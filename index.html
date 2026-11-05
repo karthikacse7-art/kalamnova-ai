@@ -8,7 +8,7 @@
 <style>
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif;a
     background: #f1f5ff;
     color: #172554;
 }
@@ -157,6 +157,63 @@ function displayTasks() {
 
 displayTasks();
 </script>
+<section class="card" id="ai-chat">
+  <h2>🤖 KALAMNOVA AI Assistant</h2>
+  <p>Ask me anything about your studies!</p>
 
+  <textarea
+    id="chat-question"
+    placeholder="Type your question here..."
+    rows="3"
+    style="width:90%; padding:12px; border-radius:8px;"
+  ></textarea>
+
+  <br>
+
+  <button onclick="askKalamNova()" id="chat-button">
+    Ask AI
+  </button>
+
+  <div
+    id="chat-answer"
+    style="margin-top:20px; white-space:pre-wrap; text-align:left;"
+  ></div>
+</section>
+
+<script>
+async function askKalamNova() {
+  const question = document.getElementById("chat-question").value.trim();
+  const answerBox = document.getElementById("chat-answer");
+  const button = document.getElementById("chat-button");
+
+  if (!question) {
+    answerBox.textContent = "Please type a question first.";
+    return;
+  }
+
+  button.disabled = true;
+  answerBox.textContent = "KALAMNOVA AI is thinking...";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: question })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed.");
+    }
+
+    answerBox.textContent = data.answer || "No answer received.";
+  } catch (error) {
+    answerBox.textContent = "Sorry! " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
+</script>
 </body>
 </html>
