@@ -7,9 +7,7 @@
 <title>KALAMNOVA AI - Smart Learning</title>
 
 <style>
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     margin: 0;
@@ -40,22 +38,26 @@ main {
     box-shadow: 0 4px 15px #0001;
 }
 
-input, button, textarea {
+input, button, textarea, select {
     font: inherit;
 }
 
-input, button {
+input, select {
     padding: 12px;
     margin: 6px;
     border-radius: 7px;
     border: 1px solid #cbd5e1;
+    max-width: 100%;
 }
 
 button {
+    padding: 12px 18px;
+    margin: 6px;
+    border-radius: 7px;
+    border: none;
     background: #4f46e5;
     color: white;
     cursor: pointer;
-    border: none;
 }
 
 button:disabled {
@@ -84,7 +86,7 @@ li {
     opacity: 0.6;
 }
 
-.delete {
+.delete, .clear-chat {
     background: #dc2626;
 }
 
@@ -154,17 +156,12 @@ li {
     border-radius: 10px;
 }
 
-.clear-chat {
-    background: #dc2626;
-    margin: 0;
-}
-
 .typing {
     color: #64748b;
     font-style: italic;
 }
 
-/* PRACTICE QUIZ */
+/* AI QUIZ */
 
 #quiz {
     text-align: left;
@@ -173,6 +170,18 @@ li {
 #quiz h2,
 #quiz > p {
     text-align: center;
+}
+
+.quiz-settings {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.quiz-settings input,
+.quiz-settings select {
+    width: 100%;
+    margin: 0;
 }
 
 .quiz-question {
@@ -213,7 +222,45 @@ li {
 }
 
 #quiz-feedback {
-    line-height: 1.8;
+    line-height: 1.7;
+}
+
+.correct-feedback {
+    color: #15803d;
+}
+
+.wrong-feedback {
+    color: #dc2626;
+}
+
+#progress {
+    text-align: center;
+}
+
+.progress-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.progress-item {
+    background: #eef2ff;
+    border-radius: 10px;
+    padding: 15px 8px;
+}
+
+.progress-item strong {
+    display: block;
+    font-size: 25px;
+    color: #4f46e5;
+    margin-bottom: 6px;
+}
+
+.status-message {
+    text-align: center;
+    color: #64748b;
+    line-height: 1.5;
 }
 
 @media (max-width: 500px) {
@@ -232,6 +279,10 @@ li {
 
     #chat-button {
         min-height: 45px;
+    }
+
+    .progress-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -268,36 +319,99 @@ li {
     <h2>Our Features</h2>
     <p>🤖 AI Study Assistant</p>
     <p>📚 Personalized Study Plans</p>
-    <p>📝 Practice Quizzes</p>
+    <p>📝 AI-Powered Practice Quizzes</p>
     <p>📊 Progress Tracking</p>
 </div>
 
-<!-- PRACTICE QUIZ -->
+<!-- PROGRESS TRACKING -->
+
+<section class="card" id="progress">
+    <h2>📊 My Learning Progress</h2>
+    <p>Track your quiz performance!</p>
+
+    <div class="progress-grid">
+        <div class="progress-item">
+            <strong id="attempt-count">0</strong>
+            Quiz Attempts
+        </div>
+
+        <div class="progress-item">
+            <strong id="highest-score">0%</strong>
+            Highest Score
+        </div>
+
+        <div class="progress-item">
+            <strong id="average-score">0%</strong>
+            Average Score
+        </div>
+    </div>
+</section>
+
+<!-- AI PRACTICE QUIZ -->
 
 <section class="card" id="quiz">
 
-    <h2>📝 Practice Quiz</h2>
-    <p>Test your knowledge and improve your learning!</p>
+    <h2>📝 AI Practice Quiz</h2>
+    <p>Choose your subject and topic. Let AI create your quiz!</p>
+
+    <div class="quiz-settings">
+
+        <select id="quiz-subject">
+            <option value="">Select Subject</option>
+            <option>Science</option>
+            <option>Mathematics</option>
+            <option>English</option>
+            <option>Social Science</option>
+            <option>Computer Science</option>
+            <option>Biology</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>History</option>
+            <option>Geography</option>
+        </select>
+
+        <input
+            id="quiz-topic"
+            type="text"
+            maxlength="150"
+            placeholder="Enter topic (e.g. Photosynthesis)"
+        >
+
+        <select id="quiz-difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+
+    </div>
+
+    <div style="text-align:center;">
+        <button id="generate-quiz" onclick="generateQuiz()">
+            ✨ Generate AI Quiz
+        </button>
+    </div>
+
+    <div id="quiz-status" class="status-message"
+        aria-live="polite"></div>
 
     <div id="quiz-container"></div>
 
-    <button id="submit-quiz" onclick="submitQuiz()">
-        Submit Answers
-    </button>
-
-    <div id="quiz-result" aria-live="polite"></div>
-
-    <div id="quiz-feedback"></div>
-
     <div style="text-align:center;">
-        <button
-            id="retry-quiz"
-            onclick="startQuiz()"
-            style="display:none;"
-        >
-            🔄 Try Again
+        <button id="submit-quiz"
+            onclick="submitQuiz()"
+            style="display:none;">
+            Submit Answers
+        </button>
+
+        <button id="retry-quiz"
+            onclick="generateQuiz()"
+            style="display:none;">
+            🔄 Generate Another Quiz
         </button>
     </div>
+
+    <div id="quiz-result" aria-live="polite"></div>
+    <div id="quiz-feedback"></div>
 
 </section>
 
@@ -350,9 +464,15 @@ li {
 // STUDY PLANNER
 // ======================
 
-let tasks = JSON.parse(
-    localStorage.getItem("kalamnovaTasks")
-) || [];
+let tasks = [];
+
+try {
+    tasks = JSON.parse(
+        localStorage.getItem("kalamnovaTasks")
+    ) || [];
+} catch {
+    tasks = [];
+}
 
 function saveTasks() {
     localStorage.setItem(
@@ -431,55 +551,165 @@ displayTasks();
 
 
 // ======================
-// PRACTICE QUIZ
+// PROGRESS TRACKING
 // ======================
 
-const quizQuestions = [
+let quizScores = [];
 
-    {
-        question: "1. Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Jupiter", "Venus"],
-        answer: 1
-    },
+try {
+    quizScores = JSON.parse(
+        localStorage.getItem("kalamnovaQuizScores")
+    ) || [];
+} catch {
+    quizScores = [];
+}
 
-    {
-        question: "2. What is the chemical formula of water?",
-        options: ["CO2", "O2", "H2O", "NaCl"],
-        answer: 2
-    },
+function saveQuizProgress(score) {
+    quizScores.push(score);
 
-    {
-        question: "3. Which organ pumps blood in the human body?",
-        options: ["Brain", "Lungs", "Heart", "Kidney"],
-        answer: 2
-    },
+    localStorage.setItem(
+        "kalamnovaQuizScores",
+        JSON.stringify(quizScores)
+    );
 
-    {
-        question: "4. What is 12 × 8?",
-        options: ["84", "96", "108", "88"],
-        answer: 1
-    },
+    displayProgress();
+}
 
-    {
-        question: "5. Which gas do plants absorb during photosynthesis?",
-        options: ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"],
-        answer: 3
+function displayProgress() {
+    const attempts = quizScores.length;
+
+    const highest = attempts
+        ? Math.max(...quizScores)
+        : 0;
+
+    const average = attempts
+        ? quizScores.reduce((total, score) => total + score, 0) / attempts
+        : 0;
+
+    document.getElementById("attempt-count").textContent =
+        attempts;
+
+    document.getElementById("highest-score").textContent =
+        highest + "%";
+
+    document.getElementById("average-score").textContent =
+        Math.round(average) + "%";
+}
+
+displayProgress();
+
+
+// ======================
+// AI PRACTICE QUIZ
+// ======================
+
+let quizQuestions = [];
+let quizSubmitted = false;
+
+async function generateQuiz() {
+
+    const subject =
+        document.getElementById("quiz-subject").value.trim();
+
+    const topic =
+        document.getElementById("quiz-topic").value.trim();
+
+    const difficulty =
+        document.getElementById("quiz-difficulty").value;
+
+    const button =
+        document.getElementById("generate-quiz");
+
+    const container =
+        document.getElementById("quiz-container");
+
+    const status =
+        document.getElementById("quiz-status");
+
+    if (!subject) {
+        status.textContent = "Please select a subject.";
+        return;
     }
 
-];
+    if (!topic) {
+        status.textContent = "Please enter a topic.";
+        document.getElementById("quiz-topic").focus();
+        return;
+    }
 
-function startQuiz() {
+    button.disabled = true;
+    button.textContent = "Generating...";
+
+    container.innerHTML = "";
+    document.getElementById("quiz-result").textContent = "";
+    document.getElementById("quiz-feedback").innerHTML = "";
+
+    document.getElementById("submit-quiz").style.display = "none";
+    document.getElementById("retry-quiz").style.display = "none";
+
+    status.textContent = "✨ KALAMNOVA AI is preparing your questions...";
+
+    quizQuestions = [];
+    quizSubmitted = false;
+
+    try {
+
+        const response = await fetch("/api/quiz", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                subject: subject,
+                topic: topic,
+                difficulty: difficulty
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Quiz generation failed."
+            );
+        }
+
+        if (
+            !Array.isArray(data.questions) ||
+            data.questions.length !== 5
+        ) {
+            throw new Error("The AI returned an invalid quiz.");
+        }
+
+        quizQuestions = data.questions;
+
+        renderQuiz();
+
+        status.textContent =
+            "Your " + difficulty.toLowerCase() +
+            " quiz on " + topic + " is ready!";
+
+        document.getElementById("submit-quiz").style.display =
+            "inline-block";
+
+    } catch (error) {
+
+        status.textContent = "Sorry! " + error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "✨ Generate AI Quiz";
+
+    }
+}
+
+function renderQuiz() {
 
     const container =
         document.getElementById("quiz-container");
 
     container.innerHTML = "";
-
-    document.getElementById("quiz-result").textContent = "";
-    document.getElementById("quiz-feedback").innerHTML = "";
-
-    document.getElementById("submit-quiz").style.display = "inline-block";
-    document.getElementById("retry-quiz").style.display = "none";
 
     quizQuestions.forEach((question, index) => {
 
@@ -487,7 +717,8 @@ function startQuiz() {
         questionBox.className = "quiz-question";
 
         const heading = document.createElement("h3");
-        heading.textContent = question.question;
+        heading.textContent =
+            (index + 1) + ". " + question.question;
 
         questionBox.appendChild(heading);
 
@@ -517,6 +748,10 @@ function startQuiz() {
 
 function submitQuiz() {
 
+    if (quizSubmitted || quizQuestions.length !== 5) {
+        return;
+    }
+
     let score = 0;
     let unanswered = 0;
 
@@ -525,60 +760,85 @@ function submitQuiz() {
 
     feedback.innerHTML = "";
 
-    quizQuestions.forEach((question, index) => {
+    const answers = quizQuestions.map((question, index) => {
 
-        const selected = document.querySelector(
+        return document.querySelector(
             'input[name="question' + index + '"]:checked'
         );
 
-        if (!selected) {
-            unanswered++;
-            return;
-        }
+    });
 
-        const userAnswer = Number(selected.value);
+    unanswered = answers.filter(answer => !answer).length;
 
-        const result = document.createElement("p");
+    if (unanswered > 0) {
+        document.getElementById("quiz-result").textContent =
+            "Please answer all questions. " +
+            unanswered + " remaining.";
+        return;
+    }
+
+    quizQuestions.forEach((question, index) => {
+
+        const userAnswer = Number(answers[index].value);
+
+        const result = document.createElement("div");
+        result.className = "quiz-question";
+
+        const heading = document.createElement("strong");
 
         if (userAnswer === question.answer) {
 
             score++;
 
-            result.textContent =
+            heading.textContent =
                 "Question " + (index + 1) + ": Correct! ✅";
+
+            heading.className = "correct-feedback";
 
         } else {
 
-            result.textContent =
-                "Question " + (index + 1) +
-                ": Incorrect. Correct answer: " +
-                question.options[question.answer] + " ❌";
+            heading.textContent =
+                "Question " + (index + 1) + ": Incorrect ❌";
+
+            heading.className = "wrong-feedback";
 
         }
 
+        const correctAnswer = document.createElement("p");
+        correctAnswer.textContent =
+            "Correct answer: " + question.options[question.answer];
+
+        const explanation = document.createElement("p");
+        explanation.textContent =
+            "Explanation: " + question.explanation;
+
+        result.append(heading, correctAnswer, explanation);
         feedback.appendChild(result);
 
     });
 
-    if (unanswered > 0) {
-        document.getElementById("quiz-result").textContent =
-            "Please answer all " + quizQuestions.length +
-            " questions. " + unanswered + " remaining.";
-        return;
-    }
+    const percentage = Math.round(
+        (score / quizQuestions.length) * 100
+    );
 
     document.getElementById("quiz-result").textContent =
         "🏆 Your Score: " + score + " / " +
-        quizQuestions.length;
+        quizQuestions.length + " (" + percentage + "%)";
+
+    quizSubmitted = true;
+
+    saveQuizProgress(percentage);
 
     document.getElementById("submit-quiz").style.display = "none";
     document.getElementById("retry-quiz").style.display = "inline-block";
+
+    document.querySelectorAll(
+        '#quiz-container input[type="radio"]'
+    ).forEach(radio => {
+        radio.disabled = true;
+    });
+
 }
-
-
-// Start quiz when page loads
-
-startQuiz();
 
 
 // ======================
