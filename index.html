@@ -88,7 +88,7 @@ li {
     background: #dc2626;
 }
 
-/* CHATBOT DESIGN */
+/* CHATBOT */
 
 #ai-chat {
     text-align: left;
@@ -136,7 +136,6 @@ li {
 .chat-input-area {
     display: flex;
     gap: 8px;
-    align-items: stretch;
 }
 
 #chat-question {
@@ -163,6 +162,58 @@ li {
 .typing {
     color: #64748b;
     font-style: italic;
+}
+
+/* PRACTICE QUIZ */
+
+#quiz {
+    text-align: left;
+}
+
+#quiz h2,
+#quiz > p {
+    text-align: center;
+}
+
+.quiz-question {
+    background: #f8faff;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+}
+
+.quiz-question h3 {
+    font-size: 16px;
+}
+
+.quiz-option {
+    display: block;
+    padding: 10px;
+    margin: 8px 0;
+    background: white;
+    border: 1px solid #dbeafe;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.quiz-option:hover {
+    background: #eef2ff;
+}
+
+.quiz-option input {
+    margin-right: 8px;
+}
+
+#quiz-result {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+#quiz-feedback {
+    line-height: 1.8;
 }
 
 @media (max-width: 500px) {
@@ -195,85 +246,109 @@ li {
 
 <main>
 
-    <h2>Welcome to Your Smart Learning Space!</h2>
-    <p>A learning platform designed for school and college students.</p>
+<h2>Welcome to Your Smart Learning Space!</h2>
+<p>A learning platform designed for school and college students.</p>
 
-    <!-- STUDY PLANNER -->
-    <div class="card">
-        <h2>📚 My Study Planner</h2>
+<!-- STUDY PLANNER -->
 
-        <input
-            id="task"
-            type="text"
-            placeholder="Enter your study task"
+<div class="card">
+    <h2>📚 My Study Planner</h2>
+
+    <input id="task" type="text"
+        placeholder="Enter your study task">
+
+    <button onclick="addTask()">Add Task</button>
+
+    <ul id="taskList"></ul>
+</div>
+
+<!-- FEATURES -->
+
+<div class="card">
+    <h2>Our Features</h2>
+    <p>🤖 AI Study Assistant</p>
+    <p>📚 Personalized Study Plans</p>
+    <p>📝 Practice Quizzes</p>
+    <p>📊 Progress Tracking</p>
+</div>
+
+<!-- PRACTICE QUIZ -->
+
+<section class="card" id="quiz">
+
+    <h2>📝 Practice Quiz</h2>
+    <p>Test your knowledge and improve your learning!</p>
+
+    <div id="quiz-container"></div>
+
+    <button id="submit-quiz" onclick="submitQuiz()">
+        Submit Answers
+    </button>
+
+    <div id="quiz-result" aria-live="polite"></div>
+
+    <div id="quiz-feedback"></div>
+
+    <div style="text-align:center;">
+        <button
+            id="retry-quiz"
+            onclick="startQuiz()"
+            style="display:none;"
         >
-
-        <button onclick="addTask()">Add Task</button>
-
-        <ul id="taskList"></ul>
+            🔄 Try Again
+        </button>
     </div>
 
-    <!-- FEATURES -->
-    <div class="card">
-        <h2>Our Features</h2>
-        <p>🤖 AI Study Assistant</p>
-        <p>📚 Personalized Study Plans</p>
-        <p>📝 Practice Quizzes</p>
-        <p>📊 Progress Tracking</p>
+</section>
+
+<!-- AI ASSISTANT -->
+
+<section class="card" id="ai-chat">
+
+    <h2>🤖 KALAMNOVA AI Assistant</h2>
+
+    <p>Ask me anything about your studies!</p>
+
+    <div id="chat-messages"
+        class="chat-messages"
+        aria-live="polite">
+
+        <div class="chat-bubble ai-message">
+            Hello! 👋 I'm KALAMNOVA AI.
+            Ask me any study question!
+        </div>
+
     </div>
 
-    <!-- AI CHATBOT -->
-    <section class="card" id="ai-chat">
+    <div style="text-align:right; margin-bottom:12px;">
+        <button onclick="clearChat()" class="clear-chat">
+            🗑️ Clear Chat
+        </button>
+    </div>
 
-        <h2>🤖 KALAMNOVA AI Assistant</h2>
+    <div class="chat-input-area">
 
-        <p>Ask me anything about your studies!</p>
+        <textarea
+            id="chat-question"
+            placeholder="Type your study question..."
+            rows="2"
+        ></textarea>
 
-        <div
-            id="chat-messages"
-            class="chat-messages"
-            aria-live="polite"
-        >
-            <div class="chat-bubble ai-message">
-                Hello! 👋 I'm KALAMNOVA AI.
-                Ask me any study question!
-            </div>
-        </div>
+        <button onclick="askKalamNova()" id="chat-button">
+            Ask AI
+        </button>
 
-        <div style="text-align:right; margin-bottom:12px;">
-            <button
-                onclick="clearChat()"
-                class="clear-chat"
-                id="clear-button"
-            >
-                🗑️ Clear Chat
-            </button>
-        </div>
+    </div>
 
-        <div class="chat-input-area">
-
-            <textarea
-                id="chat-question"
-                placeholder="Type your study question..."
-                rows="2"
-            ></textarea>
-
-            <button
-                onclick="askKalamNova()"
-                id="chat-button"
-            >
-                Ask AI
-            </button>
-
-        </div>
-
-    </section>
+</section>
 
 </main>
 
 <script>
 
+// ======================
 // STUDY PLANNER
+// ======================
 
 let tasks = JSON.parse(
     localStorage.getItem("kalamnovaTasks")
@@ -287,11 +362,10 @@ function saveTasks() {
 }
 
 function addTask() {
-
     const input = document.getElementById("task");
     const value = input.value.trim();
 
-    if (value === "") {
+    if (!value) {
         alert("Please enter a task!");
         return;
     }
@@ -302,40 +376,30 @@ function addTask() {
     });
 
     input.value = "";
-
     saveTasks();
     displayTasks();
 }
 
 function toggleTask(index) {
-
-    tasks[index].completed =
-        !tasks[index].completed;
-
+    tasks[index].completed = !tasks[index].completed;
     saveTasks();
     displayTasks();
 }
 
 function deleteTask(index) {
-
     tasks.splice(index, 1);
-
     saveTasks();
     displayTasks();
 }
 
 function displayTasks() {
-
     const list = document.getElementById("taskList");
-
     list.innerHTML = "";
 
     tasks.forEach((task, index) => {
-
         const item = document.createElement("li");
 
         const label = document.createElement("span");
-
         label.textContent = task.text;
 
         if (task.completed) {
@@ -343,32 +407,22 @@ function displayTasks() {
         }
 
         const checkbox = document.createElement("input");
-
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
 
-        checkbox.addEventListener(
-            "change",
-            () => toggleTask(index)
-        );
+        checkbox.addEventListener("change", () => {
+            toggleTask(index);
+        });
 
-        const deleteButton =
-            document.createElement("button");
-
+        const deleteButton = document.createElement("button");
         deleteButton.textContent = "Delete";
         deleteButton.className = "delete";
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteTask(index)
-        );
+        deleteButton.addEventListener("click", () => {
+            deleteTask(index);
+        });
 
-        item.append(
-            checkbox,
-            label,
-            deleteButton
-        );
-
+        item.append(checkbox, label, deleteButton);
         list.appendChild(item);
     });
 }
@@ -376,15 +430,167 @@ function displayTasks() {
 displayTasks();
 
 
-// CHAT MESSAGE FUNCTION
+// ======================
+// PRACTICE QUIZ
+// ======================
+
+const quizQuestions = [
+
+    {
+        question: "1. Which planet is known as the Red Planet?",
+        options: ["Earth", "Mars", "Jupiter", "Venus"],
+        answer: 1
+    },
+
+    {
+        question: "2. What is the chemical formula of water?",
+        options: ["CO2", "O2", "H2O", "NaCl"],
+        answer: 2
+    },
+
+    {
+        question: "3. Which organ pumps blood in the human body?",
+        options: ["Brain", "Lungs", "Heart", "Kidney"],
+        answer: 2
+    },
+
+    {
+        question: "4. What is 12 × 8?",
+        options: ["84", "96", "108", "88"],
+        answer: 1
+    },
+
+    {
+        question: "5. Which gas do plants absorb during photosynthesis?",
+        options: ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"],
+        answer: 3
+    }
+
+];
+
+function startQuiz() {
+
+    const container =
+        document.getElementById("quiz-container");
+
+    container.innerHTML = "";
+
+    document.getElementById("quiz-result").textContent = "";
+    document.getElementById("quiz-feedback").innerHTML = "";
+
+    document.getElementById("submit-quiz").style.display = "inline-block";
+    document.getElementById("retry-quiz").style.display = "none";
+
+    quizQuestions.forEach((question, index) => {
+
+        const questionBox = document.createElement("div");
+        questionBox.className = "quiz-question";
+
+        const heading = document.createElement("h3");
+        heading.textContent = question.question;
+
+        questionBox.appendChild(heading);
+
+        question.options.forEach((option, optionIndex) => {
+
+            const label = document.createElement("label");
+            label.className = "quiz-option";
+
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "question" + index;
+            radio.value = optionIndex;
+
+            label.appendChild(radio);
+            label.appendChild(
+                document.createTextNode(option)
+            );
+
+            questionBox.appendChild(label);
+
+        });
+
+        container.appendChild(questionBox);
+
+    });
+}
+
+function submitQuiz() {
+
+    let score = 0;
+    let unanswered = 0;
+
+    const feedback =
+        document.getElementById("quiz-feedback");
+
+    feedback.innerHTML = "";
+
+    quizQuestions.forEach((question, index) => {
+
+        const selected = document.querySelector(
+            'input[name="question' + index + '"]:checked'
+        );
+
+        if (!selected) {
+            unanswered++;
+            return;
+        }
+
+        const userAnswer = Number(selected.value);
+
+        const result = document.createElement("p");
+
+        if (userAnswer === question.answer) {
+
+            score++;
+
+            result.textContent =
+                "Question " + (index + 1) + ": Correct! ✅";
+
+        } else {
+
+            result.textContent =
+                "Question " + (index + 1) +
+                ": Incorrect. Correct answer: " +
+                question.options[question.answer] + " ❌";
+
+        }
+
+        feedback.appendChild(result);
+
+    });
+
+    if (unanswered > 0) {
+        document.getElementById("quiz-result").textContent =
+            "Please answer all " + quizQuestions.length +
+            " questions. " + unanswered + " remaining.";
+        return;
+    }
+
+    document.getElementById("quiz-result").textContent =
+        "🏆 Your Score: " + score + " / " +
+        quizQuestions.length;
+
+    document.getElementById("submit-quiz").style.display = "none";
+    document.getElementById("retry-quiz").style.display = "inline-block";
+}
+
+
+// Start quiz when page loads
+
+startQuiz();
+
+
+// ======================
+// AI CHAT ASSISTANT
+// ======================
 
 function addChatMessage(message, type) {
 
     const messages =
         document.getElementById("chat-messages");
 
-    const bubble =
-        document.createElement("div");
+    const bubble = document.createElement("div");
 
     bubble.className =
         "chat-bubble " +
@@ -396,25 +602,23 @@ function addChatMessage(message, type) {
 
     messages.appendChild(bubble);
 
-    messages.scrollTop =
-        messages.scrollHeight;
+    messages.scrollTop = messages.scrollHeight;
 
     return bubble;
 }
 
 
-// CLEAR CHAT FUNCTION
+// CLEAR CHAT
 
 function clearChat() {
 
+    const button =
+        document.getElementById("chat-button");
+
+    if (button.disabled) return;
+
     const messages =
         document.getElementById("chat-messages");
-
-    if (
-        document.getElementById("chat-button").disabled
-    ) {
-        return;
-    }
 
     messages.innerHTML = "";
 
@@ -427,7 +631,7 @@ function clearChat() {
 }
 
 
-// ASK AI FUNCTION
+// ASK AI
 
 async function askKalamNova() {
 
@@ -437,8 +641,7 @@ async function askKalamNova() {
     const button =
         document.getElementById("chat-button");
 
-    const question =
-        questionInput.value.trim();
+    const question = questionInput.value.trim();
 
     if (!question) {
         questionInput.focus();
@@ -462,7 +665,6 @@ async function askKalamNova() {
     try {
 
         const response = await fetch("/api/chat", {
-
             method: "POST",
 
             headers: {
@@ -472,7 +674,6 @@ async function askKalamNova() {
             body: JSON.stringify({
                 message: question
             })
-
         });
 
         const data = await response.json();
@@ -499,8 +700,8 @@ async function askKalamNova() {
 
         button.disabled = false;
         button.textContent = "Ask AI";
-
         questionInput.focus();
+
     }
 }
 
