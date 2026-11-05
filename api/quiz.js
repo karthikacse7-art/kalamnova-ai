@@ -1,0 +1,149 @@
+export default {
+  async fetch(request) {
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    if (request.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers }
+      );
+    }
+
+    try {
+      if (!process.env.GROQ_API_KEY) {
+        return new Response(
+          JSON.stringify({ error: "Groq API key is missing." }),
+          { status: 500, headers }
+        );
+      }
+
+      const { subject, topic, difficulty } = await request.json();
+
+      const allowedDifficulties = ["Easy", "Medium", "Hard"];
+
+      if (
+        typeof subject !== "string" ||
+        !subject.trim() ||
+        subject.length > 80 ||
+        typeof topic !== "string" ||
+        !topic.trim() ||
+        topic.length > 150 ||
+        !allowedDifficulties.includes(difficulty)
+      ) {
+        return new Response(
+          JSON.stringify({ error: "Please provide a valid subject, topic, and difficulty." }),
+          { status: 400, headers }
+        );
+      }
+
+      const prompt = `
+Create exactly 5 multiple-choice quiz questions for students.
+
+Subject: ${subject.trim()}
+Topic: ${topic.trim()}
+Difficulty: ${difficulty}
+
+Return ONLY valid JSON in this exact format:
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": 0,
+      "explanation": "Short explanation of the correct answer."
+    }
+  ]
+}
+
+Rules:
+- Exactly 5 questions.
+- Exactly 4 options per question.
+- answer must be an index: 0, 1, 2, or 3.
+- Questions must match the requested subject, topic, and difficulty.
+- Each question must have exactly one correct answer.
+- Explanations must be educational and accurate.
+- Do not include markdown or text outside the JSON.
+`;
+
+      const apiResponse = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-oss-120b",
+            messages: [
+              {
+                role: "system",
+                content: "You are KALAMNOVA AI, an accurate and helpful educational quiz generator."
+              },
+              {
+                role: "user",
+                content: prompt
+              }
+            ],
+            temperature: 0.4,
+            max_tokens: 1800
+          }),
+          signal: AbortSignal.timeout(25000)
+        }
+      );
+
+      const data = await apiResponse.json();
+
+      if (!apiResponse.ok) {
+        return new Response(
+          JSON.stringify({
+            error: data.error?.message || "Quiz generation failed."
+          }),
+          { status: 502, headers }
+        );
+      }
+
+      const content = data.choices?.[0]?.message?.content || "";
+      const cleaned = content
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```$/, "")
+        .trim();
+
+      const quiz = JSON.parse(cleaned);
+
+      if (
+        !Array.isArray(quiz.questions) ||
+        quiz.questions.length !== 5 ||
+        !quiz.questions.every(q =>
+          typeof q.question === "string" &&
+          Array.isArray(q.options) &&
+          q.options.length === 4 &&
+          q.options.every(option => typeof option === "string") &&
+          Number.isInteger(q.answer) &&
+          q.answer >= 0 &&
+          q.answer <= 3 &&
+          typeof q.explanation === "string"
+        )
+      ) {
+        throw new Error("Invalid quiz format");
+      }
+
+      return new Response(
+        JSON.stringify(quiz),
+        { status: 200, headers }
+      );
+
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: error.name === "TimeoutError"
+            ? "Quiz generation took too long. Please try again."
+            : "Unable to generate the quiz. Please try again."
+        }),
+        { status: 500, headers }
+      );
+    }
+  }
+};
