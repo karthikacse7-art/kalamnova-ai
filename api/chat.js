@@ -17,19 +17,26 @@ export default async function handler(request) {
     }
 
     const apiResponse = await fetch(
-      "https://api.openai.com/v1/responses",
+      "https://api.groq.com/openai/v1/chat/completions",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
         },
         body: JSON.stringify({
-          model: "gpt-5.5",
-          instructions:
-            "You are KALAMNOVA AI, a friendly and patient tutor. Help school and college students understand subjects with clear explanations and examples.",
-          input: message.trim(),
-          max_output_tokens: 1000
+          model: "llama-3.3-70b-versatile",
+          messages: [
+            {
+              role: "system",
+              content: "You are KALAMNOVA AI, a friendly and patient tutor. Help school and college students understand subjects with clear explanations and examples."
+            },
+            {
+              role: "user",
+              content: message.trim()
+            }
+          ],
+          max_tokens: 1000
         })
       }
     );
@@ -38,17 +45,12 @@ export default async function handler(request) {
 
     if (!apiResponse.ok) {
       return new Response(
-        JSON.stringify({ error: "AI service request failed. Please try again." }),
+        JSON.stringify({ error: "AI service is unavailable. Please try again." }),
         { status: 502, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    const answer = (data.output || [])
-      .filter(item => item.type === "message")
-      .flatMap(item => item.content || [])
-      .filter(item => item.type === "output_text")
-      .map(item => item.text)
-      .join("\n");
+    const answer = data.choices?.[0]?.message?.content || "No answer received.";
 
     return new Response(
       JSON.stringify({ answer }),
