@@ -1,711 +1,150 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KALAMNOVA AI - Smart Learning</title>
+export default {
+  async fetch(request) {
+    const headers = {
+      "Content-Type": "application/json"
+    };
 
-<style>
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #f1f5ff;
-    color: #172554;
-}
-
-header {
-    background: #172554;
-    color: white;
-    padding: 25px;
-    text-align: center;
-}
-
-main {
-    max-width: 750px;
-    margin: 35px auto;
-    padding: 20px;
-    text-align: center;
-}
-
-.card {
-    background: white;
-    padding: 25px;
-    margin: 20px 0;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px #0001;
-}
-
-input, button, textarea {
-    font: inherit;
-}
-
-input, button {
-    padding: 12px;
-    margin: 6px;
-    border-radius: 7px;
-    border: 1px solid #cbd5e1;
-}
-
-button {
-    background: #4f46e5;
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-ul {
-    padding: 0;
-    list-style: none;
-}
-
-li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    background: #eef2ff;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 8px;
-}
-
-.completed {
-    text-decoration: line-through;
-    opacity: 0.6;
-}
-
-.delete {
-    background: #dc2626;
-}
-
-/* CHATBOT */
-
-#ai-chat {
-    text-align: left;
-}
-
-#ai-chat h2,
-#ai-chat > p {
-    text-align: center;
-}
-
-.chat-messages {
-    height: 350px;
-    overflow-y: auto;
-    background: #f8faff;
-    border: 1px solid #dbeafe;
-    border-radius: 12px;
-    padding: 15px;
-    margin: 20px 0;
-}
-
-.chat-bubble {
-    max-width: 85%;
-    padding: 12px 15px;
-    margin: 12px 0;
-    border-radius: 14px;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    line-height: 1.5;
-}
-
-.user-message {
-    background: #4f46e5;
-    color: white;
-    margin-left: auto;
-    border-bottom-right-radius: 3px;
-}
-
-.ai-message {
-    background: #e0eaff;
-    color: #172554;
-    margin-right: auto;
-    border-bottom-left-radius: 3px;
-}
-
-.chat-input-area {
-    display: flex;
-    gap: 8px;
-}
-
-#chat-question {
-    flex: 1;
-    min-width: 0;
-    min-height: 55px;
-    resize: vertical;
-    padding: 13px;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-}
-
-#chat-button {
-    min-width: 90px;
-    margin: 0;
-    border-radius: 10px;
-}
-
-.clear-chat {
-    background: #dc2626;
-    margin: 0;
-}
-
-.typing {
-    color: #64748b;
-    font-style: italic;
-}
-
-/* PRACTICE QUIZ */
-
-#quiz {
-    text-align: left;
-}
-
-#quiz h2,
-#quiz > p {
-    text-align: center;
-}
-
-.quiz-question {
-    background: #f8faff;
-    padding: 15px;
-    margin: 15px 0;
-    border: 1px solid #dbeafe;
-    border-radius: 10px;
-}
-
-.quiz-question h3 {
-    font-size: 16px;
-}
-
-.quiz-option {
-    display: block;
-    padding: 10px;
-    margin: 8px 0;
-    background: white;
-    border: 1px solid #dbeafe;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.quiz-option:hover {
-    background: #eef2ff;
-}
-
-.quiz-option input {
-    margin-right: 8px;
-}
-
-#quiz-result {
-    text-align: center;
-    font-weight: bold;
-    font-size: 20px;
-    margin: 20px 0;
-}
-
-#quiz-feedback {
-    line-height: 1.8;
-}
-
-@media (max-width: 500px) {
-    main {
-        margin: 15px auto;
-        padding: 12px;
+    if (request.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers }
+      );
     }
-
-    .card {
-        padding: 18px;
-    }
-
-    .chat-input-area {
-        flex-direction: column;
-    }
-
-    #chat-button {
-        min-height: 45px;
-    }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-    <h1>KALAMNOVA AI</h1>
-    <p>Learn Smarter. Grow Faster.</p>
-</header>
-
-<main>
-
-<h2>Welcome to Your Smart Learning Space!</h2>
-<p>A learning platform designed for school and college students.</p>
-
-<!-- STUDY PLANNER -->
-
-<div class="card">
-    <h2>📚 My Study Planner</h2>
-
-    <input id="task" type="text"
-        placeholder="Enter your study task">
-
-    <button onclick="addTask()">Add Task</button>
-
-    <ul id="taskList"></ul>
-</div>
-
-<!-- FEATURES -->
-
-<div class="card">
-    <h2>Our Features</h2>
-    <p>🤖 AI Study Assistant</p>
-    <p>📚 Personalized Study Plans</p>
-    <p>📝 Practice Quizzes</p>
-    <p>📊 Progress Tracking</p>
-</div>
-
-<!-- PRACTICE QUIZ -->
-
-<section class="card" id="quiz">
-
-    <h2>📝 Practice Quiz</h2>
-    <p>Test your knowledge and improve your learning!</p>
-
-    <div id="quiz-container"></div>
-
-    <button id="submit-quiz" onclick="submitQuiz()">
-        Submit Answers
-    </button>
-
-    <div id="quiz-result" aria-live="polite"></div>
-
-    <div id="quiz-feedback"></div>
-
-    <div style="text-align:center;">
-        <button
-            id="retry-quiz"
-            onclick="startQuiz()"
-            style="display:none;"
-        >
-            🔄 Try Again
-        </button>
-    </div>
-
-</section>
-
-<!-- AI ASSISTANT -->
-
-<section class="card" id="ai-chat">
-
-    <h2>🤖 KALAMNOVA AI Assistant</h2>
-
-    <p>Ask me anything about your studies!</p>
-
-    <div id="chat-messages"
-        class="chat-messages"
-        aria-live="polite">
-
-        <div class="chat-bubble ai-message">
-            Hello! 👋 I'm KALAMNOVA AI.
-            Ask me any study question!
-        </div>
-
-    </div>
-
-    <div style="text-align:right; margin-bottom:12px;">
-        <button onclick="clearChat()" class="clear-chat">
-            🗑️ Clear Chat
-        </button>
-    </div>
-
-    <div class="chat-input-area">
-
-        <textarea
-            id="chat-question"
-            placeholder="Type your study question..."
-            rows="2"
-        ></textarea>
-
-        <button onclick="askKalamNova()" id="chat-button">
-            Ask AI
-        </button>
-
-    </div>
-
-</section>
-
-</main>
-
-<script>
-
-// ======================
-// STUDY PLANNER
-// ======================
-
-let tasks = JSON.parse(
-    localStorage.getItem("kalamnovaTasks")
-) || [];
-
-function saveTasks() {
-    localStorage.setItem(
-        "kalamnovaTasks",
-        JSON.stringify(tasks)
-    );
-}
-
-function addTask() {
-    const input = document.getElementById("task");
-    const value = input.value.trim();
-
-    if (!value) {
-        alert("Please enter a task!");
-        return;
-    }
-
-    tasks.push({
-        text: value,
-        completed: false
-    });
-
-    input.value = "";
-    saveTasks();
-    displayTasks();
-}
-
-function toggleTask(index) {
-    tasks[index].completed = !tasks[index].completed;
-    saveTasks();
-    displayTasks();
-}
-
-function deleteTask(index) {
-    tasks.splice(index, 1);
-    saveTasks();
-    displayTasks();
-}
-
-function displayTasks() {
-    const list = document.getElementById("taskList");
-    list.innerHTML = "";
-
-    tasks.forEach((task, index) => {
-        const item = document.createElement("li");
-
-        const label = document.createElement("span");
-        label.textContent = task.text;
-
-        if (task.completed) {
-            label.classList.add("completed");
-        }
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = task.completed;
-
-        checkbox.addEventListener("change", () => {
-            toggleTask(index);
-        });
-
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.className = "delete";
-
-        deleteButton.addEventListener("click", () => {
-            deleteTask(index);
-        });
-
-        item.append(checkbox, label, deleteButton);
-        list.appendChild(item);
-    });
-}
-
-displayTasks();
-
-
-// ======================
-// PRACTICE QUIZ
-// ======================
-
-const quizQuestions = [
-
-    {
-        question: "1. Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Jupiter", "Venus"],
-        answer: 1
-    },
-
-    {
-        question: "2. What is the chemical formula of water?",
-        options: ["CO2", "O2", "H2O", "NaCl"],
-        answer: 2
-    },
-
-    {
-        question: "3. Which organ pumps blood in the human body?",
-        options: ["Brain", "Lungs", "Heart", "Kidney"],
-        answer: 2
-    },
-
-    {
-        question: "4. What is 12 × 8?",
-        options: ["84", "96", "108", "88"],
-        answer: 1
-    },
-
-    {
-        question: "5. Which gas do plants absorb during photosynthesis?",
-        options: ["Oxygen", "Nitrogen", "Hydrogen", "Carbon dioxide"],
-        answer: 3
-    }
-
-];
-
-function startQuiz() {
-
-    const container =
-        document.getElementById("quiz-container");
-
-    container.innerHTML = "";
-
-    document.getElementById("quiz-result").textContent = "";
-    document.getElementById("quiz-feedback").innerHTML = "";
-
-    document.getElementById("submit-quiz").style.display = "inline-block";
-    document.getElementById("retry-quiz").style.display = "none";
-
-    quizQuestions.forEach((question, index) => {
-
-        const questionBox = document.createElement("div");
-        questionBox.className = "quiz-question";
-
-        const heading = document.createElement("h3");
-        heading.textContent = question.question;
-
-        questionBox.appendChild(heading);
-
-        question.options.forEach((option, optionIndex) => {
-
-            const label = document.createElement("label");
-            label.className = "quiz-option";
-
-            const radio = document.createElement("input");
-            radio.type = "radio";
-            radio.name = "question" + index;
-            radio.value = optionIndex;
-
-            label.appendChild(radio);
-            label.appendChild(
-                document.createTextNode(option)
-            );
-
-            questionBox.appendChild(label);
-
-        });
-
-        container.appendChild(questionBox);
-
-    });
-}
-
-function submitQuiz() {
-
-    let score = 0;
-    let unanswered = 0;
-
-    const feedback =
-        document.getElementById("quiz-feedback");
-
-    feedback.innerHTML = "";
-
-    quizQuestions.forEach((question, index) => {
-
-        const selected = document.querySelector(
-            'input[name="question' + index + '"]:checked'
-        );
-
-        if (!selected) {
-            unanswered++;
-            return;
-        }
-
-        const userAnswer = Number(selected.value);
-
-        const result = document.createElement("p");
-
-        if (userAnswer === question.answer) {
-
-            score++;
-
-            result.textContent =
-                "Question " + (index + 1) + ": Correct! ✅";
-
-        } else {
-
-            result.textContent =
-                "Question " + (index + 1) +
-                ": Incorrect. Correct answer: " +
-                question.options[question.answer] + " ❌";
-
-        }
-
-        feedback.appendChild(result);
-
-    });
-
-    if (unanswered > 0) {
-        document.getElementById("quiz-result").textContent =
-            "Please answer all " + quizQuestions.length +
-            " questions. " + unanswered + " remaining.";
-        return;
-    }
-
-    document.getElementById("quiz-result").textContent =
-        "🏆 Your Score: " + score + " / " +
-        quizQuestions.length;
-
-    document.getElementById("submit-quiz").style.display = "none";
-    document.getElementById("retry-quiz").style.display = "inline-block";
-}
-
-
-// Start quiz when page loads
-
-startQuiz();
-
-
-// ======================
-// AI CHAT ASSISTANT
-// ======================
-
-function addChatMessage(message, type) {
-
-    const messages =
-        document.getElementById("chat-messages");
-
-    const bubble = document.createElement("div");
-
-    bubble.className =
-        "chat-bubble " +
-        (type === "user"
-            ? "user-message"
-            : "ai-message");
-
-    bubble.textContent = message;
-
-    messages.appendChild(bubble);
-
-    messages.scrollTop = messages.scrollHeight;
-
-    return bubble;
-}
-
-
-// CLEAR CHAT
-
-function clearChat() {
-
-    const button =
-        document.getElementById("chat-button");
-
-    if (button.disabled) return;
-
-    const messages =
-        document.getElementById("chat-messages");
-
-    messages.innerHTML = "";
-
-    addChatMessage(
-        "Hello! 👋 I'm KALAMNOVA AI. Ask me any study question!",
-        "ai"
-    );
-
-    document.getElementById("chat-question").value = "";
-}
-
-
-// ASK AI
-
-async function askKalamNova() {
-
-    const questionInput =
-        document.getElementById("chat-question");
-
-    const button =
-        document.getElementById("chat-button");
-
-    const question = questionInput.value.trim();
-
-    if (!question) {
-        questionInput.focus();
-        return;
-    }
-
-    addChatMessage(question, "user");
-
-    questionInput.value = "";
-
-    button.disabled = true;
-    button.textContent = "Thinking...";
-
-    const typingBubble = addChatMessage(
-        "KALAMNOVA AI is thinking...",
-        "ai"
-    );
-
-    typingBubble.classList.add("typing");
 
     try {
+      if (!process.env.GROQ_API_KEY) {
+        return new Response(
+          JSON.stringify({ error: "Groq API key is missing." }),
+          { status: 500, headers }
+        );
+      }
 
-        const response = await fetch("/api/chat", {
-            method: "POST",
+      const { subject, topic, difficulty } = await request.json();
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+      const allowedDifficulties = ["Easy", "Medium", "Hard"];
 
-            body: JSON.stringify({
-                message: question
-            })
-        });
+      if (
+        typeof subject !== "string" ||
+        !subject.trim() ||
+        subject.length > 80 ||
+        typeof topic !== "string" ||
+        !topic.trim() ||
+        topic.length > 150 ||
+        !allowedDifficulties.includes(difficulty)
+      ) {
+        return new Response(
+          JSON.stringify({ error: "Please provide a valid subject, topic, and difficulty." }),
+          { status: 400, headers }
+        );
+      }
 
-        const data = await response.json();
+      const prompt = `
+Create exactly 5 multiple-choice quiz questions for students.
 
-        if (!response.ok) {
-            throw new Error(
-                data.error || "AI request failed."
-            );
-        }
+Subject: ${subject.trim()}
+Topic: ${topic.trim()}
+Difficulty: ${difficulty}
 
-        typingBubble.classList.remove("typing");
-
-        typingBubble.textContent =
-            data.answer || "No answer received.";
-
-    } catch (error) {
-
-        typingBubble.classList.remove("typing");
-
-        typingBubble.textContent =
-            "Sorry! " + error.message;
-
-    } finally {
-
-        button.disabled = false;
-        button.textContent = "Ask AI";
-        questionInput.focus();
-
+Return ONLY valid JSON in this exact format:
+{
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": 0,
+      "explanation": "Short explanation of the correct answer."
     }
+  ]
 }
 
-</script>
+Rules:
+- Exactly 5 questions.
+- Exactly 4 options per question.
+- answer must be an index: 0, 1, 2, or 3.
+- Questions must match the requested subject, topic, and difficulty.
+- Each question must have exactly one correct answer.
+- Explanations must be educational and accurate.
+- Do not include markdown or text outside the JSON.
+`;
 
-</body>
-</html>
+      const apiResponse = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "openai/gpt-oss-120b",
+            messages: [
+              {
+                role: "system",
+                content: "You are KALAMNOVA AI, an accurate and helpful educational quiz generator."
+              },
+              {
+                role: "user",
+                content: prompt
+              }
+            ],
+            temperature: 0.4,
+            max_tokens: 1800
+          }),
+          signal: AbortSignal.timeout(25000)
+        }
+      );
+
+      const data = await apiResponse.json();
+
+      if (!apiResponse.ok) {
+        return new Response(
+          JSON.stringify({
+            error: data.error?.message || "Quiz generation failed."
+          }),
+          { status: 502, headers }
+        );
+      }
+
+      const content = data.choices?.[0]?.message?.content || "";
+      const cleaned = content
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```$/, "")
+        .trim();
+
+      const quiz = JSON.parse(cleaned);
+
+      if (
+        !Array.isArray(quiz.questions) ||
+        quiz.questions.length !== 5 ||
+        !quiz.questions.every(q =>
+          typeof q.question === "string" &&
+          Array.isArray(q.options) &&
+          q.options.length === 4 &&
+          q.options.every(option => typeof option === "string") &&
+          Number.isInteger(q.answer) &&
+          q.answer >= 0 &&
+          q.answer <= 3 &&
+          typeof q.explanation === "string"
+        )
+      ) {
+        throw new Error("Invalid quiz format");
+      }
+
+      return new Response(
+        JSON.stringify(quiz),
+        { status: 200, headers }
+      );
+
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: error.name === "TimeoutError"
+            ? "Quiz generation took too long. Please try again."
+            : "Unable to generate the quiz. Please try again."
+        }),
+        { status: 500, headers }
+      );
+    }
+  }
+};
