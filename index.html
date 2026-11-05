@@ -2,94 +2,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALAMNOVA AI - Smart Learning</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f1f5ff;
-            color: #172554;
-        }
-        header {
-            background: #172554;
-            color: white;
-            padding: 22px;
-            text-align: center;
-        }
-        main {
-            max-width: 750px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
-        }
-        .card {
-            background: white;
-            padding: 25px;
-            margin: 20px 0;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px #0001;
-        }
-        input, button {
-            padding: 12px;
-            margin: 6px;
-            border-radius: 7px;
-            border: 1px solid #cbd5e1;
-        }
-        button {
-            background: #4f46e5;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        li {
-            margin: 10px;
-            text-align: left;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KALAMNOVA AI - Smart Learning</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f1f5ff;
+    color: #172554;
+}
+header {
+    background: #172554;
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+main {
+    max-width: 750px;
+    margin: 35px auto;
+    padding: 20px;
+    text-align: center;
+}
+.card {
+    background: white;
+    padding: 25px;
+    margin: 20px 0;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px #0001;
+}
+input, button {
+    padding: 12px;
+    margin: 6px;
+    border-radius: 7px;
+    border: 1px solid #cbd5e1;
+}
+button {
+    background: #4f46e5;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+ul {
+    padding: 0;
+    list-style: none;
+}
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #eef2ff;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+.delete {
+    background: #dc2626;
+}
+</style>
 </head>
 <body>
-    <header>
-        <h1>KALAMNOVA AI</h1>
-        <p>Learn Smarter. Grow Faster.</p>
-    </header>
 
-    <main>
-        <h2>Welcome to Your Smart Learning Space!</h2>
-        <p>A learning platform designed for school and college students.</p>
+<header>
+    <h1>KALAMNOVA AI</h1>
+    <p>Learn Smarter. Grow Faster.</p>
+</header>
 
-        <div class="card">
-            <h2>My Study Planner</h2>
-            <input id="task" type="text" placeholder="Enter your study task">
-            <button onclick="addTask()">Add Task</button>
-            <ul id="taskList"></ul>
-        </div>
+<main>
+    <h2>Welcome to Your Smart Learning Space!</h2>
+    <p>A learning platform designed for school and college students.</p>
 
-        <div class="card">
-            <h2>Our Future Features</h2>
-            <p>AI Study Assistant</p>
-            <p>Personalized Study Plans</p>
-            <p>Practice Quizzes</p>
-            <p>Progress Tracking</p>
-        </div>
-    </main>
+    <div class="card">
+        <h2>My Study Planner</h2>
+        <input id="task" type="text" placeholder="Enter your study task">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
 
-    <script>
-        function addTask() {
-            const input = document.getElementById("task");
-            const value = input.value.trim();
+    <div class="card">
+        <h2>Our Features</h2>
+        <p>AI Study Assistant</p>
+        <p>Personalized Study Plans</p>
+        <p>Practice Quizzes</p>
+        <p>Progress Tracking</p>
+    </div>
+</main>
 
-            if (value === "") {
-                alert("Please enter a task!");
-                return;
-            }
+<script>
+let tasks = JSON.parse(localStorage.getItem("kalamnovaTasks")) || [];
 
-            const item = document.createElement("li");
-            item.textContent = value;
-            document.getElementById("taskList").appendChild(item);
-            input.value = "";
+function saveTasks() {
+    localStorage.setItem("kalamnovaTasks", JSON.stringify(tasks));
+}
+
+function addTask() {
+    const input = document.getElementById("task");
+    const value = input.value.trim();
+
+    if (value === "") {
+        alert("Please enter a task!");
+        return;
+    }
+
+    tasks.push({ text: value, completed: false });
+    input.value = "";
+    saveTasks();
+    displayTasks();
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
+    displayTasks();
+}
+
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    displayTasks();
+}
+
+function displayTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        const item = document.createElement("li");
+
+        const label = document.createElement("span");
+        label.textContent = task.text;
+        if (task.completed) {
+            label.classList.add("completed");
         }
-    </script>
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.addEventListener("change", () => toggleTask(index));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "delete";
+        deleteButton.addEventListener("click", () => deleteTask(index));
+
+        item.append(checkbox, label, deleteButton);
+        list.appendChild(item);
+    });
+}
+
+displayTasks();
+</script>
+
 </body>
 </html>
