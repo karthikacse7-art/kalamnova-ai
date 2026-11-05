@@ -5,25 +5,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KALAMNOVA AI - Smart Learning</title>
+
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;a
+    font-family: Arial, sans-serif;
     background: #f1f5ff;
     color: #172554;
 }
+
 header {
     background: #172554;
     color: white;
     padding: 25px;
     text-align: center;
 }
+
 main {
     max-width: 750px;
     margin: 35px auto;
     padding: 20px;
     text-align: center;
 }
+
 .card {
     background: white;
     padding: 25px;
@@ -31,22 +39,35 @@ main {
     border-radius: 14px;
     box-shadow: 0 4px 15px #0001;
 }
+
+input, button, textarea {
+    font: inherit;
+}
+
 input, button {
     padding: 12px;
     margin: 6px;
     border-radius: 7px;
     border: 1px solid #cbd5e1;
 }
+
 button {
     background: #4f46e5;
     color: white;
     cursor: pointer;
     border: none;
 }
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 ul {
     padding: 0;
     list-style: none;
 }
+
 li {
     display: flex;
     align-items: center;
@@ -57,15 +78,108 @@ li {
     margin: 10px 0;
     border-radius: 8px;
 }
+
 .completed {
     text-decoration: line-through;
     opacity: 0.6;
 }
+
 .delete {
     background: #dc2626;
 }
+
+/* AI CHAT DESIGN */
+#ai-chat {
+    text-align: left;
+}
+
+#ai-chat h2,
+#ai-chat > p {
+    text-align: center;
+}
+
+.chat-messages {
+    height: 350px;
+    overflow-y: auto;
+    background: #f8faff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.chat-bubble {
+    max-width: 85%;
+    padding: 12px 15px;
+    margin: 12px 0;
+    border-radius: 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.user-message {
+    background: #4f46e5;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 3px;
+}
+
+.ai-message {
+    background: #e0eaff;
+    color: #172554;
+    margin-right: auto;
+    border-bottom-left-radius: 3px;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+#chat-question {
+    flex: 1;
+    min-width: 0;
+    min-height: 55px;
+    resize: vertical;
+    padding: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+}
+
+#chat-button {
+    min-width: 90px;
+    margin: 0;
+    border-radius: 10px;
+}
+
+.typing {
+    color: #64748b;
+    font-style: italic;
+}
+
+@media (max-width: 500px) {
+    main {
+        margin: 15px auto;
+        padding: 12px;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .chat-input-area {
+        flex-direction: column;
+    }
+
+    #chat-button {
+        min-height: 45px;
+    }
+}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -86,11 +200,38 @@ li {
 
     <div class="card">
         <h2>Our Features</h2>
-        <p>AI Study Assistant</p>
-        <p>Personalized Study Plans</p>
-        <p>Practice Quizzes</p>
-        <p>Progress Tracking</p>
+        <p>🤖 AI Study Assistant</p>
+        <p>📚 Personalized Study Plans</p>
+        <p>📝 Practice Quizzes</p>
+        <p>📊 Progress Tracking</p>
     </div>
+
+    <section class="card" id="ai-chat">
+        <h2>🤖 KALAMNOVA AI Assistant</h2>
+        <p>Ask me anything about your studies!</p>
+
+        <div
+            id="chat-messages"
+            class="chat-messages"
+            aria-live="polite"
+        >
+            <div class="chat-bubble ai-message">
+                Hello! 👋 I'm KALAMNOVA AI. Ask me any study question!
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <textarea
+                id="chat-question"
+                placeholder="Type your study question..."
+                rows="2"
+            ></textarea>
+
+            <button onclick="askKalamNova()" id="chat-button">
+                Ask AI
+            </button>
+        </div>
+    </section>
 </main>
 
 <script>
@@ -136,6 +277,7 @@ function displayTasks() {
 
         const label = document.createElement("span");
         label.textContent = task.text;
+
         if (task.completed) {
             label.classList.add("completed");
         }
@@ -156,64 +298,72 @@ function displayTasks() {
 }
 
 displayTasks();
-</script>
-<section class="card" id="ai-chat">
-  <h2>🤖 KALAMNOVA AI Assistant</h2>
-  <p>Ask me anything about your studies!</p>
 
-  <textarea
-    id="chat-question"
-    placeholder="Type your question here..."
-    rows="3"
-    style="width:90%; padding:12px; border-radius:8px;"
-  ></textarea>
+function addChatMessage(message, type) {
+    const messages = document.getElementById("chat-messages");
+    const bubble = document.createElement("div");
 
-  <br>
+    bubble.className = "chat-bubble " +
+        (type === "user" ? "user-message" : "ai-message");
 
-  <button onclick="askKalamNova()" id="chat-button">
-    Ask AI
-  </button>
+    bubble.textContent = message;
+    messages.appendChild(bubble);
+    messages.scrollTop = messages.scrollHeight;
 
-  <div
-    id="chat-answer"
-    style="margin-top:20px; white-space:pre-wrap; text-align:left;"
-  ></div>
-</section>
+    return bubble;
+}
 
-<script>
 async function askKalamNova() {
-  const question = document.getElementById("chat-question").value.trim();
-  const answerBox = document.getElementById("chat-answer");
-  const button = document.getElementById("chat-button");
+    const questionInput = document.getElementById("chat-question");
+    const button = document.getElementById("chat-button");
+    const question = questionInput.value.trim();
 
-  if (!question) {
-    answerBox.textContent = "Please type a question first.";
-    return;
-  }
-
-  button.disabled = true;
-  answerBox.textContent = "KALAMNOVA AI is thinking...";
-
-  try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: question })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "AI request failed.");
+    if (!question) {
+        questionInput.focus();
+        return;
     }
 
-    answerBox.textContent = data.answer || "No answer received.";
-  } catch (error) {
-    answerBox.textContent = "Sorry! " + error.message;
-  } finally {
-    button.disabled = false;
-  }
+    addChatMessage(question, "user");
+    questionInput.value = "";
+    button.disabled = true;
+    button.textContent = "Thinking...";
+
+    const typingBubble = addChatMessage(
+        "KALAMNOVA AI is thinking...",
+        "ai"
+    );
+
+    typingBubble.classList.add("typing");
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: question })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "AI request failed.");
+        }
+
+        typingBubble.classList.remove("typing");
+        typingBubble.textContent = data.answer || "No answer received.";
+
+    } catch (error) {
+        typingBubble.classList.remove("typing");
+        typingBubble.textContent = "Sorry! " + error.message;
+
+    } finally {
+        button.disabled = false;
+        button.textContent = "Ask AI";
+        questionInput.focus();
+    }
 }
 </script>
+
 </body>
 </html>
