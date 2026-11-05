@@ -88,7 +88,8 @@ li {
     background: #dc2626;
 }
 
-/* AI CHAT DESIGN */
+/* CHATBOT DESIGN */
+
 #ai-chat {
     text-align: left;
 }
@@ -154,6 +155,11 @@ li {
     border-radius: 10px;
 }
 
+.clear-chat {
+    background: #dc2626;
+    margin: 0;
+}
+
 .typing {
     color: #64748b;
     font-style: italic;
@@ -188,16 +194,26 @@ li {
 </header>
 
 <main>
+
     <h2>Welcome to Your Smart Learning Space!</h2>
     <p>A learning platform designed for school and college students.</p>
 
+    <!-- STUDY PLANNER -->
     <div class="card">
-        <h2>My Study Planner</h2>
-        <input id="task" type="text" placeholder="Enter your study task">
+        <h2>📚 My Study Planner</h2>
+
+        <input
+            id="task"
+            type="text"
+            placeholder="Enter your study task"
+        >
+
         <button onclick="addTask()">Add Task</button>
+
         <ul id="taskList"></ul>
     </div>
 
+    <!-- FEATURES -->
     <div class="card">
         <h2>Our Features</h2>
         <p>🤖 AI Study Assistant</p>
@@ -206,8 +222,11 @@ li {
         <p>📊 Progress Tracking</p>
     </div>
 
+    <!-- AI CHATBOT -->
     <section class="card" id="ai-chat">
+
         <h2>🤖 KALAMNOVA AI Assistant</h2>
+
         <p>Ask me anything about your studies!</p>
 
         <div
@@ -216,32 +235,59 @@ li {
             aria-live="polite"
         >
             <div class="chat-bubble ai-message">
-                Hello! 👋 I'm KALAMNOVA AI. Ask me any study question!
+                Hello! 👋 I'm KALAMNOVA AI.
+                Ask me any study question!
             </div>
         </div>
 
+        <div style="text-align:right; margin-bottom:12px;">
+            <button
+                onclick="clearChat()"
+                class="clear-chat"
+                id="clear-button"
+            >
+                🗑️ Clear Chat
+            </button>
+        </div>
+
         <div class="chat-input-area">
+
             <textarea
                 id="chat-question"
                 placeholder="Type your study question..."
                 rows="2"
             ></textarea>
 
-            <button onclick="askKalamNova()" id="chat-button">
+            <button
+                onclick="askKalamNova()"
+                id="chat-button"
+            >
                 Ask AI
             </button>
+
         </div>
+
     </section>
+
 </main>
 
 <script>
-let tasks = JSON.parse(localStorage.getItem("kalamnovaTasks")) || [];
+
+// STUDY PLANNER
+
+let tasks = JSON.parse(
+    localStorage.getItem("kalamnovaTasks")
+) || [];
 
 function saveTasks() {
-    localStorage.setItem("kalamnovaTasks", JSON.stringify(tasks));
+    localStorage.setItem(
+        "kalamnovaTasks",
+        JSON.stringify(tasks)
+    );
 }
 
 function addTask() {
+
     const input = document.getElementById("task");
     const value = input.value.trim();
 
@@ -250,32 +296,46 @@ function addTask() {
         return;
     }
 
-    tasks.push({ text: value, completed: false });
+    tasks.push({
+        text: value,
+        completed: false
+    });
+
     input.value = "";
+
     saveTasks();
     displayTasks();
 }
 
 function toggleTask(index) {
-    tasks[index].completed = !tasks[index].completed;
+
+    tasks[index].completed =
+        !tasks[index].completed;
+
     saveTasks();
     displayTasks();
 }
 
 function deleteTask(index) {
+
     tasks.splice(index, 1);
+
     saveTasks();
     displayTasks();
 }
 
 function displayTasks() {
+
     const list = document.getElementById("taskList");
+
     list.innerHTML = "";
 
     tasks.forEach((task, index) => {
+
         const item = document.createElement("li");
 
         const label = document.createElement("span");
+
         label.textContent = task.text;
 
         if (task.completed) {
@@ -283,40 +343,102 @@ function displayTasks() {
         }
 
         const checkbox = document.createElement("input");
+
         checkbox.type = "checkbox";
         checkbox.checked = task.completed;
-        checkbox.addEventListener("change", () => toggleTask(index));
 
-        const deleteButton = document.createElement("button");
+        checkbox.addEventListener(
+            "change",
+            () => toggleTask(index)
+        );
+
+        const deleteButton =
+            document.createElement("button");
+
         deleteButton.textContent = "Delete";
         deleteButton.className = "delete";
-        deleteButton.addEventListener("click", () => deleteTask(index));
 
-        item.append(checkbox, label, deleteButton);
+        deleteButton.addEventListener(
+            "click",
+            () => deleteTask(index)
+        );
+
+        item.append(
+            checkbox,
+            label,
+            deleteButton
+        );
+
         list.appendChild(item);
     });
 }
 
 displayTasks();
 
-function addChatMessage(message, type) {
-    const messages = document.getElementById("chat-messages");
-    const bubble = document.createElement("div");
 
-    bubble.className = "chat-bubble " +
-        (type === "user" ? "user-message" : "ai-message");
+// CHAT MESSAGE FUNCTION
+
+function addChatMessage(message, type) {
+
+    const messages =
+        document.getElementById("chat-messages");
+
+    const bubble =
+        document.createElement("div");
+
+    bubble.className =
+        "chat-bubble " +
+        (type === "user"
+            ? "user-message"
+            : "ai-message");
 
     bubble.textContent = message;
+
     messages.appendChild(bubble);
-    messages.scrollTop = messages.scrollHeight;
+
+    messages.scrollTop =
+        messages.scrollHeight;
 
     return bubble;
 }
 
+
+// CLEAR CHAT FUNCTION
+
+function clearChat() {
+
+    const messages =
+        document.getElementById("chat-messages");
+
+    if (
+        document.getElementById("chat-button").disabled
+    ) {
+        return;
+    }
+
+    messages.innerHTML = "";
+
+    addChatMessage(
+        "Hello! 👋 I'm KALAMNOVA AI. Ask me any study question!",
+        "ai"
+    );
+
+    document.getElementById("chat-question").value = "";
+}
+
+
+// ASK AI FUNCTION
+
 async function askKalamNova() {
-    const questionInput = document.getElementById("chat-question");
-    const button = document.getElementById("chat-button");
-    const question = questionInput.value.trim();
+
+    const questionInput =
+        document.getElementById("chat-question");
+
+    const button =
+        document.getElementById("chat-button");
+
+    const question =
+        questionInput.value.trim();
 
     if (!question) {
         questionInput.focus();
@@ -324,7 +446,9 @@ async function askKalamNova() {
     }
 
     addChatMessage(question, "user");
+
     questionInput.value = "";
+
     button.disabled = true;
     button.textContent = "Thinking...";
 
@@ -336,33 +460,50 @@ async function askKalamNova() {
     typingBubble.classList.add("typing");
 
     try {
+
         const response = await fetch("/api/chat", {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ message: question })
+
+            body: JSON.stringify({
+                message: question
+            })
+
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || "AI request failed.");
+            throw new Error(
+                data.error || "AI request failed."
+            );
         }
 
         typingBubble.classList.remove("typing");
-        typingBubble.textContent = data.answer || "No answer received.";
+
+        typingBubble.textContent =
+            data.answer || "No answer received.";
 
     } catch (error) {
+
         typingBubble.classList.remove("typing");
-        typingBubble.textContent = "Sorry! " + error.message;
+
+        typingBubble.textContent =
+            "Sorry! " + error.message;
 
     } finally {
+
         button.disabled = false;
         button.textContent = "Ask AI";
+
         questionInput.focus();
     }
 }
+
 </script>
 
 </body>
