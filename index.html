@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,9 @@
 <title>KALAMNOVA AI | Smart Learning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Supabase client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
@@ -30,7 +32,160 @@ body {
 }
 button,input,textarea,select {font:inherit}
 button {cursor:pointer}
-.app {display:flex;min-height:100vh}
+
+/* AUTHENTICATION SCREEN */
+.auth-screen {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px 18px;
+  background:
+    radial-gradient(circle at 10% 10%,#334b87 0%,transparent 35%),
+    linear-gradient(135deg,#08132f,#172554 55%,#253c75);
+}
+.auth-container {
+  width:100%;
+  max-width:1050px;
+  min-height:610px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#fff;
+  border-radius:25px;
+  overflow:hidden;
+  box-shadow:0 30px 90px #0005;
+  animation:authAppear .7s ease;
+}
+@keyframes authAppear {
+  from {opacity:0;transform:translateY(25px)}
+  to {opacity:1;transform:translateY(0)}
+}
+.auth-art {
+  position:relative;
+  overflow:hidden;
+  padding:42px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  color:#fff;
+  background:
+    radial-gradient(circle at 75% 30%,#d5a94e55,transparent 35%),
+    linear-gradient(150deg,#0b1738,#172554 60%,#263d73);
+}
+.auth-art:before,.auth-art:after {
+  content:"";
+  position:absolute;
+  border:1px solid #d6b66b40;
+  border-radius:50%;
+  width:340px;height:340px;
+  right:-150px;top:-100px;
+}
+.auth-art:after {
+  width:240px;height:240px;
+  right:-100px;top:-50px;
+}
+.auth-brand {
+  position:relative;z-index:2;
+  font-size:18px;font-weight:800;letter-spacing:1px;
+}
+.auth-brand span {color:#e4bd69}
+.kalam-portrait {
+  width:100%;
+  max-width:350px;
+  height:300px;
+  margin:5px auto;
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+}
+.kalam-portrait svg {
+  width:100%;height:100%;
+  filter:drop-shadow(0 15px 20px #0005);
+}
+.auth-quote {
+  position:relative;z-index:2;
+  border-left:3px solid #d6b66b;
+  padding-left:17px;
+}
+.auth-quote p {
+  font-size:17px;line-height:1.7;font-weight:600;
+  margin:0 0 9px;color:#fff;
+}
+.auth-quote small {color:#e4bd69;font-weight:700}
+.auth-art-footer {
+  position:relative;z-index:2;
+  font-size:11px;color:#aebbd8;margin-top:25px;
+}
+.auth-form-side {
+  padding:55px 48px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.auth-form-side h1 {
+  margin:0 0 10px;font-size:29px;color:#172554;
+}
+.auth-subtitle {
+  color:#64748b;font-size:13px;line-height:1.7;margin:0 0 27px;
+}
+.auth-tabs {
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;background:#f1f4fa;padding:5px;
+  border-radius:12px;margin-bottom:24px;
+}
+.auth-tab {
+  border:0;padding:11px;border-radius:9px;
+  background:transparent;color:#64748b;
+  font-size:13px;font-weight:700;
+}
+.auth-tab.active {
+  background:#fff;color:#172554;
+  box-shadow:0 2px 8px #17255412;
+}
+.auth-field {margin:15px 0}
+.auth-field label {
+  display:block;font-size:12px;font-weight:700;
+  color:#334155;margin-bottom:8px;
+}
+.auth-field input {
+  width:100%;padding:14px 13px;
+  border:1px solid #dce2ed;border-radius:11px;
+  outline:none;font-size:13px;background:#fff;color:#172033;
+  transition:.2s;
+}
+.auth-field input:focus {
+  border-color:#c49b48;box-shadow:0 0 0 3px #c49b481c;
+}
+.auth-submit {
+  width:100%;border:0;border-radius:11px;
+  padding:15px;background:linear-gradient(110deg,#172554,#263d73);
+  color:#fff;font-weight:800;font-size:14px;
+  margin-top:12px;transition:.2s;
+}
+.auth-submit:hover {transform:translateY(-2px);box-shadow:0 8px 20px #17255435}
+.auth-submit:disabled {opacity:.6;cursor:not-allowed;transform:none}
+.auth-message {
+  display:none;padding:12px;border-radius:10px;
+  font-size:12px;line-height:1.6;margin:14px 0;
+  overflow-wrap:anywhere;
+}
+.auth-message.show {display:block}
+.auth-message.error {background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.auth-message.success {background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.auth-forgot {
+  border:0;background:transparent;color:#8b6a2d;
+  font-size:12px;font-weight:700;padding:10px 0;
+}
+.auth-back {
+  border:0;background:transparent;color:#64748b;
+  font-size:12px;padding:8px 0;
+}
+.auth-note {
+  text-align:center;font-size:11px;color:#94a3b8;
+  line-height:1.7;margin-top:22px;
+}
+.auth-screen[hidden] {display:none!important}
+.app {display:none;min-height:100vh}
+.app.authenticated {display:flex}
+
+/* ORIGINAL WEBSITE STYLES */
 .sidebar {
   width:255px;background:#111c43;color:white;padding:24px 16px;
   position:fixed;top:0;bottom:0;left:0;overflow-y:auto;z-index:20;
@@ -65,6 +220,14 @@ button {cursor:pointer}
 .avatar {
   width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
   background:#e0e7ff;color:var(--primary-dark);font-weight:800;
+}
+.user-info {
+  display:flex;align-items:center;gap:9px;
+  max-width:220px;
+}
+.user-email {
+  max-width:145px;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;font-size:11px;color:var(--muted);
 }
 .page {display:none}
 .page.active {display:block}
@@ -171,8 +334,17 @@ body.dark-mode .message.ai {background:#172033;color:#e2e8f0}
 body.dark-mode .flashcard {background:#312e81}
 body.dark-mode .flashcard h2 {color:white}
 body.dark-mode .dark-toggle {background:#334155;color:white}
-@media(max-width:1000px) {.grid {grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media(max-width:1000px) {
+  .grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media(max-width:700px) {
+  .auth-container {grid-template-columns:1fr;max-width:480px}
+  .auth-art {padding:25px 28px;min-height:270px}
+  .kalam-portrait {height:155px;max-width:230px}
+  .auth-quote p {font-size:13px}
+  .auth-form-side {padding:32px 25px}
+  .auth-form-side h1 {font-size:25px}
   .sidebar {transform:translateX(-100%);transition:.25s}
   .sidebar.open {transform:translateX(0)}
   .main {margin-left:0;width:100%;padding:20px 15px 40px}
@@ -180,12 +352,108 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
   .grid,.grid.two {grid-template-columns:1fr}
   .hero {padding:28px 22px}
   .topbar h2 {font-size:18px}
+  .user-email {display:none}
 }
 </style>
 </head>
 
 <body>
-<div class="app">
+
+<!-- AUTHENTICATION SCREEN -->
+<section class="auth-screen" id="authScreen">
+  <div class="auth-container">
+
+    <div class="auth-art">
+      <div class="auth-brand">KALAM<span>NOVA</span> AI</div>
+
+      <div class="kalam-portrait">
+        <!-- Original inline illustration; no external image required -->
+        <svg viewBox="0 0 360 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration inspired by Dr APJ Abdul Kalam">
+          <defs>
+            <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f4d5b3"/>
+              <stop offset="1" stop-color="#c88d69"/>
+            </linearGradient>
+            <linearGradient id="hair" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f3eee5"/>
+              <stop offset="1" stop-color="#aeb8c9"/>
+            </linearGradient>
+            <linearGradient id="coat" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f4f0e8"/>
+              <stop offset="1" stop-color="#b9c5d5"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="180" cy="306" rx="105" ry="13" fill="#000" opacity=".2"/>
+          <path d="M74 305 Q83 218 135 205 L225 205 Q279 225 287 305Z" fill="url(#coat)" stroke="#d8d8e1" stroke-width="2"/>
+          <path d="M150 204 L180 252 L210 204 L230 305 L130 305Z" fill="#fff" opacity=".8"/>
+          <path d="M145 209 L180 252 L164 271 L139 218Z" fill="#c6a45d"/>
+          <path d="M215 209 L180 252 L197 271 L221 218Z" fill="#c6a45d"/>
+          <path d="M151 196 L150 220 L180 255 L210 220 L209 196Z" fill="url(#face)"/>
+          <path d="M113 104 Q113 35 181 35 Q252 35 250 123 L244 175 Q230 220 181 225 Q130 220 116 173Z" fill="url(#face)" stroke="#a9765b" stroke-width="2"/>
+          <path d="M112 117 Q98 49 153 25 Q201 2 246 42 Q271 68 249 128 Q242 84 218 77 Q178 97 127 79Z" fill="url(#hair)" stroke="#dce3ec" stroke-width="2"/>
+          <path d="M115 91 Q91 61 132 34 Q103 71 151 73 Q205 80 242 47 Q258 75 247 112 Q228 81 215 79 Q165 100 125 82Z" fill="#e9edf2" opacity=".8"/>
+          <path d="M140 125 Q155 117 168 125" fill="none" stroke="#594b43" stroke-width="4" stroke-linecap="round"/>
+          <path d="M194 125 Q207 117 221 125" fill="none" stroke="#594b43" stroke-width="4" stroke-linecap="round"/>
+          <path d="M142 139 Q155 146 168 139" fill="none" stroke="#302b2a" stroke-width="3" stroke-linecap="round"/>
+          <path d="M195 139 Q208 146 220 139" fill="none" stroke="#302b2a" stroke-width="3" stroke-linecap="round"/>
+          <path d="M181 137 Q174 160 182 164" fill="none" stroke="#a9765b" stroke-width="3" stroke-linecap="round"/>
+          <path d="M161 181 Q180 191 202 180" fill="none" stroke="#8f5148" stroke-width="3" stroke-linecap="round"/>
+          <path d="M145 173 Q180 185 215 171" fill="none" stroke="#c18a70" stroke-width="2" opacity=".7"/>
+          <path d="M116 113 Q102 132 119 151" fill="none" stroke="#c18a70" stroke-width="8" stroke-linecap="round"/>
+          <path d="M245 113 Q260 132 243 151" fill="none" stroke="#c18a70" stroke-width="8" stroke-linecap="round"/>
+          <path d="M128 80 Q175 95 224 77" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/>
+          <circle cx="180" cy="14" r="5" fill="#d6b66b"/>
+          <path d="M180 0 V-5 M180 33 V27 M166 14 H160 M200 14 H194" stroke="#d6b66b" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <div class="auth-quote">
+        <p>“Dream, dream, dream. Dreams transform into thoughts and thoughts result in action.”</p>
+        <small>— DR. A.P.J. ABDUL KALAM</small>
+      </div>
+      <div class="auth-art-footer">LEARN SMARTER · GROW FASTER · BUILD YOUR FUTURE</div>
+    </div>
+
+    <div class="auth-form-side">
+      <h1 id="authHeading">Welcome back!</h1>
+      <p class="auth-subtitle" id="authSubtitle">Sign in to continue your learning journey with KALAMNOVA AI.</p>
+
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab active" id="loginTab" type="button" onclick="showAuthMode('login')">Sign In</button>
+        <button class="auth-tab" id="signupTab" type="button" onclick="showAuthMode('signup')">Create Account</button>
+      </div>
+
+      <form id="authForm">
+        <div class="auth-field" id="nameField" style="display:none">
+          <label for="authName">Full name</label>
+          <input id="authName" type="text" maxlength="80" placeholder="Enter your full name" autocomplete="name">
+        </div>
+
+        <div class="auth-field">
+          <label for="authEmail">Email address</label>
+          <input id="authEmail" type="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+
+        <div class="auth-field" id="passwordField">
+          <label for="authPassword">Password</label>
+          <input id="authPassword" type="password" minlength="6" placeholder="At least 6 characters" autocomplete="current-password" required>
+        </div>
+
+        <button class="auth-forgot" id="forgotButton" type="button" onclick="showAuthMode('forgot')">Forgot password?</button>
+
+        <button class="auth-submit" id="authSubmit" type="submit">Sign In</button>
+      </form>
+
+      <div class="auth-message" id="authMessage" role="status" aria-live="polite"></div>
+      <button class="auth-back" id="authBack" type="button" style="display:none" onclick="showAuthMode('login')">← Back to sign in</button>
+
+      <p class="auth-note">Your learning journey starts here.<br>Powered by KALAMNOVA AI.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXISTING WEBSITE -->
+<div class="app" id="mainApp">
 <aside class="sidebar" id="sidebar">
   <div class="brand">
     <img src="./kalamnova-logo.png" class="brand-logo" alt="KALAMNOVA AI Logo"
@@ -227,7 +495,11 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-    <div class="avatar">K</div>
+    <div class="user-info">
+      <span class="user-email" id="userEmail"></span>
+      <div class="avatar" id="userAvatar">K</div>
+    </div>
+    <button class="btn danger" id="logoutButton" onclick="logoutStudent()">Logout</button>
   </div>
 </header>
 
@@ -329,7 +601,7 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
 
 <!-- NOTES MAKER -->
 <section class="page" id="notes">
-  <h3>AI Notes Maker</h3><p class="muted">Paste your material or upload a text file to create organized study notes.</p>
+  <h3>AI Notes Maker</h3><p class="muted">Paste your material or upload a text file to create organized notes.</p>
   <div class="card">
     <div class="form-group"><label>Paste your study material</label><textarea id="notesInput" maxlength="20000" placeholder="Paste your textbook content or study material here..."></textarea></div>
     <div class="form-group"><label>Or upload a TXT file</label><input type="file" id="notesFile" accept=".txt,text/plain"></div>
@@ -494,6 +766,213 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
 </div>
 
 <script>
+/* ==========================================
+   SUPABASE AUTHENTICATION
+========================================== */
+
+const SUPABASE_URL = "https://rfsofuyahfcmqprfgiog.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable__nuu3F5KAFCJK58gzLA2Og_HJ01RoDP";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let authMode = "login";
+
+function showAuthMessage(message,type="error") {
+  const box=$("authMessage");
+  box.textContent=message;
+  box.className="auth-message show "+type;
+}
+
+function clearAuthMessage() {
+  $("authMessage").textContent="";
+  $("authMessage").className="auth-message";
+}
+
+function showAuthMode(mode) {
+  authMode=mode;
+  clearAuthMessage();
+
+  $("authForm").reset();
+  $("authBack").style.display=mode==="forgot"?"block":"none";
+  $("authTabs").style.display=mode==="forgot"?"none":"grid";
+  $("nameField").style.display=mode==="signup"?"block":"none";
+  $("passwordField").style.display=mode==="forgot"?"none":"block";
+  $("forgotButton").style.display=mode==="login"?"inline-block":"none";
+
+  $("loginTab").classList.toggle("active",mode==="login");
+  $("signupTab").classList.toggle("active",mode==="signup");
+
+  if(mode==="login") {
+    $("authHeading").textContent="Welcome back!";
+    $("authSubtitle").textContent="Sign in to continue your learning journey with KALAMNOVA AI.";
+    $("authSubmit").textContent="Sign In";
+    $("authPassword").autocomplete="current-password";
+    $("authPassword").required=true;
+  } else if(mode==="signup") {
+    $("authHeading").textContent="Create your account";
+    $("authSubtitle").textContent="Join KALAMNOVA AI and start building your future.";
+    $("authSubmit").textContent="Create Account";
+    $("authPassword").autocomplete="new-password";
+    $("authPassword").required=true;
+  } else {
+    $("authHeading").textContent="Reset your password";
+    $("authSubtitle").textContent="Enter your email address and we'll send you a password reset link.";
+    $("authSubmit").textContent="Send Reset Link";
+    $("authPassword").required=false;
+  }
+}
+
+function showMainApp(user) {
+  $("authScreen").hidden=true;
+  $("mainApp").classList.add("authenticated");
+
+  const email=user?.email||"Student";
+  $("userEmail").textContent=email;
+  $("userEmail").title=email;
+  $("userAvatar").textContent=(email.charAt(0)||"S").toUpperCase();
+
+  const metadata=user?.user_metadata||{};
+  if(metadata.full_name && $("communityName")) {
+    $("communityName").value=metadata.full_name;
+  }
+}
+
+function showLoginScreen() {
+  $("mainApp").classList.remove("authenticated");
+  $("authScreen").hidden=false;
+  showAuthMode("login");
+}
+
+$("authForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  clearAuthMessage();
+
+  const email=$("authEmail").value.trim();
+  const password=$("authPassword").value;
+  const name=$("authName").value.trim();
+  const button=$("authSubmit");
+
+  if(!email) {
+    showAuthMessage("Please enter your email address.");
+    return;
+  }
+
+  if(authMode!=="forgot" && password.length<6) {
+    showAuthMessage("Your password must contain at least 6 characters.");
+    return;
+  }
+
+  if(authMode==="signup" && !name) {
+    showAuthMessage("Please enter your full name.");
+    return;
+  }
+
+  button.disabled=true;
+  const originalText=button.textContent;
+  button.textContent="Please wait...";
+
+  try {
+    if(authMode==="signup") {
+      const {data,error}=await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{
+          data:{full_name:name},
+          emailRedirectTo:window.location.origin
+        }
+      });
+
+      if(error) throw error;
+
+      if(data.session) {
+        showMainApp(data.user);
+      } else {
+        showAuthMessage(
+          "Account created! Please check your email and click the confirmation link before signing in.",
+          "success"
+        );
+        showAuthMode("login");
+        showAuthMessage(
+          "Your account has been created. Check your email for the confirmation link, then sign in.",
+          "success"
+        );
+      }
+
+    } else if(authMode==="login") {
+      const {data,error}=await supabaseClient.auth.signInWithPassword({
+        email,password
+      });
+
+      if(error) throw error;
+      showMainApp(data.user);
+
+    } else if(authMode==="forgot") {
+      const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{
+        redirectTo:window.location.origin
+      });
+
+      if(error) throw error;
+      showAuthMessage(
+        "If an account exists for this email, a password reset link has been sent. Please check your inbox.",
+        "success"
+      );
+    }
+
+  } catch(error) {
+    showAuthMessage(error.message||"Authentication failed. Please try again.");
+  } finally {
+    button.disabled=false;
+    button.textContent=originalText;
+  }
+});
+
+async function logoutStudent() {
+  const button=$("logoutButton");
+  button.disabled=true;
+  try {
+    const {error}=await supabaseClient.auth.signOut();
+    if(error) throw error;
+    showLoginScreen();
+  } catch(error) {
+    alert("Logout failed: "+error.message);
+  } finally {
+    button.disabled=false;
+  }
+}
+
+/* Restore login session and listen for login/logout changes */
+async function initializeAuthentication() {
+  try {
+    const {data,error}=await supabaseClient.auth.getSession();
+    if(error) throw error;
+
+    if(data.session?.user) {
+      showMainApp(data.session.user);
+    } else {
+      showLoginScreen();
+    }
+  } catch(error) {
+    showLoginScreen();
+    showAuthMessage("Could not check your login session. Please try signing in again.");
+    console.error("Supabase session error:",error);
+  }
+}
+
+supabaseClient.auth.onAuthStateChange((event,session)=>{
+  if(session?.user) {
+    showMainApp(session.user);
+  } else if(event==="SIGNED_OUT") {
+    showLoginScreen();
+  }
+});
+
+/* ==========================================
+   ORIGINAL KALAMNOVA AI JAVASCRIPT
+========================================== */
+
 const $ = id => document.getElementById(id);
 
 function readStore(key,fallback) {
@@ -1122,12 +1601,15 @@ function addCommunityPost() {
   $("communityText").value="";renderCommunity();
 }
 
-/* INITIALIZE */
+/* INITIALIZE EXISTING WEBSITE */
 recordLearningActivity();
 renderTasks();
 updateDashboard();
 updateRewards();
 renderCommunity();
+
+/* INITIALIZE SUPABASE LOGIN */
+initializeAuthentication();
 </script>
 </body>
 </html>
