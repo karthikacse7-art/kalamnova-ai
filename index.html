@@ -1,3 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#172554">
+<title>KALAMNOVA AI | Smart Learning</title>
+
+<style>
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --navy: #172554;
+    --bg: #f5f7ff;
+    --white: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --green: #16a34a;
+    --red: #dc2626;
+    --shadow: 0 8px 25px rgba(23,37,84,.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 255px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: var(--navy);
+    color: white;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 28px;
+}
+
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: contain;
+    background: white;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+.brand h2 {
+    margin: 0;
+    font-size: 17px;
+    letter-spacing: .5px;
+}
+
+.brand small {
+    color: #c7d2fe;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.nav-title {
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 10px 12px;
+    letter-spacing: 1.5px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 13px 14px;
+    margin: 3px 0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: white;
+    background: #3730a3;
+}
+
+.nav-link span:first-child {
+    font-size: 19px;
+    width: 24px;
+    text-align: center;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding: 18px 10px 5px;
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* MAIN CONTENT */
+
+.main {
+    margin-left: 255px;
+    padding: 30px 36px;
+    min-height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+    gap: 15px;
+}
+
+.topbar h2 {
+    margin: 0;
+    color: var(--navy);
+    font-size: 23px;
+}
+
+.topbar p {
+    color: var(--muted);
+    margin: 6px 0 0;
+    font-size: 13px;
+}
+
+.top-label {
+    background: #eef2ff;
+    color: var(--primary-dark);
+    padding: 9px 14px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 /* MODERN HOME HERO */
 
 .hero {
@@ -63,6 +234,42 @@
     }
 }
 
+/* CARDS */
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 28px 0 17px;
+    gap: 10px;
+}
+
+.section-heading h2 {
+    color: var(--navy);
+    font-size: 20px;
+    margin: 0;
+}
+
+.section-heading p {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 6px 0 0;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    padding: 23px;
+    box-shadow: var(--shadow);
+}
+
 .feature-card {
     transition: transform .25s, box-shadow .25s, border-color .25s;
     cursor: pointer;
@@ -77,3 +284,1484 @@
 .feature-card .stat-icon {
     font-size: 30px;
 }
+
+.feature-card h3 {
+    color: var(--navy);
+    margin: 14px 0 8px;
+    font-size: 16px;
+}
+
+.feature-card p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: #eef2ff;
+    font-size: 23px;
+}
+
+.stat-card h3 {
+    font-size: 24px;
+    margin: 0;
+    color: var(--navy);
+}
+
+.stat-card p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* BUTTONS */
+
+.btn {
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-secondary {
+    background: #eef2ff;
+    color: var(--primary-dark);
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-small {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+/* PAGES */
+
+.page {
+    display: none;
+    animation: pageFade .3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes pageFade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* FORMS */
+
+.form-card {
+    max-width: 760px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    color: var(--text);
+    outline: none;
+    transition: .2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px #4f46e51a;
+}
+
+textarea.form-control {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* TASKS */
+
+.task-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.task-item:last-child {
+    border-bottom: none;
+}
+
+.task-item span {
+    flex: 1;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.task-item.completed span {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.task-item input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--primary);
+}
+
+/* RESULT BOXES */
+
+.result-box {
+    background: #f8faff;
+    border: 1px solid #dbeafe;
+    border-radius: 13px;
+    padding: 20px;
+    margin-top: 20px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
+.status {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.status.error {
+    color: var(--red);
+}
+
+.status.success {
+    color: var(--green);
+}
+
+/* QUIZ */
+
+.quiz-question {
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.quiz-question h4 {
+    margin: 0 0 14px;
+    color: var(--navy);
+    line-height: 1.5;
+}
+
+.quiz-option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 11px;
+    margin: 7px 0;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.quiz-option:hover {
+    background: #f5f7ff;
+    border-color: #a5b4fc;
+}
+
+.quiz-option input {
+    accent-color: var(--primary);
+    margin-top: 2px;
+}
+
+.quiz-feedback {
+    background: #f0fdf4;
+    border-radius: 9px;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.quiz-feedback.incorrect {
+    background: #fff1f2;
+}
+
+.quiz-result {
+    background: #eef2ff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.quiz-result h2 {
+    color: var(--primary-dark);
+    font-size: 30px;
+    margin: 5px;
+}
+
+/* PROGRESS */
+
+.progress-track {
+    height: 10px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #818cf8);
+    border-radius: 20px;
+    transition: width .5s;
+}
+
+.progress-item {
+    margin: 20px 0;
+}
+
+.progress-item strong {
+    font-size: 13px;
+    color: var(--navy);
+}
+
+/* CHAT */
+
+.chat-card {
+    max-width: 850px;
+}
+
+.chat-messages {
+    height: 390px;
+    overflow-y: auto;
+    padding: 15px;
+    background: #f8faff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border);
+}
+
+.chat-message {
+    max-width: 85%;
+    padding: 12px 15px;
+    border-radius: 13px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.chat-message.user {
+    background: var(--primary);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 3px;
+}
+
+.chat-message.ai {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-bottom-left-radius: 3px;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-area textarea {
+    min-height: 48px;
+    max-height: 120px;
+    flex: 1;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 30px 10px 10px;
+}
+
+/* MOBILE */
+
+.mobile-menu {
+    display: none;
+    border: none;
+    background: var(--navy);
+    color: white;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.sidebar-overlay {
+    display: none;
+}
+
+@media(max-width: 1050px) {
+    .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .main {
+        padding: 25px;
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform .25s;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: #0008;
+        z-index: 90;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 18px;
+    }
+
+    .mobile-menu {
+        display: inline-block;
+    }
+
+    .topbar {
+        align-items: flex-start;
+    }
+
+    .topbar h2 {
+        font-size: 19px;
+    }
+
+    .hero {
+        padding: 35px 24px;
+    }
+
+    .hero::after {
+        right: -25px;
+        font-size: 150px;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .chat-messages {
+        height: 350px;
+    }
+
+    .chat-input-area {
+        flex-direction: column;
+    }
+
+    .top-label {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <img src="kalamnova-logo.png"
+             class="brand-logo"
+             alt="KALAMNOVA AI Logo"
+             onerror="this.style.display='none'">
+
+        <div>
+            <h2>KALAMNOVA AI</h2>
+            <small>LEARN • GROW • SUCCEED</small>
+        </div>
+    </div>
+
+    <div class="nav-title">MAIN MENU</div>
+
+    <a href="#" class="nav-link active" data-page="home" onclick="showPage('home',this)">
+        <span>🏠</span> Home
+    </a>
+
+    <a href="#" class="nav-link" data-page="dashboard" onclick="showPage('dashboard',this)">
+        <span>📊</span> Dashboard
+    </a>
+
+    <div class="nav-title">MY LEARNING</div>
+
+    <a href="#" class="nav-link" data-page="planner" onclick="showPage('planner',this)">
+        <span>📚</span> Study Planner
+    </a>
+
+    <a href="#" class="nav-link" data-page="studyplan" onclick="showPage('studyplan',this)">
+        <span>🗓️</span> AI Study Plan
+    </a>
+
+    <a href="#" class="nav-link" data-page="quiz" onclick="showPage('quiz',this)">
+        <span>📝</span> Practice Quiz
+    </a>
+
+    <a href="#" class="nav-link" data-page="progress" onclick="showPage('progress',this)">
+        <span>📈</span> My Progress
+    </a>
+
+    <div class="nav-title">AI TOOLS</div>
+
+    <a href="#" class="nav-link" data-page="assistant" onclick="showPage('assistant',this)">
+        <span>🤖</span> AI Assistant
+    </a>
+
+    <div class="sidebar-bottom">
+        <strong>KALAMNOVA AI</strong><br>
+        Your smart learning companion.<br>
+        Learn smarter. Grow faster.
+    </div>
+
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:13px">
+            <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+            <div>
+                <h2 id="page-title">Welcome Home</h2>
+                <p id="page-subtitle">Your journey to smarter learning starts here.</p>
+            </div>
+        </div>
+        <div class="top-label">✨ SMART LEARNING PLATFORM</div>
+    </header>
+
+    <!-- HOME -->
+    <section class="page active" id="home">
+
+        <div class="hero">
+            <h1>Learn Smarter. Grow Faster. Succeed Together.</h1>
+            <p>
+                Welcome to KALAMNOVA AI — your personal smart learning space.
+                Organize your studies, create personalized timetables,
+                practice with AI quizzes and learn with your AI assistant.
+            </p>
+            <button class="btn" onclick="showPage('dashboard')">
+                Explore My Dashboard →
+            </button>
+        </div>
+
+        <div class="section-heading">
+            <div>
+                <h2>Your Learning Space</h2>
+                <p>Everything you need to make learning easier.</p>
+            </div>
+        </div>
+
+        <div class="card-grid">
+
+            <div class="card feature-card" onclick="showPage('planner')">
+                <div class="stat-icon">📚</div>
+                <h3>Study Planner</h3>
+                <p>Organize your daily tasks and stay focused on your goals.</p>
+            </div>
+
+            <div class="card feature-card" onclick="showPage('studyplan')">
+                <div class="stat-icon">🗓️</div>
+                <h3>AI Study Plan</h3>
+                <p>Generate a personalized study timetable with AI.</p>
+            </div>
+
+            <div class="card feature-card" onclick="showPage('quiz')">
+                <div class="stat-icon">📝</div>
+                <h3>Practice Quiz</h3>
+                <p>Test your knowledge with AI-powered practice questions.</p>
+            </div>
+
+            <div class="card feature-card" onclick="showPage('progress')">
+                <div class="stat-icon">📈</div>
+                <h3>Progress Tracking</h3>
+                <p>Track your quiz scores and celebrate your improvements.</p>
+            </div>
+
+            <div class="card feature-card" onclick="showPage('assistant')">
+                <div class="stat-icon">🤖</div>
+                <h3>AI Study Assistant</h3>
+                <p>Ask questions and get helpful explanations from AI.</p>
+            </div>
+
+            <div class="card feature-card" onclick="showPage('dashboard')">
+                <div class="stat-icon">🎯</div>
+                <h3>Student Dashboard</h3>
+                <p>View your learning activities and progress in one place.</p>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            © 2026 KALAMNOVA AI. Learn Smarter. Grow Faster.
+        </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section class="page" id="dashboard">
+
+        <div class="section-heading">
+            <div>
+                <h2>Learning Dashboard</h2>
+                <p>Your learning activities at a glance.</p>
+            </div>
+        </div>
+
+        <div class="card-grid">
+
+            <div class="card stat-card">
+                <div class="stat-icon">📚</div>
+                <div>
+                    <h3 id="dashboard-tasks">0</h3>
+                    <p>Total Study Tasks</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">✅</div>
+                <div>
+                    <h3 id="dashboard-completed">0</h3>
+                    <p>Completed Tasks</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">📝</div>
+                <div>
+                    <h3 id="dashboard-attempts">0</h3>
+                    <p>Quiz Attempts</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card" style="margin-top:22px">
+            <h3 style="color:var(--navy)">Your Study Activity</h3>
+            <p style="color:var(--muted);font-size:13px">
+                Keep completing your tasks and practicing to improve your learning.
+            </p>
+            <div class="progress-track">
+                <div class="progress-fill" id="dashboard-task-progress" style="width:0%"></div>
+            </div>
+            <p id="dashboard-progress-label" class="status">0% tasks completed</p>
+            <button class="btn" onclick="showPage('planner')">Open Study Planner</button>
+        </div>
+
+    </section>
+
+    <!-- STUDY PLANNER -->
+    <section class="page" id="planner">
+
+        <div class="section-heading">
+            <div>
+                <h2>My Study Planner</h2>
+                <p>Add your tasks and manage your daily study goals.</p>
+            </div>
+        </div>
+
+        <div class="card form-card">
+
+            <div class="form-group">
+                <label for="task">Enter a study task</label>
+                <input class="form-control" id="task"
+                       type="text"
+                       placeholder="Example: Study Biology chapter 2"
+                       maxlength="150">
+            </div>
+
+            <button class="btn" onclick="addTask()">+ Add Task</button>
+
+            <div class="section-heading">
+                <h2 style="font-size:17px">My Tasks</h2>
+                <button class="btn btn-secondary btn-small" onclick="clearCompletedTasks()">
+                    Clear Completed
+                </button>
+            </div>
+
+            <ul class="task-list" id="taskList"></ul>
+
+            <p id="task-empty" class="status">No tasks yet. Add your first study task!</p>
+
+        </div>
+
+    </section>
+
+    <!-- AI STUDY PLAN -->
+    <section class="page" id="studyplan">
+
+        <div class="section-heading">
+            <div>
+                <h2>AI Study Plan Generator</h2>
+                <p>Create a personalized study timetable for your exam.</p>
+            </div>
+        </div>
+
+        <div class="card form-card">
+
+            <div class="form-group">
+                <label for="plan-subject">Subject</label>
+                <input class="form-control" id="plan-subject"
+                       type="text" placeholder="Example: Mathematics">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="plan-hours">Study hours per day</label>
+                    <input class="form-control" id="plan-hours"
+                           type="number" min="1" max="12" value="3">
+                </div>
+
+                <div class="form-group">
+                    <label for="plan-date">Exam date</label>
+                    <input class="form-control" id="plan-date" type="date">
+                </div>
+            </div>
+
+            <button class="btn" id="generate-plan" onclick="generateStudyPlan()">
+                ✨ Generate My Study Plan
+            </button>
+
+            <p class="status" id="plan-status"></p>
+            <div id="study-plan-result" aria-live="polite"></div>
+
+        </div>
+
+    </section>
+
+    <!-- PRACTICE QUIZ -->
+    <section class="page" id="quiz">
+
+        <div class="section-heading">
+            <div>
+                <h2>AI Practice Quiz</h2>
+                <p>Generate questions, test yourself and understand your mistakes.</p>
+            </div>
+        </div>
+
+        <div class="card form-card">
+
+            <div class="form-group">
+                <label for="quiz-subject">Subject</label>
+                <input class="form-control" id="quiz-subject"
+                       type="text" placeholder="Example: Science">
+            </div>
+
+            <div class="form-group">
+                <label for="quiz-topic">Topic</label>
+                <input class="form-control" id="quiz-topic"
+                       type="text" placeholder="Example: Photosynthesis">
+            </div>
+
+            <div class="form-group">
+                <label for="quiz-difficulty">Difficulty</label>
+                <select class="form-control" id="quiz-difficulty">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <button class="btn" id="generate-quiz" onclick="generateQuiz()">
+                ✨ Generate Practice Quiz
+            </button>
+
+            <p id="quiz-status" class="status"></p>
+
+            <div id="quiz-container"></div>
+
+            <button class="btn" id="submit-quiz"
+                    style="display:none;margin-top:15px"
+                    onclick="submitQuiz()">
+                Submit Answers
+            </button>
+
+            <button class="btn btn-secondary" id="retry-quiz"
+                    style="display:none;margin:15px 0 0 8px"
+                    onclick="generateQuiz()">
+                Try Another Quiz
+            </button>
+
+            <div id="quiz-result"></div>
+            <div id="quiz-feedback"></div>
+
+        </div>
+
+    </section>
+
+    <!-- MY PROGRESS -->
+    <section class="page" id="progress">
+
+        <div class="section-heading">
+            <div>
+                <h2>My Learning Progress</h2>
+                <p>Review your practice performance and achievements.</p>
+            </div>
+        </div>
+
+        <div class="card-grid">
+
+            <div class="card stat-card">
+                <div class="stat-icon">📝</div>
+                <div>
+                    <h3 id="attempt-count">0</h3>
+                    <p>Quiz Attempts</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">🏆</div>
+                <div>
+                    <h3 id="highest-score">0%</h3>
+                    <p>Highest Score</p>
+                </div>
+            </div>
+
+            <div class="card stat-card">
+                <div class="stat-icon">📊</div>
+                <div>
+                    <h3 id="average-score">0%</h3>
+                    <p>Average Score</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card" style="margin-top:22px">
+            <h3 style="color:var(--navy)">Quiz Performance</h3>
+            <div class="progress-item">
+                <strong>Average Score</strong>
+                <div class="progress-track">
+                    <div class="progress-fill" id="average-progress" style="width:0%"></div>
+                </div>
+            </div>
+
+            <div class="progress-item">
+                <strong>Highest Score</strong>
+                <div class="progress-track">
+                    <div class="progress-fill" id="highest-progress" style="width:0%"></div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="clearQuizProgress()">
+                Reset Quiz Progress
+            </button>
+        </div>
+
+    </section>
+
+    <!-- AI ASSISTANT -->
+    <section class="page" id="assistant">
+
+        <div class="section-heading">
+            <div>
+                <h2>AI Study Assistant</h2>
+                <p>Ask questions and learn concepts in simple language.</p>
+            </div>
+        </div>
+
+        <div class="card chat-card">
+
+            <div class="chat-messages" id="chat-messages" aria-live="polite">
+                <div class="chat-message ai">
+                    👋 Hello! I'm your KALAMNOVA AI Study Assistant.
+                    Ask me anything about your studies!
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <textarea class="form-control"
+                          id="chat-question"
+                          placeholder="Ask your study question..."
+                          rows="2"></textarea>
+
+                <button class="btn" id="chat-button" onclick="sendChatMessage()">
+                    Send ➤
+                </button>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:12px">
+                <button class="btn btn-secondary btn-small" onclick="clearChat()">
+                    Clear Chat
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        © 2026 KALAMNOVA AI | Learn Smarter. Grow Faster.
+    </footer>
+
+</main>
+
+<script>
+/* PAGE NAVIGATION */
+
+const pageTitles = {
+    home: ["Welcome Home", "Your journey to smarter learning starts here."],
+    dashboard: ["Dashboard", "Your learning activities at a glance."],
+    planner: ["Study Planner", "Organize your daily study tasks."],
+    studyplan: ["AI Study Plan", "Create your personalized study timetable."],
+    quiz: ["Practice Quiz", "Test your knowledge with AI."],
+    progress: ["My Progress", "Track your learning achievements."],
+    assistant: ["AI Study Assistant", "Your personal AI learning companion."]
+};
+
+function showPage(pageId, clickedLink) {
+    const page = document.getElementById(pageId);
+
+    if (!page) return;
+
+    document.querySelectorAll(".page").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    page.classList.add("active");
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+        link.classList.remove("active");
+    });
+
+    const link = clickedLink ||
+        document.querySelector('.nav-link[data-page="' + pageId + '"]');
+
+    if (link) link.classList.add("active");
+
+    document.getElementById("page-title").textContent =
+        pageTitles[pageId][0];
+
+    document.getElementById("page-subtitle").textContent =
+        pageTitles[pageId][1];
+
+    toggleSidebar(false);
+
+    if (pageId === "dashboard") updateDashboard();
+    if (pageId === "progress") updateProgress();
+}
+
+function toggleSidebar(forceClose) {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebar-overlay");
+
+    if (forceClose === false) {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("show");
+        return;
+    }
+
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+}
+
+/* STORAGE HELPERS */
+
+function readStorage(key, fallback) {
+    try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+    } catch (error) {
+        return fallback;
+    }
+}
+
+function saveStorage(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        console.error("Could not save local data:", error);
+    }
+}
+
+/* STUDY PLANNER */
+
+let tasks = readStorage("kalamnovaTasks", []);
+
+if (!Array.isArray(tasks)) tasks = [];
+
+function saveTasks() {
+    saveStorage("kalamnovaTasks", tasks);
+    renderTasks();
+    updateDashboard();
+}
+
+function addTask() {
+    const input = document.getElementById("task");
+    const value = input.value.trim();
+
+    if (!value) {
+        alert("Please enter a study task.");
+        input.focus();
+        return;
+    }
+
+    tasks.push({
+        id: Date.now(),
+        text: value,
+        completed: false
+    });
+
+    input.value = "";
+    saveTasks();
+}
+
+function renderTasks() {
+    const list = document.getElementById("taskList");
+    const empty = document.getElementById("task-empty");
+
+    list.innerHTML = "";
+
+    empty.style.display = tasks.length ? "none" : "block";
+
+    tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.className = "task-item" + (task.completed ? " completed" : "");
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
+        checkbox.setAttribute("aria-label", "Mark task completed");
+
+        checkbox.addEventListener("change", () => {
+            task.completed = checkbox.checked;
+            saveTasks();
+        });
+
+        const span = document.createElement("span");
+        span.textContent = task.text;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger btn-small";
+        deleteButton.textContent = "Delete";
+        deleteButton.addEventListener("click", () => {
+            tasks = tasks.filter(item => item.id !== task.id);
+            saveTasks();
+        });
+
+        li.append(checkbox, span, deleteButton);
+        list.appendChild(li);
+    });
+}
+
+function clearCompletedTasks() {
+    tasks = tasks.filter(task => !task.completed);
+    saveTasks();
+}
+
+document.getElementById("task").addEventListener("keydown", event => {
+    if (event.key === "Enter") addTask();
+});
+
+/* DASHBOARD */
+
+function updateDashboard() {
+    const completed = tasks.filter(task => task.completed).length;
+    const total = tasks.length;
+    const percentage = total ? Math.round(completed / total * 100) : 0;
+    const scores = readStorage("kalamnovaQuizScores", []);
+
+    document.getElementById("dashboard-tasks").textContent = total;
+    document.getElementById("dashboard-completed").textContent = completed;
+    document.getElementById("dashboard-attempts").textContent = scores.length;
+
+    document.getElementById("dashboard-task-progress").style.width =
+        percentage + "%";
+
+    document.getElementById("dashboard-progress-label").textContent =
+        percentage + "% tasks completed";
+}
+
+/* AI STUDY PLAN */
+
+async function generateStudyPlan() {
+    const subject = document.getElementById("plan-subject").value.trim();
+    const hours = Number(document.getElementById("plan-hours").value);
+    const examDate = document.getElementById("plan-date").value;
+    const status = document.getElementById("plan-status");
+    const result = document.getElementById("study-plan-result");
+    const button = document.getElementById("generate-plan");
+
+    if (!subject) {
+        status.textContent = "Please enter a subject.";
+        status.className = "status error";
+        return;
+    }
+
+    if (!Number.isInteger(hours) || hours < 1 || hours > 12) {
+        status.textContent = "Enter study hours between 1 and 12.";
+        status.className = "status error";
+        return;
+    }
+
+    if (!examDate) {
+        status.textContent = "Please select your exam date.";
+        status.className = "status error";
+        return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const selectedDate = new Date(examDate + "T00:00:00");
+
+    if (Number.isNaN(selectedDate.getTime()) || selectedDate < today) {
+        status.textContent = "Please select today or a future exam date.";
+        status.className = "status error";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Generating...";
+    status.textContent = "AI is preparing your personalized study plan...";
+    status.className = "status";
+    result.innerHTML = "";
+
+    try {
+        const response = await fetch("/api/study-plan", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({subject, hours, examDate})
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Unable to generate your study plan.");
+        }
+
+        const output = document.createElement("div");
+        output.className = "result-box";
+        output.textContent = data.plan || "No study plan was returned.";
+
+        result.appendChild(output);
+
+        status.textContent = "Your study plan is ready!";
+        status.className = "status success";
+
+    } catch (error) {
+        status.textContent = error.message || "Something went wrong. Please try again.";
+        status.className = "status error";
+    } finally {
+        button.disabled = false;
+        button.textContent = "✨ Generate My Study Plan";
+    }
+}
+
+/* AI PRACTICE QUIZ */
+
+let currentQuiz = [];
+
+async function generateQuiz() {
+    const subject = document.getElementById("quiz-subject").value.trim();
+    const topic = document.getElementById("quiz-topic").value.trim();
+    const difficulty = document.getElementById("quiz-difficulty").value;
+
+    const status = document.getElementById("quiz-status");
+    const container = document.getElementById("quiz-container");
+    const submit = document.getElementById("submit-quiz");
+    const retry = document.getElementById("retry-quiz");
+    const result = document.getElementById("quiz-result");
+    const feedback = document.getElementById("quiz-feedback");
+    const button = document.getElementById("generate-quiz");
+
+    if (!subject || !topic) {
+        status.textContent = "Please enter both subject and topic.";
+        status.className = "status error";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Generating...";
+    status.textContent = "AI is creating your quiz...";
+    status.className = "status";
+
+    container.innerHTML = "";
+    result.innerHTML = "";
+    feedback.innerHTML = "";
+    submit.style.display = "none";
+    retry.style.display = "none";
+
+    try {
+        const response = await fetch("/api/quiz", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({subject, topic, difficulty})
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Could not generate quiz.");
+        }
+
+        currentQuiz = data.questions || data.quiz || [];
+
+        if (!Array.isArray(currentQuiz) || currentQuiz.length !== 5) {
+            throw new Error("The quiz response did not contain exactly 5 questions. Please try again.");
+        }
+
+        currentQuiz.forEach((question, index) => {
+            if (!question.question || !Array.isArray(question.options) ||
+                question.options.length < 2) {
+                throw new Error("The quiz response has an invalid question. Please try again.");
+            }
+        });
+
+        renderQuiz();
+
+        status.textContent = "Your quiz is ready. Select one answer for each question.";
+        status.className = "status success";
+        submit.style.display = "inline-block";
+
+    } catch (error) {
+        currentQuiz = [];
+        status.textContent = error.message || "Something went wrong.";
+        status.className = "status error";
+    } finally {
+        button.disabled = false;
+        button.textContent = "✨ Generate Practice Quiz";
+    }
+}
+
+function renderQuiz() {
+    const container = document.getElementById("quiz-container");
+    container.innerHTML = "";
+
+    currentQuiz.forEach((question, index) => {
+        const section = document.createElement("div");
+        section.className = "quiz-question";
+
+        const heading = document.createElement("h4");
+        heading.textContent = (index + 1) + ". " + question.question;
+        section.appendChild(heading);
+
+        question.options.forEach((option, optionIndex) => {
+            const label = document.createElement("label");
+            label.className = "quiz-option";
+
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "question-" + index;
+            radio.value = optionIndex;
+
+            const text = document.createElement("span");
+            text.textContent = option;
+
+            label.append(radio, text);
+            section.appendChild(label);
+        });
+
+        container.appendChild(section);
+    });
+}
+
+function getCorrectIndex(question) {
+    const answer = question.answer ?? question.correctAnswer;
+
+    if (typeof answer === "number") return answer;
+
+    if (typeof answer === "string") {
+        const trimmed = answer.trim();
+
+        if (/^[0-9]+$/.test(trimmed)) {
+            const number = Number(trimmed);
+            if (number >= 0 && number < question.options.length) return number;
+            if (number >= 1 && number <= question.options.length) return number - 1;
+        }
+
+        const letter = trimmed.toUpperCase().match(/^[A-E]$/);
+        if (letter) return letter[0].charCodeAt(0) - 65;
+
+        return question.options.findIndex(
+            option => option.toLowerCase() === trimmed.toLowerCase()
+        );
+    }
+
+    return -1;
+}
+
+function submitQuiz() {
+    if (!currentQuiz.length) return;
+
+    let score = 0;
+    const answers = [];
+
+    for (let index = 0; index < currentQuiz.length; index++) {
+        const selected = document.querySelector(
+            'input[name="question-' + index + '"]:checked'
+        );
+
+        if (!selected) {
+            alert("Please answer all five questions before submitting.");
+            return;
+        }
+
+        answers.push(Number(selected.value));
+    }
+
+    const feedback = document.getElementById("quiz-feedback");
+    feedback.innerHTML = "";
+
+    currentQuiz.forEach((question, index) => {
+        const correctIndex = getCorrectIndex(question);
+        const isCorrect = answers[index] === correctIndex;
+
+        if (isCorrect) score++;
+
+        const box = document.createElement("div");
+        box.className = "quiz-feedback" + (isCorrect ? "" : " incorrect");
+
+        const title = document.createElement("strong");
+        title.textContent = isCorrect ? "✓ Correct" : "✗ Incorrect";
+
+        const answer = document.createElement("p");
+        answer.textContent = "Correct answer: " +
+            (question.options[correctIndex] ?? "Not available");
+
+        const explanation = document.createElement("p");
+        explanation.textContent = question.explanation || "Review this topic to strengthen your understanding.";
+
+        box.append(title, answer, explanation);
+        feedback.appendChild(box);
+    });
+
+    const percentage = Math.round(score / currentQuiz.length * 100);
+
+    const result = document.getElementById("quiz-result");
+    result.innerHTML = "";
+
+    const resultBox = document.createElement("div");
+    resultBox.className = "quiz-result";
+
+    const heading = document.createElement("h2");
+    heading.textContent = percentage + "%";
+
+    const message = document.createElement("p");
+    message.textContent = "You scored " + score + " out of " +
+        currentQuiz.length + ". " +
+        (percentage >= 80 ? "Excellent work!" :
+         percentage >= 60 ? "Good effort! Keep practicing." :
+         "Keep learning. You can improve!");
+
+    resultBox.append(heading, message);
+    result.appendChild(resultBox);
+
+    const scores = readStorage("kalamnovaQuizScores", []);
+    scores.push(percentage);
+    saveStorage("kalamnovaQuizScores", scores);
+
+    document.getElementById("submit-quiz").style.display = "none";
+    document.getElementById("retry-quiz").style.display = "inline-block";
+
+    document.querySelectorAll("#quiz-container input").forEach(input => {
+        input.disabled = true;
+    });
+
+    updateProgress();
+    updateDashboard();
+}
+
+/* PROGRESS TRACKING */
+
+function updateProgress() {
+    const scores = readStorage("kalamnovaQuizScores", []);
+    const attempts = scores.length;
+    const highest = attempts ? Math.max(...scores) : 0;
+    const average = attempts
+        ? Math.round(scores.reduce((sum, score) => sum + score, 0) / attempts)
+        : 0;
+
+    document.getElementById("attempt-count").textContent = attempts;
+    document.getElementById("highest-score").textContent = highest + "%";
+    document.getElementById("average-score").textContent = average + "%";
+
+    document.getElementById("average-progress").style.width = average + "%";
+    document.getElementById("highest-progress").style.width = highest + "%";
+}
+
+function clearQuizProgress() {
+    if (!confirm("Are you sure you want to reset all quiz progress?")) return;
+
+    saveStorage("kalamnovaQuizScores", []);
+    updateProgress();
+    updateDashboard();
+}
+
+/* AI CHAT ASSISTANT */
+
+function addChatMessage(message, sender) {
+    const container = document.getElementById("chat-messages");
+    const bubble = document.createElement("div");
+
+    bubble.className = "chat-message " + sender;
+    bubble.textContent = message;
+
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+
+    return bubble;
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById("chat-question");
+    const button = document.getElementById("chat-button");
+    const question = input.value.trim();
+
+    if (!question) {
+        input.focus();
+        return;
+    }
+
+    addChatMessage(question, "user");
+    input.value = "";
+
+    button.disabled = true;
+    button.textContent = "Thinking...";
+
+    const waiting = addChatMessage("Thinking... Please wait.", "ai");
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({question})
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "AI assistant is unavailable.");
+        }
+
+        waiting.textContent =
+            data.reply || data.answer || data.message || "I couldn't generate a response.";
+
+    } catch (error) {
+        waiting.textContent = error.message || "Something went wrong. Please try again.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "Send ➤";
+        input.focus();
+    }
+}
+
+function clearChat() {
+    const container = document.getElementById("chat-messages");
+    container.innerHTML = "";
+
+    addChatMessage(
+        "👋 Hello! I'm your KALAMNOVA AI Study Assistant. Ask me anything about your studies!",
+        "ai"
+    );
+}
+
+document.getElementById("chat-question").addEventListener("keydown", event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendChatMessage();
+    }
+});
+
+/* INITIALIZE WEBSITE */
+
+renderTasks();
+updateDashboard();
+updateProgress();
+
+/* SET MINIMUM EXAM DATE TO TODAY */
+
+const todayString = new Date(
+    Date.now() - new Date().getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
+
+document.getElementById("plan-date").min = todayString;
+
+</script>
+
+</body>
+</html>
