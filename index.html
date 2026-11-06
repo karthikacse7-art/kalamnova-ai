@@ -1,1248 +1,639 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#172554">
-<title>KALAMNOVA AI | Smart Learning</title>
+<meta name="theme-color" content="#101b45">
+<title>KALAMNOVA AI | Student Success Platform</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js"></script>
 
 <style>
 :root {
-    --primary:#4f46e5;
-    --primary-dark:#3730a3;
-    --navy:#172554;
-    --bg:#f5f7ff;
-    --white:#fff;
-    --text:#1e293b;
-    --muted:#64748b;
-    --border:#e2e8f0;
-    --green:#16a34a;
-    --red:#dc2626;
-    --shadow:0 8px 25px rgba(23,37,84,.07);
+  --primary:#5145e5;
+  --primary-dark:#3930ae;
+  --navy:#101b45;
+  --bg:#f5f6fc;
+  --white:#fff;
+  --text:#202746;
+  --muted:#7d849e;
+  --border:#e8eaf3;
+  --green:#0eaa78;
+  --orange:#f59e0b;
+  --red:#e34d67;
+  --shadow:0 12px 35px rgba(32,39,70,.07);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-
-/* SIDEBAR */
-.sidebar{
-    width:255px;height:100vh;position:fixed;left:0;top:0;
-    background:var(--navy);color:white;padding:24px 16px;
-    display:flex;flex-direction:column;z-index:100;overflow-y:auto;
-}
-.brand{display:flex;align-items:center;gap:12px;padding:0 8px 28px}
-.brand-logo{width:48px;height:48px;border-radius:12px;object-fit:contain;background:white;padding:3px}
-.brand h2{margin:0;font-size:17px;letter-spacing:.5px}
-.brand small{color:#c7d2fe;font-size:10px;letter-spacing:1px}
-.nav-title{color:#94a3b8;font-size:11px;font-weight:bold;padding:10px 12px;letter-spacing:1.5px}
-.nav-link{
-    display:flex;align-items:center;gap:12px;color:#cbd5e1;
-    text-decoration:none;padding:13px 14px;margin:3px 0;
-    border-radius:10px;font-size:14px;transition:.2s;
-}
-.nav-link:hover,.nav-link.active{color:white;background:#3730a3}
-.nav-link span:first-child{font-size:19px;width:24px;text-align:center}
-.sidebar-bottom{margin-top:auto;padding:18px 10px 5px;color:#cbd5e1;font-size:12px;line-height:1.7}
-
-/* MAIN */
-.main{margin-left:255px;padding:30px 36px;min-height:100vh}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;gap:15px}
-.topbar h2{margin:0;color:var(--navy);font-size:23px}
-.topbar p{color:var(--muted);margin:6px 0 0;font-size:13px}
-.top-label{background:#eef2ff;color:var(--primary-dark);padding:9px 14px;border-radius:30px;font-size:12px;font-weight:bold}
-
-/* HERO */
-.hero{
-    padding:55px 45px;border-radius:24px;color:white;
-    background:radial-gradient(circle at 85% 20%,#818cf8 0%,transparent 30%),
-    linear-gradient(125deg,#111c43,#3730a3 65%,#6366f1);
-    position:relative;overflow:hidden;margin-bottom:28px;
-    box-shadow:0 15px 40px rgba(55,48,163,.2);
-    animation:heroFade .8s ease;
-}
-.hero::after{content:"✦";position:absolute;font-size:210px;color:#ffffff12;right:35px;top:-35px;pointer-events:none}
-.hero h1{font-size:clamp(28px,4vw,42px);max-width:620px;margin:0 0 15px;line-height:1.2}
-.hero p{color:#dbeafe;line-height:1.8;max-width:580px;font-size:15px}
-.hero .btn{background:white;color:var(--primary-dark);margin-top:15px;padding:14px 22px}
-.hero .btn:hover{background:#eef2ff;transform:translateY(-3px)}
-@keyframes heroFade{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-
-/* CARDS */
-.section-heading{display:flex;justify-content:space-between;align-items:center;margin:28px 0 17px;gap:10px}
-.section-heading h2{color:var(--navy);font-size:20px;margin:0}
-.section-heading p{font-size:13px;color:var(--muted);margin:6px 0 0}
-.card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.card{background:var(--white);border:1px solid var(--border);border-radius:17px;padding:23px;box-shadow:var(--shadow)}
-.feature-card{transition:transform .25s,box-shadow .25s,border-color .25s;cursor:pointer}
-.feature-card:hover{transform:translateY(-6px);border-color:#a5b4fc;box-shadow:0 15px 35px rgba(79,70,229,.12)}
-.feature-card .stat-icon{font-size:30px}
-.feature-card h3{color:var(--navy);margin:14px 0 8px;font-size:16px}
-.feature-card p{color:var(--muted);font-size:13px;line-height:1.7;margin:0}
-.stat-card{display:flex;align-items:center;gap:15px}
-.stat-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#eef2ff;font-size:23px}
-.stat-card h3{font-size:24px;margin:0;color:var(--navy)}
-.stat-card p{margin:5px 0 0;color:var(--muted);font-size:12px}
-
-/* BUTTONS */
-.btn{border:none;border-radius:10px;padding:12px 18px;background:var(--primary);color:white;font-weight:bold;font-size:13px;transition:.2s}
-.btn:hover{background:var(--primary-dark);transform:translateY(-2px)}
-.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.btn-secondary{background:#eef2ff;color:var(--primary-dark)}
-.btn-danger{background:#fee2e2;color:#b91c1c}
-.btn-small{padding:8px 12px;font-size:12px}
-
-/* PAGES */
-.page{display:none;animation:pageFade .3s ease}
-.page.active{display:block}
-@keyframes pageFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-/* FORMS */
-.form-card{max-width:760px}
-.form-group{margin-bottom:18px}
-.form-group label{display:block;font-weight:bold;font-size:13px;color:var(--navy);margin-bottom:8px}
-.form-control{width:100%;padding:13px 14px;border:1px solid var(--border);border-radius:10px;background:white;color:var(--text);outline:none;transition:.2s}
-.form-control:focus{border-color:var(--primary);box-shadow:0 0 0 3px #4f46e51a}
-textarea.form-control{min-height:110px;resize:vertical}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-
-/* TASKS */
-.task-list{list-style:none;padding:0;margin:20px 0 0}
-.task-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
-.task-item:last-child{border-bottom:none}
-.task-item span{flex:1;font-size:14px;overflow-wrap:anywhere}
-.task-item.completed span{text-decoration:line-through;color:#94a3b8}
-.task-item input{width:17px;height:17px;accent-color:var(--primary)}
-
-/* RESULTS */
-.result-box{background:#f8faff;border:1px solid #dbeafe;border-radius:13px;padding:20px;margin-top:20px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px}
-.status{margin-top:12px;font-size:13px;color:var(--muted)}
-.status.error{color:var(--red)}
-.status.success{color:var(--green)}
-
-/* QUIZ */
-.quiz-question{padding:18px 0;border-bottom:1px solid var(--border)}
-.quiz-question h4{margin:0 0 14px;color:var(--navy);line-height:1.5}
-.quiz-option{display:flex;gap:10px;align-items:flex-start;padding:11px;margin:7px 0;border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:13px}
-.quiz-option:hover{background:#f5f7ff;border-color:#a5b4fc}
-.quiz-option input{accent-color:var(--primary);margin-top:2px}
-.quiz-feedback{background:#f0fdf4;border-radius:9px;padding:12px;margin-top:10px;font-size:13px;line-height:1.6}
-.quiz-feedback.incorrect{background:#fff1f2}
-.quiz-result{background:#eef2ff;border-radius:14px;padding:20px;margin-top:20px;text-align:center}
-.quiz-result h2{color:var(--primary-dark);font-size:30px;margin:5px}
-
-/* PROGRESS */
-.progress-track{height:10px;border-radius:20px;background:#e2e8f0;overflow:hidden;margin-top:10px}
-.progress-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#818cf8);border-radius:20px;transition:width .5s}
-.progress-item{margin:20px 0}
-.progress-item strong{font-size:13px;color:var(--navy)}
-
-/* CHAT */
-.chat-card{max-width:850px}
-.chat-messages{height:390px;overflow-y:auto;padding:15px;background:#f8faff;border-radius:12px;margin-bottom:15px;border:1px solid var(--border)}
-.chat-message{max-width:85%;padding:12px 15px;border-radius:13px;margin-bottom:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
-.chat-message.user{background:var(--primary);color:white;margin-left:auto;border-bottom-right-radius:3px}
-.chat-message.ai{background:white;border:1px solid var(--border);color:var(--text);border-bottom-left-radius:3px}
-.chat-input-area{display:flex;gap:10px}
-.chat-input-area textarea{min-height:48px;max-height:120px;flex:1}
-
-/* NOTES */
-.notes-output{white-space:pre-wrap;overflow-wrap:anywhere;font-family:Arial,sans-serif;line-height:1.8;color:var(--text)}
-.notes-actions{display:none;margin-top:15px;gap:10px;flex-wrap:wrap}
-
-/* AI FLASHCARDS */
-.flashcard-area{max-width:760px}
-.flashcard{
-    min-height:270px;
-    background:linear-gradient(135deg,#3730a3,#6366f1);
-    color:white;
-    border-radius:20px;
-    padding:35px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    cursor:pointer;
-    box-shadow:0 15px 35px rgba(55,48,163,.18);
-    transition:transform .25s;
-    user-select:none;
-}
-.flashcard:hover{transform:translateY(-3px)}
-.flashcard .card-label{
-    font-size:12px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:#c7d2fe;
-    margin-bottom:20px;
-}
-.flashcard h2{
-    font-size:clamp(19px,3vw,25px);
-    line-height:1.5;
-    margin:0;
-    overflow-wrap:anywhere;
-}
-.flashcard .flip-hint{font-size:12px;color:#e0e7ff;margin-top:25px}
-.flashcard-controls{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:20px;
-}
-.flashcard-counter{text-align:center;color:var(--muted);font-size:13px;margin-top:15px}
-.flashcard-progress{height:8px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin-top:10px}
-.flashcard-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4f46e5,#818cf8);transition:width .3s}
-.flashcard-empty{
-    text-align:center;
-    padding:35px 15px;
-    color:var(--muted);
-    background:#f8faff;
-    border:1px dashed #c7d2fe;
-    border-radius:14px;
-}
-
-/* FOOTER */
-.footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 10px 10px}
-
-/* MOBILE */
-.mobile-menu{display:none;border:none;background:var(--navy);color:white;padding:9px 12px;border-radius:8px;font-size:20px}
-.sidebar-overlay{display:none}
-
-@media(max-width:1050px){
-    .card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .main{padding:25px}
-}
+.layout{min-height:100vh}
+.sidebar{width:255px;background:var(--navy);color:white;position:fixed;inset:0 auto 0 0;padding:25px 17px;z-index:20;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:0 10px 28px}
+.brand-logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#8b83ff,#5145e5);display:grid;place-items:center;font-size:21px;font-weight:800}
+.brand h2{font-size:18px;margin:0;letter-spacing:.5px}
+.brand small{display:block;color:#aab2d1;font-size:10px;margin-top:4px;letter-spacing:1.3px}
+.nav-label{font-size:10px;color:#8994bd;letter-spacing:1.5px;padding:15px 12px 8px}
+.nav-btn{width:100%;border:0;background:transparent;color:#c3c9df;padding:12px 13px;border-radius:10px;text-align:left;display:flex;align-items:center;gap:12px;margin:2px 0;font-size:13px;transition:.2s}
+.nav-btn:hover,.nav-btn.active{background:#303c70;color:white}
+.nav-btn.active{box-shadow:inset 3px 0 #938bff}
+.nav-icon{width:20px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto;background:#202d5a;border-radius:14px;padding:15px;font-size:12px;color:#d5daf0;line-height:1.6}
+.sidebar-bottom strong{display:block;color:white;margin-bottom:5px}
+.main{margin-left:255px;min-height:100vh}
+.topbar{height:76px;background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 34px;position:sticky;top:0;z-index:10}
+.topbar-title{font-weight:700;font-size:15px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.avatar{width:38px;height:38px;border-radius:50%;background:#e9e7ff;color:var(--primary);display:grid;place-items:center;font-weight:800}
+.menu-toggle{display:none;border:0;background:none;font-size:23px}
+.content{max-width:1450px;margin:auto;padding:30px 34px 55px}
+.page{display:none}.page.active{display:block}
+.page-heading{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}
+.page-heading h1{font-size:25px;margin:0 0 7px}
+.page-heading p{margin:0;color:var(--muted);font-size:13px}
+.hero{background:linear-gradient(120deg,#171f55,#5145e5 72%,#766df4);color:white;border-radius:22px;padding:34px;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden;position:relative}
+.hero:after{content:"✦";font-size:190px;color:#ffffff12;position:absolute;right:40px;top:-55px}
+.hero-text{position:relative;z-index:1;max-width:620px}
+.hero .eyebrow{font-size:11px;letter-spacing:2px;color:#c9c7ff;font-weight:700}
+.hero h1{font-size:clamp(26px,4vw,39px);line-height:1.2;margin:12px 0}
+.hero p{color:#e0e2ff;font-size:14px;line-height:1.7;max-width:520px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.hero-visual{position:relative;z-index:1;font-size:105px;padding:10px 35px}
+.btn{border:0;border-radius:9px;padding:11px 16px;font-size:12px;font-weight:700;transition:.2s}
+.btn:hover{transform:translateY(-1px);filter:brightness(.97)}
+.btn-primary{background:var(--primary);color:white}
+.btn-light{background:white;color:var(--primary)}
+.btn-outline{background:white;border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:#fff0f2;color:var(--red)}
+.btn-small{padding:8px 11px;font-size:11px}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:27px 0 15px}
+.section-title h2{font-size:17px;margin:0}
+.section-title span{font-size:12px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:20px}
+.stat,.card{background:white;border:1px solid var(--border);border-radius:15px;padding:19px;box-shadow:var(--shadow)}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{width:39px;height:39px;border-radius:12px;background:#eeedff;display:grid;place-items:center;font-size:19px}
+.stat h3{font-size:25px;margin:15px 0 5px}
+.stat p{font-size:11px;color:var(--muted);margin:0}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}
+.feature-card{background:white;border:1px solid var(--border);border-radius:15px;padding:19px;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.feature-card:hover{transform:translateY(-4px);border-color:#c7c2ff}
+.feature-icon{width:43px;height:43px;border-radius:12px;background:#eeedff;display:grid;place-items:center;font-size:21px;margin-bottom:13px}
+.feature-card h3{font-size:14px;margin:0 0 7px}
+.feature-card p{font-size:12px;line-height:1.6;color:var(--muted);margin:0}
+.feature-card .arrow{color:var(--primary);font-size:12px;font-weight:700;margin-top:13px;display:block}
+.panel{background:white;border:1px solid var(--border);border-radius:15px;padding:21px;box-shadow:var(--shadow);margin-bottom:17px}
+.panel h3{font-size:15px;margin:0 0 15px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+.form-group input,.form-group textarea,.form-group select,.chat-input{width:100%;padding:12px 13px;border:1px solid var(--border);border-radius:9px;outline:none;background:#fff;color:var(--text);font-size:13px}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus,.chat-input:focus{border-color:var(--primary)}
+.form-group textarea{min-height:105px;resize:vertical;line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.task-list{display:grid;gap:9px}
+.task{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:12px}
+.task span{flex:1}.task.done span{text-decoration:line-through;color:var(--muted)}
+.task input{accent-color:var(--primary)}
+.task button{border:0;background:none;color:var(--red)}
+.progress-track{height:8px;background:#eeeff6;border-radius:20px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#5145e5,#9189ff);border-radius:20px;width:0;transition:.3s}
+.muted{color:var(--muted);font-size:12px}
+.output{background:#f8f8ff;border:1px solid var(--border);border-radius:11px;padding:17px;margin-top:15px;font-size:13px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;min-height:50px}
+.output:empty{display:none}
+.output h4{margin:14px 0 5px}
+.notice{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px}
+.quiz-question{padding:15px;border:1px solid var(--border);border-radius:12px;margin:12px 0}
+.quiz-question h4{font-size:13px;margin:0 0 12px}
+.option{display:block;padding:9px;border-radius:8px;font-size:12px;cursor:pointer}
+.option:hover{background:#f2f1ff}
+.option input{accent-color:var(--primary);margin-right:8px}
+.chat-box{height:390px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:15px;background:#fafaff;margin-bottom:12px}
+.message{padding:11px 13px;border-radius:12px;margin:8px 0;max-width:85%;font-size:12px;line-height:1.7;white-space:pre-wrap}
+.message.user{background:#e9e7ff;margin-left:auto}
+.message.ai{background:white;border:1px solid var(--border)}
+.chat-row{display:flex;gap:8px}
+.chat-row input{flex:1;min-width:0}
+.empty{padding:22px;text-align:center;color:var(--muted);font-size:12px}
+.skill-level{font-size:10px;color:var(--green);font-weight:700}
+.tag{display:inline-block;background:#efeeff;color:var(--primary);padding:5px 8px;border-radius:20px;font-size:10px;margin:3px}
+.footer{text-align:center;color:var(--muted);font-size:11px;padding:25px}
+.mobile-overlay{display:none}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}.hero-visual{font-size:75px}}
 @media(max-width:700px){
-    .sidebar{transform:translateX(-100%);transition:transform .25s}
-    .sidebar.open{transform:translateX(0)}
-    .sidebar-overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:90}
-    .main{margin-left:0;padding:18px}
-    .mobile-menu{display:inline-block}
-    .topbar{align-items:flex-start}
-    .topbar h2{font-size:19px}
-    .hero{padding:35px 24px}
-    .hero::after{right:-25px;font-size:150px}
-    .card-grid{grid-template-columns:1fr}
-    .form-row{grid-template-columns:1fr;gap:0}
-    .chat-messages{height:350px}
-    .chat-input-area{flex-direction:column}
-    .top-label{display:none}
-    .flashcard{min-height:230px;padding:25px 18px}
+ .sidebar{transform:translateX(-100%);transition:.25s}
+ .sidebar.open{transform:translateX(0)}
+ .mobile-overlay.show{display:block;position:fixed;inset:0;background:#080e28a8;z-index:15}
+ .main{margin-left:0}.menu-toggle{display:block}
+ .topbar{height:65px;padding:0 17px}.topbar-title{margin-right:auto;margin-left:12px}
+ .content{padding:20px 15px 40px}
+ .hero{padding:25px 20px}.hero-visual{display:none}
+ .stats{gap:10px}.stat{padding:14px}.stat h3{font-size:22px}
+ .grid-3,.grid-2{grid-template-columns:1fr}
+ .page-heading h1{font-size:22px}.form-row{grid-template-columns:1fr}
 }
 </style>
 </head>
 
 <body>
-
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<div class="mobile-overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <aside class="sidebar" id="sidebar">
-    <div class="brand">
-        <img src="kalamnova-logo.png" class="brand-logo" alt="KALAMNOVA AI Logo" onerror="this.style.display='none'">
-        <div>
-            <h2>KALAMNOVA AI</h2>
-            <small>LEARN • GROW • SUCCEED</small>
-        </div>
-    </div>
+  <div class="brand">
+    <div class="brand-logo">K</div>
+    <div><h2>KALAMNOVA AI</h2><small>STUDENT SUCCESS PLATFORM</small></div>
+  </div>
 
-    <div class="nav-title">MAIN MENU</div>
-    <a href="#" class="nav-link active" data-page="home" onclick="showPage('home',this);return false"><span>🏠</span> Home</a>
-    <a href="#" class="nav-link" data-page="dashboard" onclick="showPage('dashboard',this);return false"><span>📊</span> Dashboard</a>
+  <div class="nav-label">MAIN MENU</div>
+  <button class="nav-btn active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span> Home</button>
+  <button class="nav-btn" data-page="dashboard" onclick="showPage('dashboard')"><span class="nav-icon">▦</span> Dashboard</button>
+  <button class="nav-btn" data-page="planner" onclick="showPage('planner')"><span class="nav-icon">☑</span> Study Planner</button>
+  <button class="nav-btn" data-page="studyplan" onclick="showPage('studyplan')"><span class="nav-icon">✦</span> AI Study Plan</button>
+  <button class="nav-btn" data-page="quiz" onclick="showPage('quiz')"><span class="nav-icon">▤</span> Practice Quiz</button>
+  <button class="nav-btn" data-page="notes" onclick="showPage('notes')"><span class="nav-icon">▧</span> AI Notes Maker</button>
+  <button class="nav-btn" data-page="assistant" onclick="showPage('assistant')"><span class="nav-icon">◉</span> AI Assistant</button>
 
-    <div class="nav-title">MY LEARNING</div>
-    <a href="#" class="nav-link" data-page="planner" onclick="showPage('planner',this);return false"><span>📚</span> Study Planner</a>
-    <a href="#" class="nav-link" data-page="studyplan" onclick="showPage('studyplan',this);return false"><span>🗓️</span> AI Study Plan</a>
-    <a href="#" class="nav-link" data-page="quiz" onclick="showPage('quiz',this);return false"><span>📝</span> Practice Quiz</a>
-    <a href="#" class="nav-link" data-page="flashcards" onclick="showPage('flashcards',this);return false"><span>🃏</span> AI Flashcards</a>
-    <a href="#" class="nav-link" data-page="progress" onclick="showPage('progress',this);return false"><span>📈</span> My Progress</a>
-    <a href="#" class="nav-link" data-page="notes" onclick="showPage('notes',this);return false"><span>📄</span> AI Notes Maker</a>
-    <a href="#" class="nav-link" data-page="assistant" onclick="showPage('assistant',this);return false"><span>🤖</span> AI Assistant</a>
+  <div class="nav-label">GROW YOUR FUTURE</div>
+  <button class="nav-btn" data-page="skills" onclick="showPage('skills')"><span class="nav-icon">⌘</span> Skill Development</button>
+  <button class="nav-btn" data-page="career" onclick="showPage('career')"><span class="nav-icon">♧</span> Career Launchpad</button>
+  <button class="nav-btn" data-page="progress" onclick="showPage('progress')"><span class="nav-icon">▥</span> My Progress</button>
 
-    <div class="sidebar-bottom">
-        <strong>KALAMNOVA AI</strong><br>
-        Your smart learning companion.<br>
-        Learn smarter. Grow faster.
-    </div>
+  <div class="sidebar-bottom">
+    <strong>✦ Your future starts here</strong>
+    Learn something new every day. Small steps create big achievements.
+  </div>
 </aside>
 
 <main class="main">
-
 <header class="topbar">
-    <div style="display:flex;align-items:center;gap:13px">
-        <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
-        <div>
-            <h2 id="page-title">Welcome Home</h2>
-            <p id="page-subtitle">Your journey to smarter learning starts here.</p>
-        </div>
-    </div>
-    <div class="top-label">✨ SMART LEARNING PLATFORM</div>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  <div class="topbar-title" id="topTitle">Home</div>
+  <div class="topbar-right">
+    <span class="muted">Welcome, Student</span>
+    <div class="avatar">S</div>
+  </div>
 </header>
+
+<div class="content">
 
 <!-- HOME -->
 <section class="page active" id="home">
-    <div class="hero">
-        <h1>Learn Smarter. Grow Faster. Succeed Together.</h1>
-        <p>Welcome to KALAMNOVA AI — your personal smart learning space. Organize your studies, create personalized timetables, practice with AI quizzes and learn with your AI assistant.</p>
-        <button class="btn" onclick="showPage('dashboard')">Explore My Dashboard →</button>
+  <div class="hero">
+    <div class="hero-text">
+      <div class="eyebrow">WELCOME TO YOUR LEARNING SPACE</div>
+      <h1>Learn Smarter.<br>Build Skills. Shape Your Future.</h1>
+      <p>Your personal AI-powered learning companion for school, college, practical skills and career growth.</p>
+      <div class="hero-actions">
+        <button class="btn btn-light" onclick="showPage('studyplan')">Create My Study Plan →</button>
+        <button class="btn" style="background:#ffffff20;color:white;border:1px solid #ffffff55" onclick="showPage('assistant')">Ask AI Assistant</button>
+      </div>
     </div>
+    <div class="hero-visual">🎓</div>
+  </div>
 
-    <div class="section-heading">
-        <div><h2>Your Learning Space</h2><p>Everything you need to make learning easier.</p></div>
-    </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-top"><span class="muted">Study Tasks</span><span class="stat-icon">📚</span></div><h3 id="homeTasks">0</h3><p>Tasks completed</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quiz Score</span><span class="stat-icon">🎯</span></div><h3 id="homeScore">0%</h3><p>Average performance</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quizzes</span><span class="stat-icon">✍️</span></div><h3 id="homeQuizzes">0</h3><p>Quizzes completed</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Learning Goals</span><span class="stat-icon">🚀</span></div><h3>∞</h3><p>Possibilities ahead</p></div>
+  </div>
 
-    <div class="card-grid">
-        <div class="card feature-card" onclick="showPage('planner')"><div class="stat-icon">📚</div><h3>Study Planner</h3><p>Organize your daily tasks and stay focused on your goals.</p></div>
-        <div class="card feature-card" onclick="showPage('studyplan')"><div class="stat-icon">🗓️</div><h3>AI Study Plan</h3><p>Generate a personalized study timetable with AI.</p></div>
-        <div class="card feature-card" onclick="showPage('quiz')"><div class="stat-icon">📝</div><h3>Practice Quiz</h3><p>Test your knowledge with AI-powered practice questions.</p></div>
-        <div class="card feature-card" onclick="showPage('flashcards')"><div class="stat-icon">🃏</div><h3>AI Flashcards</h3><p>Create interactive question-and-answer cards for quick revision.</p></div>
-        <div class="card feature-card" onclick="showPage('progress')"><div class="stat-icon">📈</div><h3>Progress Tracking</h3><p>Track your quiz scores and celebrate your improvements.</p></div>
-        <div class="card feature-card" onclick="showPage('notes')"><div class="stat-icon">📄</div><h3>AI Notes Maker</h3><p>Turn PDF, Word and text documents into organized study notes.</p></div>
-        <div class="card feature-card" onclick="showPage('assistant')"><div class="stat-icon">🤖</div><h3>AI Study Assistant</h3><p>Ask questions and get helpful explanations from AI.</p></div>
-    </div>
+  <div class="section-title"><h2>Explore Your Learning Tools</h2><span>Everything in one place</span></div>
+  <div class="grid-3">
+    <div class="feature-card" onclick="showPage('assistant')"><div class="feature-icon">🤖</div><h3>AI Study Assistant</h3><p>Ask questions, clear doubts and understand difficult topics.</p><span class="arrow">Explore assistant →</span></div>
+    <div class="feature-card" onclick="showPage('notes')"><div class="feature-icon">📝</div><h3>AI Notes Maker</h3><p>Turn your study materials into organized revision notes.</p><span class="arrow">Create notes →</span></div>
+    <div class="feature-card" onclick="showPage('quiz')"><div class="feature-icon">🧠</div><h3>Practice Quiz</h3><p>Test your knowledge with AI-generated questions.</p><span class="arrow">Start practicing →</span></div>
+    <div class="feature-card" onclick="showPage('studyplan')"><div class="feature-icon">📅</div><h3>Smart Study Plan</h3><p>Build a study timetable based on your goals.</p><span class="arrow">Plan learning →</span></div>
+    <div class="feature-card" onclick="showPage('skills')"><div class="feature-icon">💡</div><h3>Skill Development</h3><p>Explore coding, communication and real-world skills.</p><span class="arrow">Build skills →</span></div>
+    <div class="feature-card" onclick="showPage('career')"><div class="feature-icon">💼</div><h3>Career Launchpad</h3><p>Prepare for interviews, resumes and future opportunities.</p><span class="arrow">Explore careers →</span></div>
+  </div>
+
+  <div class="section-title"><h2>Today's Learning Goals</h2><span>Make today count</span></div>
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:10px"><strong style="font-size:13px">Your daily progress</strong><span class="muted" id="homeTaskProgress">0% completed</span></div>
+    <div class="progress-track"><div class="progress-fill" id="homeProgressBar"></div></div>
+    <p class="notice">Add your goals in the Study Planner and complete them one by one.</p>
+    <button class="btn btn-primary btn-small" onclick="showPage('planner')">Open Study Planner →</button>
+  </div>
 </section>
 
 <!-- DASHBOARD -->
 <section class="page" id="dashboard">
-    <div class="section-heading"><div><h2>Learning Dashboard</h2><p>Your learning activities at a glance.</p></div></div>
-    <div class="card-grid">
-        <div class="card stat-card"><div class="stat-icon">📚</div><div><h3 id="dashboard-tasks">0</h3><p>Total Study Tasks</p></div></div>
-        <div class="card stat-card"><div class="stat-icon">✅</div><div><h3 id="dashboard-completed">0</h3><p>Completed Tasks</p></div></div>
-        <div class="card stat-card"><div class="stat-icon">📝</div><div><h3 id="dashboard-attempts">0</h3><p>Quiz Attempts</p></div></div>
-    </div>
-    <div class="card" style="margin-top:22px">
-        <h3 style="color:var(--navy)">Your Study Activity</h3>
-        <p style="color:var(--muted);font-size:13px">Keep completing your tasks and practicing to improve your learning.</p>
-        <div class="progress-track"><div class="progress-fill" id="dashboard-task-progress" style="width:0%"></div></div>
-        <p id="dashboard-progress-label" class="status">0% tasks completed</p>
-        <button class="btn" onclick="showPage('planner')">Open Study Planner</button>
-    </div>
+  <div class="page-heading"><div><h1>My Dashboard</h1><p>Your learning activity at a glance.</p></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-top"><span class="muted">Completed tasks</span><span class="stat-icon">✓</span></div><h3 id="dashTasks">0</h3><p>Keep moving forward</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quiz average</span><span class="stat-icon">🎯</span></div><h3 id="dashScore">0%</h3><p>Your quiz performance</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quizzes taken</span><span class="stat-icon">📘</span></div><h3 id="dashQuizzes">0</h3><p>Practice makes progress</p></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Pending tasks</span><span class="stat-icon">⏳</span></div><h3 id="dashPending">0</h3><p>One task at a time</p></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>Study completion</h3>
+    <div class="progress-track"><div class="progress-fill" id="dashProgressBar"></div></div>
+    <p class="muted" id="dashProgressText">No tasks yet. Add your first study goal!</p>
+  </div>
+  <div class="panel"><h3>Recent quiz activity</h3><div id="recentScores" class="empty">Your quiz results will appear here.</div></div>
 </section>
 
-<!-- STUDY PLANNER -->
+<!-- PLANNER -->
 <section class="page" id="planner">
-    <div class="section-heading"><div><h2>My Study Planner</h2><p>Add your tasks and manage your daily study goals.</p></div></div>
-    <div class="card form-card">
-        <div class="form-group">
-            <label for="task">Enter a study task</label>
-            <input class="form-control" id="task" type="text" placeholder="Example: Study Biology chapter 2" maxlength="150">
-        </div>
-        <button class="btn" onclick="addTask()">+ Add Task</button>
-        <div class="section-heading">
-            <h2 style="font-size:17px">My Tasks</h2>
-            <button class="btn btn-secondary btn-small" onclick="clearCompletedTasks()">Clear Completed</button>
-        </div>
-        <ul class="task-list" id="taskList"></ul>
-        <p id="task-empty" class="status">No tasks yet. Add your first study task!</p>
-    </div>
-</section>
-
-<!-- AI STUDY PLAN -->
-<section class="page" id="studyplan">
-    <div class="section-heading"><div><h2>AI Study Plan Generator</h2><p>Create a personalized study timetable for your exam.</p></div></div>
-    <div class="card form-card">
-        <div class="form-group">
-            <label for="plan-subject">Subject</label>
-            <input class="form-control" id="plan-subject" type="text" placeholder="Example: Mathematics">
-        </div>
+  <div class="page-heading"><div><h1>My Study Planner</h1><p>Organize your day and stay focused on your goals.</p></div></div>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>＋ Add a study task</h3>
+      <form onsubmit="addTask(event)">
+        <div class="form-group"><label>Task name</label><input id="taskInput" required maxlength="120" placeholder="e.g. Revise Mathematics chapter 3"></div>
         <div class="form-row">
-            <div class="form-group">
-                <label for="plan-hours">Study hours per day</label>
-                <input class="form-control" id="plan-hours" type="number" min="1" max="12" value="3">
-            </div>
-            <div class="form-group">
-                <label for="plan-date">Exam date</label>
-                <input class="form-control" id="plan-date" type="date">
-            </div>
+          <div class="form-group"><label>Subject</label><input id="taskSubject" placeholder="e.g. Mathematics"></div>
+          <div class="form-group"><label>Due date</label><input type="date" id="taskDate"></div>
         </div>
-        <button class="btn" id="generate-plan" onclick="generateStudyPlan()">✨ Generate My Study Plan</button>
-        <p class="status" id="plan-status"></p>
-        <div id="study-plan-result"></div>
+        <button class="btn btn-primary" type="submit">Add Task</button>
+      </form>
     </div>
+    <div class="panel">
+      <h3>Your daily progress</h3>
+      <div style="font-size:30px;font-weight:800;margin:20px 0 8px" id="plannerPercent">0%</div>
+      <div class="progress-track"><div class="progress-fill" id="plannerBar"></div></div>
+      <p class="muted" id="plannerCount">0 of 0 tasks completed</p>
+      <button class="btn btn-outline btn-small" onclick="clearCompleted()">Clear completed tasks</button>
+    </div>
+  </div>
+  <div class="panel"><h3>My Tasks</h3><div id="taskList" class="task-list"><div class="empty">No tasks yet. Add your first task above!</div></div></div>
 </section>
 
-<!-- PRACTICE QUIZ -->
+<!-- STUDY PLAN -->
+<section class="page" id="studyplan">
+  <div class="page-heading"><div><h1>AI Study Plan Generator</h1><p>Get a personalized study timetable based on your learning goals.</p></div></div>
+  <div class="panel">
+    <form onsubmit="generateStudyPlan(event)">
+      <div class="form-row">
+        <div class="form-group"><label>Class / College year</label><input id="planLevel" required placeholder="e.g. Class 12 / First year"></div>
+        <div class="form-group"><label>Subjects</label><input id="planSubjects" required placeholder="e.g. Maths, Physics, Computer Science"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Available study hours per day</label><input id="planHours" type="number" min="1" max="16" value="3" required></div>
+        <div class="form-group"><label>Preparation period</label><select id="planDuration"><option>7 days</option><option>14 days</option><option>30 days</option><option>60 days</option></select></div>
+      </div>
+      <div class="form-group"><label>Your goal</label><textarea id="planGoal" placeholder="e.g. Prepare for semester exams and improve problem-solving"></textarea></div>
+      <button class="btn btn-primary" type="submit" id="planBtn">✦ Generate My Study Plan</button>
+    </form>
+    <div id="planOutput" class="output"></div>
+  </div>
+</section>
+
+<!-- QUIZ -->
 <section class="page" id="quiz">
-    <div class="section-heading"><div><h2>AI Practice Quiz</h2><p>Generate questions, test yourself and understand your mistakes.</p></div></div>
-    <div class="card form-card">
-        <div class="form-group">
-            <label for="quiz-subject">Subject</label>
-            <input class="form-control" id="quiz-subject" type="text" placeholder="Example: Science">
-        </div>
-        <div class="form-group">
-            <label for="quiz-topic">Topic</label>
-            <input class="form-control" id="quiz-topic" type="text" placeholder="Example: Photosynthesis">
-        </div>
-        <div class="form-group">
-            <label for="quiz-difficulty">Difficulty</label>
-            <select class="form-control" id="quiz-difficulty">
-                <option value="Easy">Easy</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="Hard">Hard</option>
-            </select>
-        </div>
-        <button class="btn" id="generate-quiz" onclick="generateQuiz()">✨ Generate Practice Quiz</button>
-        <p id="quiz-status" class="status"></p>
-        <div id="quiz-container"></div>
-        <button class="btn" id="submit-quiz" style="display:none;margin-top:15px" onclick="submitQuiz()">Submit Answers</button>
-        <button class="btn btn-secondary" id="retry-quiz" style="display:none;margin:15px 0 0 8px" onclick="generateQuiz()">Try Another Quiz</button>
-        <div id="quiz-result"></div>
-        <div id="quiz-feedback"></div>
+  <div class="page-heading"><div><h1>AI Practice Quiz</h1><p>Challenge yourself and improve your knowledge.</p></div></div>
+  <div class="panel">
+    <div class="form-row">
+      <div class="form-group"><label>Subject / Topic</label><input id="quizTopic" placeholder="e.g. JavaScript, Biology, Algebra"></div>
+      <div class="form-group"><label>Difficulty</label><select id="quizDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div>
     </div>
+    <button class="btn btn-primary" onclick="generateQuiz()" id="quizBtn">Generate Quiz</button>
+    <div id="quizOutput"></div>
+  </div>
 </section>
 
-<!-- AI FLASHCARDS -->
-<section class="page" id="flashcards">
-    <div class="section-heading">
-        <div>
-            <h2>AI Flashcards Generator</h2>
-            <p>Create interactive flashcards to remember important concepts.</p>
-        </div>
-    </div>
-
-    <div class="card form-card flashcard-area">
-        <div class="form-group">
-            <label for="flash-subject">Subject</label>
-            <input class="form-control" id="flash-subject" type="text" placeholder="Example: Biology">
-        </div>
-
-        <div class="form-group">
-            <label for="flash-topic">Topic</label>
-            <input class="form-control" id="flash-topic" type="text" placeholder="Example: Human Digestive System">
-        </div>
-
-        <div class="form-group">
-            <label for="flash-count">Number of flashcards</label>
-            <select class="form-control" id="flash-count">
-                <option value="5">5 Flashcards</option>
-                <option value="10" selected>10 Flashcards</option>
-                <option value="15">15 Flashcards</option>
-            </select>
-        </div>
-
-        <button class="btn" id="generate-flashcards" onclick="generateFlashcards()">✨ Generate AI Flashcards</button>
-        <p id="flash-status" class="status" aria-live="polite"></p>
-
-        <div id="flashcard-study" style="display:none">
-            <div class="flashcard-counter" id="flashcard-counter">Card 1 of 10</div>
-
-            <div class="flashcard-progress">
-                <div class="flashcard-progress-fill" id="flashcard-progress-fill"></div>
-            </div>
-
-            <div class="flashcard" id="flashcard" onclick="flipFlashcard()" role="button" tabindex="0" aria-label="Flip flashcard to reveal answer">
-                <div class="card-label" id="flashcard-label">QUESTION</div>
-                <h2 id="flashcard-text">Your question will appear here.</h2>
-                <div class="flip-hint" id="flashcard-hint">Click this card to reveal the answer ↻</div>
-            </div>
-
-            <div class="flashcard-controls">
-                <button class="btn btn-secondary" id="flash-prev" onclick="previousFlashcard()">← Previous</button>
-                <button class="btn" id="flash-next" onclick="nextFlashcard()">Next →</button>
-            </div>
-
-            <div class="flashcard-controls">
-                <button class="btn btn-secondary btn-small" onclick="shuffleFlashcards()">🔀 Shuffle</button>
-                <button class="btn btn-secondary btn-small" onclick="restartFlashcards()">↻ Restart</button>
-            </div>
-        </div>
-
-        <div id="flashcard-empty" class="flashcard-empty" style="margin-top:20px">
-            <div style="font-size:35px">🃏</div>
-            <h3 style="color:var(--navy)">Ready to revise?</h3>
-            <p>Enter a subject and topic above to create your first set of AI flashcards.</p>
-        </div>
-    </div>
-</section>
-
-<!-- MY PROGRESS -->
-<section class="page" id="progress">
-    <div class="section-heading"><div><h2>My Learning Progress</h2><p>Review your practice performance and achievements.</p></div></div>
-    <div class="card-grid">
-        <div class="card stat-card"><div class="stat-icon">📝</div><div><h3 id="attempt-count">0</h3><p>Quiz Attempts</p></div></div>
-        <div class="card stat-card"><div class="stat-icon">🏆</div><div><h3 id="highest-score">0%</h3><p>Highest Score</p></div></div>
-        <div class="card stat-card"><div class="stat-icon">📊</div><div><h3 id="average-score">0%</h3><p>Average Score</p></div></div>
-    </div>
-    <div class="card" style="margin-top:22px">
-        <h3 style="color:var(--navy)">Quiz Performance</h3>
-        <div class="progress-item"><strong>Average Score</strong><div class="progress-track"><div class="progress-fill" id="average-progress" style="width:0%"></div></div></div>
-        <div class="progress-item"><strong>Highest Score</strong><div class="progress-track"><div class="progress-fill" id="highest-progress" style="width:0%"></div></div></div>
-        <button class="btn btn-secondary" onclick="clearQuizProgress()">Reset Quiz Progress</button>
-    </div>
-</section>
-
-<!-- AI NOTES MAKER -->
+<!-- NOTES -->
 <section class="page" id="notes">
-    <div class="section-heading">
-        <div><h2>AI Notes Maker</h2><p>Upload your study material and let AI create organized notes.</p></div>
+  <div class="page-heading"><div><h1>AI Notes Maker</h1><p>Transform your learning materials into clear study notes.</p></div></div>
+  <div class="panel">
+    <div class="form-group"><label>Upload your study material (PDF, DOCX or TXT)</label><input type="file" id="notesFile" accept=".pdf,.docx,.txt"></div>
+    <div class="form-group"><label>Or paste your study material</label><textarea id="notesText" placeholder="Paste your chapter, lesson or study material here..."></textarea></div>
+    <button class="btn btn-primary" onclick="generateNotes()" id="notesBtn">✦ Generate Study Notes</button>
+    <p class="notice">Text-based PDFs and DOCX files are supported. Scanned image-only PDFs may require OCR and are not supported by this version. Maximum extracted text: 20,000 characters.</p>
+    <div id="notesOutput" class="output"></div>
+    <div id="notesActions" style="display:none;gap:8px;margin-top:12px">
+      <button class="btn btn-outline btn-small" onclick="copyNotes()">Copy Notes</button>
+      <button class="btn btn-outline btn-small" onclick="downloadNotes()">Download TXT</button>
     </div>
-    <div class="card form-card">
-        <div class="form-group">
-            <label for="notes-file">Choose your study material</label>
-            <input class="form-control" type="file" id="notes-file" accept=".pdf,.docx,.txt">
-            <p class="status">Supported formats: PDF, DOCX and TXT. Maximum extracted text: 20,000 characters.</p>
-        </div>
-        <button class="btn" id="generate-notes" onclick="generateNotes()">✨ Generate AI Notes</button>
-        <p id="notes-status" class="status" aria-live="polite"></p>
-        <div id="notes-result"></div>
-        <div id="notes-actions" class="notes-actions">
-            <button class="btn btn-secondary" onclick="copyNotes()">📋 Copy Notes</button>
-            <button class="btn btn-secondary" onclick="downloadNotes()">⬇️ Download Notes</button>
-        </div>
-    </div>
+  </div>
 </section>
 
-<!-- AI ASSISTANT -->
+<!-- ASSISTANT -->
 <section class="page" id="assistant">
-    <div class="section-heading"><div><h2>AI Study Assistant</h2><p>Ask questions and learn concepts in simple language.</p></div></div>
-    <div class="card chat-card">
-        <div class="chat-messages" id="chat-messages" aria-live="polite">
-            <div class="chat-message ai">👋 Hello! I'm your KALAMNOVA AI Study Assistant. Ask me anything about your studies!</div>
-        </div>
-        <div class="chat-input-area">
-            <textarea class="form-control" id="chat-question" placeholder="Ask your study question..." rows="2"></textarea>
-            <button class="btn" id="chat-button" onclick="sendChatMessage()">Send ➤</button>
-        </div>
-        <div style="display:flex;justify-content:flex-end;margin-top:12px">
-            <button class="btn btn-secondary btn-small" onclick="clearChat()">Clear Chat</button>
-        </div>
+  <div class="page-heading"><div><h1>AI Study Assistant</h1><p>Your learning companion is ready to help.</p></div></div>
+  <div class="panel">
+    <div class="chat-box" id="chatBox">
+      <div class="message ai">Hello! 👋 I'm your KALAMNOVA AI study assistant. Ask me about your subjects, homework, concepts, projects or study strategies.</div>
     </div>
+    <form class="chat-row" onsubmit="sendMessage(event)">
+      <input class="chat-input" id="chatInput" placeholder="Ask your question..." required>
+      <button class="btn btn-primary" id="chatBtn">Send</button>
+    </form>
+    <button class="btn btn-outline btn-small" style="margin-top:12px" onclick="clearChat()">Clear conversation</button>
+  </div>
 </section>
 
-<footer class="footer">© 2026 KALAMNOVA AI | Learn Smarter. Grow Faster.</footer>
+<!-- SKILLS -->
+<section class="page" id="skills">
+  <div class="page-heading"><div><h1>Skill Development</h1><p>Build the skills that help you succeed in the real world.</p></div></div>
+  <div class="grid-3">
+    <div class="feature-card"><div class="feature-icon">💻</div><h3>Programming & Technology</h3><p>Start learning Python, Java, web development, databases and AI fundamentals.</p><span class="tag">Python</span><span class="tag">Web Development</span><span class="tag">AI</span></div>
+    <div class="feature-card"><div class="feature-icon">🗣️</div><h3>Communication</h3><p>Improve speaking, writing, presentation and professional communication.</p><span class="tag">Public Speaking</span><span class="tag">Writing</span></div>
+    <div class="feature-card"><div class="feature-icon">🧩</div><h3>Problem Solving</h3><p>Develop analytical thinking, logical reasoning and decision-making.</p><span class="tag">Logic</span><span class="tag">Critical Thinking</span></div>
+    <div class="feature-card"><div class="feature-icon">🎨</div><h3>Creativity & Design</h3><p>Explore graphic design, UI/UX, storytelling and creative projects.</p><span class="tag">UI/UX</span><span class="tag">Design</span></div>
+    <div class="feature-card"><div class="feature-icon">🤝</div><h3>Teamwork & Leadership</h3><p>Learn collaboration, leadership, responsibility and project management.</p><span class="tag">Teamwork</span><span class="tag">Leadership</span></div>
+    <div class="feature-card"><div class="feature-icon">💰</div><h3>Financial Literacy</h3><p>Understand budgeting, saving, responsible spending and basic finance.</p><span class="tag">Budgeting</span><span class="tag">Money Skills</span></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>Ask AI for a skill-learning roadmap</h3>
+    <div class="form-group"><label>Which skill would you like to learn?</label><input id="skillInput" placeholder="e.g. Python programming from beginner to advanced"></div>
+    <button class="btn btn-primary" onclick="skillRoadmap()">Create My Roadmap</button>
+    <div class="output" id="skillOutput"></div>
+  </div>
+</section>
+
+<!-- CAREER -->
+<section class="page" id="career">
+  <div class="page-heading"><div><h1>Career Launchpad</h1><p>Prepare today for the opportunities of tomorrow.</p></div></div>
+  <div class="grid-3">
+    <div class="feature-card"><div class="feature-icon">📄</div><h3>Resume Building</h3><p>Learn how to present your education, projects, skills and achievements professionally.</p></div>
+    <div class="feature-card"><div class="feature-icon">🎤</div><h3>Interview Preparation</h3><p>Practice common interview questions and improve your answers.</p></div>
+    <div class="feature-card"><div class="feature-icon">🧭</div><h3>Career Exploration</h3><p>Explore career paths based on your interests, strengths and goals.</p></div>
+    <div class="feature-card"><div class="feature-icon">🗂️</div><h3>Portfolio Projects</h3><p>Showcase your projects and demonstrate your practical abilities.</p></div>
+    <div class="feature-card"><div class="feature-icon">🌱</div><h3>Internship Readiness</h3><p>Understand how to prepare for internships and early work experience.</p></div>
+    <div class="feature-card"><div class="feature-icon">📈</div><h3>Career Skills</h3><p>Develop professional habits, adaptability and lifelong learning.</p></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>AI Career Guide</h3>
+    <div class="form-group"><label>Tell us about your interests, education and goals</label><textarea id="careerInput" placeholder="Example: I am a computer science student interested in AI and web development..."></textarea></div>
+    <button class="btn btn-primary" onclick="careerGuide()">Get Career Guidance</button>
+    <div class="output" id="careerOutput"></div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section class="page" id="progress">
+  <div class="page-heading"><div><h1>My Progress</h1><p>Every small achievement moves you forward.</p></div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-top"><span class="muted">Tasks completed</span><span class="stat-icon">✓</span></div><h3 id="progressTasks">0</h3></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quiz average</span><span class="stat-icon">🎯</span></div><h3 id="progressScore">0%</h3></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Quizzes taken</span><span class="stat-icon">📘</span></div><h3 id="progressQuizzes">0</h3></div>
+    <div class="stat"><div class="stat-top"><span class="muted">Pending tasks</span><span class="stat-icon">⏳</span></div><h3 id="progressPending">0</h3></div>
+  </div>
+  <div class="panel" style="margin-top:18px">
+    <h3>Quiz History</h3>
+    <div id="progressHistory" class="empty">Your completed quizzes will appear here.</div>
+    <button class="btn btn-danger btn-small" style="margin-top:14px" onclick="clearProgress()">Clear quiz history</button>
+  </div>
+</section>
+
+<div class="footer">© 2026 KALAMNOVA AI · Learn Smarter. Grow Faster. Shape Your Future.</div>
+</div>
 </main>
 
-<!-- PDF AND DOCX LIBRARIES -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.9.0/mammoth.browser.min.js"></script>
-
 <script>
-/* PAGE NAVIGATION */
-const pageTitles = {
-    home:["Welcome Home","Your journey to smarter learning starts here."],
-    dashboard:["Dashboard","Your learning activities at a glance."],
-    planner:["Study Planner","Organize your daily study tasks."],
-    studyplan:["AI Study Plan","Create your personalized study timetable."],
-    quiz:["Practice Quiz","Test your knowledge with AI."],
-    flashcards:["AI Flashcards","Create interactive flashcards for quick revision."],
-    progress:["My Progress","Track your learning achievements."],
-    notes:["AI Notes Maker","Turn your study materials into organized notes."],
-    assistant:["AI Study Assistant","Your personal AI learning companion."]
+const $ = id => document.getElementById(id);
+const safeRead = (key, fallback) => {
+  try { return JSON.parse(localStorage.getItem(key)) ?? fallback; }
+  catch { return fallback; }
 };
+let tasks = safeRead("kalamnovaTasks", []);
+let scores = safeRead("kalamnovaQuizScores", []);
+let latestNotes = "";
+let currentQuiz = [];
 
-function showPage(pageId,clickedLink){
-    const page=document.getElementById(pageId);
-    if(!page || !pageTitles[pageId]) return;
-
-    document.querySelectorAll(".page").forEach(section=>section.classList.remove("active"));
-    page.classList.add("active");
-
-    document.querySelectorAll(".nav-link").forEach(link=>link.classList.remove("active"));
-    const link=clickedLink || document.querySelector('.nav-link[data-page="'+pageId+'"]');
-    if(link) link.classList.add("active");
-
-    document.getElementById("page-title").textContent=pageTitles[pageId][0];
-    document.getElementById("page-subtitle").textContent=pageTitles[pageId][1];
-
-    toggleSidebar(false);
-    if(pageId==="dashboard") updateDashboard();
-    if(pageId==="progress") updateProgress();
+function saveData(){
+  localStorage.setItem("kalamnovaTasks", JSON.stringify(tasks));
+  localStorage.setItem("kalamnovaQuizScores", JSON.stringify(scores));
 }
-
-function toggleSidebar(forceClose){
-    const sidebar=document.getElementById("sidebar");
-    const overlay=document.getElementById("sidebar-overlay");
-    if(forceClose===false){
-        sidebar.classList.remove("open");
-        overlay.classList.remove("show");
-        return;
-    }
-    sidebar.classList.toggle("open");
-    overlay.classList.toggle("show");
+function showPage(name){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+  $(name).classList.add("active");
+  const btn=document.querySelector(`.nav-btn[data-page="${name}"]`);
+  $("topTitle").textContent=btn ? btn.textContent.trim() : "Home";
+  $("sidebar").classList.remove("open");
+  $("overlay").classList.remove("show");
+  window.scrollTo({top:0,behavior:"smooth"});
+  updateDashboard();
 }
-
-/* STORAGE */
-function readStorage(key,fallback){
-    try{
-        const value=localStorage.getItem(key);
-        return value ? JSON.parse(value) : fallback;
-    }catch(error){return fallback;}
+function toggleMenu(){
+  $("sidebar").classList.toggle("open");
+  $("overlay").classList.toggle("show");
 }
-function saveStorage(key,value){
-    try{localStorage.setItem(key,JSON.stringify(value));}
-    catch(error){console.error("Could not save local data:",error);}
-}
-
-/* STUDY PLANNER */
-let tasks=readStorage("kalamnovaTasks",[]);
-if(!Array.isArray(tasks)) tasks=[];
-
-function saveTasks(){
-    saveStorage("kalamnovaTasks",tasks);
-    renderTasks();
-    updateDashboard();
-}
-
-function addTask(){
-    const input=document.getElementById("task");
-    const value=input.value.trim();
-    if(!value){alert("Please enter a study task.");input.focus();return;}
-    tasks.push({id:Date.now(),text:value,completed:false});
-    input.value="";
-    saveTasks();
-}
-
-function renderTasks(){
-    const list=document.getElementById("taskList");
-    const empty=document.getElementById("task-empty");
-    list.innerHTML="";
-    empty.style.display=tasks.length ? "none" : "block";
-
-    tasks.forEach(task=>{
-        const li=document.createElement("li");
-        li.className="task-item"+(task.completed?" completed":"");
-
-        const checkbox=document.createElement("input");
-        checkbox.type="checkbox";
-        checkbox.checked=task.completed;
-        checkbox.setAttribute("aria-label","Mark task completed");
-        checkbox.addEventListener("change",()=>{
-            task.completed=checkbox.checked;
-            saveTasks();
-        });
-
-        const span=document.createElement("span");
-        span.textContent=task.text;
-
-        const deleteButton=document.createElement("button");
-        deleteButton.className="btn btn-danger btn-small";
-        deleteButton.textContent="Delete";
-        deleteButton.addEventListener("click",()=>{
-            tasks=tasks.filter(item=>item.id!==task.id);
-            saveTasks();
-        });
-
-        li.append(checkbox,span,deleteButton);
-        list.appendChild(li);
-    });
-}
-
-function clearCompletedTasks(){
-    tasks=tasks.filter(task=>!task.completed);
-    saveTasks();
-}
-
-document.getElementById("task").addEventListener("keydown",event=>{
-    if(event.key==="Enter") addTask();
-});
-
-/* DASHBOARD */
 function updateDashboard(){
-    const completed=tasks.filter(task=>task.completed).length;
-    const total=tasks.length;
-    const percentage=total ? Math.round(completed/total*100) : 0;
-    const scores=readStorage("kalamnovaQuizScores",[]);
-
-    document.getElementById("dashboard-tasks").textContent=total;
-    document.getElementById("dashboard-completed").textContent=completed;
-    document.getElementById("dashboard-attempts").textContent=scores.length;
-    document.getElementById("dashboard-task-progress").style.width=percentage+"%";
-    document.getElementById("dashboard-progress-label").textContent=percentage+"% tasks completed";
+  const done=tasks.filter(t=>t.done).length;
+  const pending=tasks.length-done;
+  const percent=tasks.length?Math.round(done/tasks.length*100):0;
+  const avg=scores.length?Math.round(scores.reduce((a,s)=>a+s.percent,0)/scores.length):0;
+  ["homeTasks","dashTasks","progressTasks"].forEach(id=>$(id).textContent=done);
+  ["homeScore","dashScore","progressScore"].forEach(id=>$(id).textContent=avg+"%");
+  ["homeQuizzes","dashQuizzes","progressQuizzes"].forEach(id=>$(id).textContent=scores.length);
+  ["dashPending","progressPending"].forEach(id=>$(id).textContent=pending);
+  $("homeTaskProgress").textContent=percent+"% completed";
+  $("homeProgressBar").style.width=percent+"%";
+  $("dashProgressBar").style.width=percent+"%";
+  $("dashProgressText").textContent=`${done} of ${tasks.length} tasks completed (${percent}%).`;
+  $("plannerPercent").textContent=percent+"%";
+  $("plannerBar").style.width=percent+"%";
+  $("plannerCount").textContent=`${done} of ${tasks.length} tasks completed`;
+  renderTasks();
+  renderScores();
 }
-
-/* AI STUDY PLAN */
-async function generateStudyPlan(){
-    const subject=document.getElementById("plan-subject").value.trim();
-    const hours=Number(document.getElementById("plan-hours").value);
-    const examDate=document.getElementById("plan-date").value;
-    const status=document.getElementById("plan-status");
-    const result=document.getElementById("study-plan-result");
-    const button=document.getElementById("generate-plan");
-
-    if(!subject){status.textContent="Please enter a subject.";status.className="status error";return;}
-    if(!Number.isInteger(hours)||hours<1||hours>12){status.textContent="Enter study hours between 1 and 12.";status.className="status error";return;}
-    if(!examDate){status.textContent="Please select your exam date.";status.className="status error";return;}
-
-    const today=new Date();
-    today.setHours(0,0,0,0);
-    const selectedDate=new Date(examDate+"T00:00:00");
-    if(Number.isNaN(selectedDate.getTime())||selectedDate<today){
-        status.textContent="Please select today or a future exam date.";
-        status.className="status error";
-        return;
-    }
-
-    button.disabled=true;
-    button.textContent="Generating...";
-    status.textContent="AI is preparing your personalized study plan...";
-    status.className="status";
-    result.innerHTML="";
-
-    try{
-        const response=await fetch("/api/study-plan",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({subject,hours,examDate})
-        });
-        const data=await response.json();
-        if(!response.ok) throw new Error(data.error||"Unable to generate your study plan.");
-
-        const output=document.createElement("div");
-        output.className="result-box";
-        output.textContent=data.plan||"No study plan was returned.";
-        result.appendChild(output);
-
-        status.textContent="Your study plan is ready!";
-        status.className="status success";
-    }catch(error){
-        status.textContent=error.message||"Something went wrong. Please try again.";
-        status.className="status error";
-    }finally{
-        button.disabled=false;
-        button.textContent="✨ Generate My Study Plan";
-    }
+function addTask(e){
+  e.preventDefault();
+  tasks.push({id:Date.now(),text:$("taskInput").value.trim(),subject:$("taskSubject").value.trim(),date:$("taskDate").value,done:false});
+  saveData();$("taskInput").value="";$("taskSubject").value="";$("taskDate").value="";
+  updateDashboard();
 }
-
-/* AI PRACTICE QUIZ */
-let currentQuiz=[];
-
+function renderTasks(){
+  const list=$("taskList");
+  if(!tasks.length){list.innerHTML='<div class="empty">No tasks yet. Add your first task above!</div>';return;}
+  list.innerHTML="";
+  tasks.forEach(task=>{
+    const row=document.createElement("div");
+    row.className="task"+(task.done?" done":"");
+    const check=document.createElement("input");check.type="checkbox";check.checked=task.done;
+    check.addEventListener("change",()=>{task.done=check.checked;saveData();updateDashboard();});
+    const label=document.createElement("span");
+    label.textContent=task.text+(task.subject?" · "+task.subject:"")+(task.date?" · "+task.date:"");
+    const del=document.createElement("button");del.textContent="✕";del.title="Delete task";
+    del.addEventListener("click",()=>{tasks=tasks.filter(t=>t.id!==task.id);saveData();updateDashboard();});
+    row.append(check,label,del);list.appendChild(row);
+  });
+}
+function clearCompleted(){
+  tasks=tasks.filter(t=>!t.done);saveData();updateDashboard();
+}
+function renderScores(){
+  const html=scores.length?scores.slice().reverse().map(s=>`<div class="task"><span>${escapeHTML(s.topic)} · ${s.correct}/${s.total} correct</span><strong>${s.percent}%</strong></div>`).join(""):'<div class="empty">Your quiz results will appear here.</div>';
+  $("recentScores").innerHTML=html;$("progressHistory").innerHTML=html;
+}
+function clearProgress(){
+  if(!confirm("Clear all quiz history?"))return;
+  scores=[];saveData();updateDashboard();
+}
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+async function callAI(endpoint,payload){
+  const response=await fetch(endpoint,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  let data={};
+  try{data=await response.json();}catch{}
+  if(!response.ok)throw new Error(data.error||"The AI service could not complete your request.");
+  return data;
+}
+function setBusy(button,busy,label){
+  button.disabled=busy;
+  button.textContent=busy?"Please wait...":label;
+}
+async function generateStudyPlan(e){
+  e.preventDefault();
+  const btn=$("planBtn"),out=$("planOutput");
+  setBusy(btn,true,"✦ Generate My Study Plan");out.textContent="Creating your personalized study plan...";
+  try{
+    const data=await callAI("/api/study-plan",{
+      level:$("planLevel").value,
+      subjects:$("planSubjects").value,
+      hours:$("planHours").value,
+      duration:$("planDuration").value,
+      goal:$("planGoal").value
+    });
+    out.textContent=data.plan||data.result||data.message||"No study plan was returned.";
+  }catch(err){out.textContent="Error: "+err.message;}
+  finally{setBusy(btn,false,"✦ Generate My Study Plan");}
+}
 async function generateQuiz(){
-    const subject=document.getElementById("quiz-subject").value.trim();
-    const topic=document.getElementById("quiz-topic").value.trim();
-    const difficulty=document.getElementById("quiz-difficulty").value;
-    const status=document.getElementById("quiz-status");
-    const container=document.getElementById("quiz-container");
-    const submit=document.getElementById("submit-quiz");
-    const retry=document.getElementById("retry-quiz");
-    const result=document.getElementById("quiz-result");
-    const feedback=document.getElementById("quiz-feedback");
-    const button=document.getElementById("generate-quiz");
-
-    if(!subject||!topic){
-        status.textContent="Please enter both subject and topic.";
-        status.className="status error";
-        return;
-    }
-
-    button.disabled=true;
-    button.textContent="Generating...";
-    status.textContent="AI is creating your quiz...";
-    status.className="status";
-    container.innerHTML="";
-    result.innerHTML="";
-    feedback.innerHTML="";
-    submit.style.display="none";
-    retry.style.display="none";
-
-    try{
-        const response=await fetch("/api/quiz",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({subject,topic,difficulty})
-        });
-        const data=await response.json();
-        if(!response.ok) throw new Error(data.error||"Could not generate quiz.");
-
-        currentQuiz=data.questions||data.quiz||[];
-        if(!Array.isArray(currentQuiz)||currentQuiz.length!==5){
-            throw new Error("The quiz response did not contain exactly 5 questions. Please try again.");
-        }
-
-        currentQuiz.forEach(question=>{
-            if(!question.question||!Array.isArray(question.options)||question.options.length<2){
-                throw new Error("The quiz response has an invalid question. Please try again.");
-            }
-        });
-
-        renderQuiz();
-        status.textContent="Your quiz is ready. Select one answer for each question.";
-        status.className="status success";
-        submit.style.display="inline-block";
-    }catch(error){
-        currentQuiz=[];
-        status.textContent=error.message||"Something went wrong.";
-        status.className="status error";
-    }finally{
-        button.disabled=false;
-        button.textContent="✨ Generate Practice Quiz";
-    }
+  const btn=$("quizBtn"),out=$("quizOutput"),topic=$("quizTopic").value.trim();
+  if(!topic){out.textContent="Please enter a subject or topic first.";return;}
+  setBusy(btn,true,"Generate Quiz");out.textContent="Preparing your quiz...";
+  try{
+    const data=await callAI("/api/quiz",{topic,difficulty:$("quizDifficulty").value});
+    currentQuiz=data.questions||data.quiz||[];
+    if(!Array.isArray(currentQuiz)||!currentQuiz.length)throw new Error("No questions were returned. Please try another topic.");
+    renderQuiz(topic);
+  }catch(err){out.textContent="Error: "+err.message;}
+  finally{setBusy(btn,false,"Generate Quiz");}
 }
-
-function renderQuiz(){
-    const container=document.getElementById("quiz-container");
-    container.innerHTML="";
-    currentQuiz.forEach((question,index)=>{
-        const section=document.createElement("div");
-        section.className="quiz-question";
-        const heading=document.createElement("h4");
-        heading.textContent=(index+1)+". "+question.question;
-        section.appendChild(heading);
-
-        question.options.forEach((option,optionIndex)=>{
-            const label=document.createElement("label");
-            label.className="quiz-option";
-            const radio=document.createElement("input");
-            radio.type="radio";
-            radio.name="question-"+index;
-            radio.value=optionIndex;
-            const text=document.createElement("span");
-            text.textContent=option;
-            label.append(radio,text);
-            section.appendChild(label);
-        });
-        container.appendChild(section);
+function renderQuiz(topic){
+  const out=$("quizOutput");out.innerHTML="";
+  currentQuiz.forEach((q,i)=>{
+    const box=document.createElement("div");box.className="quiz-question";
+    const title=document.createElement("h4");title.textContent=(i+1)+". "+q.question;box.appendChild(title);
+    (q.options||[]).forEach((option,j)=>{
+      const label=document.createElement("label");label.className="option";
+      const input=document.createElement("input");input.type="radio";input.name="q"+i;input.value=j;
+      label.append(input,document.createTextNode(option));box.appendChild(label);
     });
+    out.appendChild(box);
+  });
+  const submit=document.createElement("button");submit.className="btn btn-primary";submit.textContent="Submit Answers";submit.onclick=()=>submitQuiz(topic);out.appendChild(submit);
 }
-
-function getCorrectIndex(question){
-    const answer=question.answer??question.correctAnswer;
-    if(typeof answer==="number") return answer;
-
-    if(typeof answer==="string"){
-        const trimmed=answer.trim();
-        if(/^[0-9]+$/.test(trimmed)){
-            const number=Number(trimmed);
-            if(number>=0&&number<question.options.length) return number;
-            if(number>=1&&number<=question.options.length) return number-1;
-        }
-        const letter=trimmed.toUpperCase().match(/^[A-E]$/);
-        if(letter) return letter[0].charCodeAt(0)-65;
-        return question.options.findIndex(option=>option.toLowerCase()===trimmed.toLowerCase());
+function submitQuiz(topic){
+  let correct=0;
+  currentQuiz.forEach((q,i)=>{
+    const selected=document.querySelector(`input[name="q${i}"]:checked`);
+    const raw=q.answer??q.correctAnswer??q.correct_answer??0;
+    let answer=typeof raw==="number"?raw:Number(raw);
+    if(!Number.isFinite(answer))answer=(q.options||[]).findIndex(o=>String(o).trim().toLowerCase()===String(raw).trim().toLowerCase());
+    if(answer>=1&&answer<=q.options.length&&q.answerIsOneBased)answer--;
+    if(selected&&Number(selected.value)===answer)correct++;
+  });
+  const percent=Math.round(correct/currentQuiz.length*100);
+  scores.push({topic,correct,total:currentQuiz.length,percent,date:new Date().toISOString()});
+  saveData();updateDashboard();
+  const result=document.createElement("div");result.className="output";
+  result.textContent=`Your score: ${correct}/${currentQuiz.length} (${percent}%)\n\n`+currentQuiz.map((q,i)=>`${i+1}. ${q.explanation||"Review this question and its correct answer."}`).join("\n\n");
+  $("quizOutput").appendChild(result);
+}
+async function extractFileText(file){
+  const name=file.name.toLowerCase();
+  if(name.endsWith(".txt"))return await file.text();
+  if(name.endsWith(".docx")){
+    if(!window.mammoth)throw new Error("DOCX reader could not be loaded. Refresh the page and try again.");
+    const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
+    return result.value;
+  }
+  if(name.endsWith(".pdf")){
+    if(!window.pdfjsLib)throw new Error("PDF reader could not be loaded. Refresh the page and try again.");
+    pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;
+    let text="";
+    for(let i=1;i<=pdf.numPages;i++){
+      const page=await pdf.getPage(i);
+      const content=await page.getTextContent();
+      text+=content.items.map(item=>item.str).join(" ")+"\n";
+      if(text.length>20000)break;
     }
-    return -1;
+    return text;
+  }
+  throw new Error("Please upload a PDF, DOCX or TXT file.");
 }
-
-function submitQuiz(){
-    if(!currentQuiz.length) return;
-    let score=0;
-    const answers=[];
-
-    for(let index=0;index<currentQuiz.length;index++){
-        const selected=document.querySelector('input[name="question-'+index+'"]:checked');
-        if(!selected){alert("Please answer all five questions before submitting.");return;}
-        answers.push(Number(selected.value));
-    }
-
-    const feedback=document.getElementById("quiz-feedback");
-    feedback.innerHTML="";
-
-    currentQuiz.forEach((question,index)=>{
-        const correctIndex=getCorrectIndex(question);
-        const isCorrect=answers[index]===correctIndex;
-        if(isCorrect) score++;
-
-        const box=document.createElement("div");
-        box.className="quiz-feedback"+(isCorrect?"":" incorrect");
-
-        const title=document.createElement("strong");
-        title.textContent=isCorrect?"✓ Correct":"✗ Incorrect";
-
-        const answer=document.createElement("p");
-        answer.textContent="Correct answer: "+(question.options[correctIndex]??"Not available");
-
-        const explanation=document.createElement("p");
-        explanation.textContent=question.explanation||"Review this topic to strengthen your understanding.";
-
-        box.append(title,answer,explanation);
-        feedback.appendChild(box);
-    });
-
-    const percentage=Math.round(score/currentQuiz.length*100);
-    const result=document.getElementById("quiz-result");
-    result.innerHTML="";
-    const resultBox=document.createElement("div");
-    resultBox.className="quiz-result";
-    const heading=document.createElement("h2");
-    heading.textContent=percentage+"%";
-    const message=document.createElement("p");
-    message.textContent="You scored "+score+" out of "+currentQuiz.length+". "+
-        (percentage>=80?"Excellent work!":percentage>=60?"Good effort! Keep practicing.":"Keep learning. You can improve!");
-    resultBox.append(heading,message);
-    result.appendChild(resultBox);
-
-    const scores=readStorage("kalamnovaQuizScores",[]);
-    scores.push(percentage);
-    saveStorage("kalamnovaQuizScores",scores);
-
-    document.getElementById("submit-quiz").style.display="none";
-    document.getElementById("retry-quiz").style.display="inline-block";
-    document.querySelectorAll("#quiz-container input").forEach(input=>input.disabled=true);
-    updateProgress();
-    updateDashboard();
-}
-
-/* AI FLASHCARDS */
-let flashcards=[];
-let flashcardIndex=0;
-let flashcardFlipped=false;
-
-async function generateFlashcards(){
-    const subject=document.getElementById("flash-subject").value.trim();
-    const topic=document.getElementById("flash-topic").value.trim();
-    const count=Number(document.getElementById("flash-count").value);
-    const status=document.getElementById("flash-status");
-    const button=document.getElementById("generate-flashcards");
-    const study=document.getElementById("flashcard-study");
-    const empty=document.getElementById("flashcard-empty");
-
-    if(!subject||!topic){
-        status.textContent="Please enter both a subject and a topic.";
-        status.className="status error";
-        return;
-    }
-
-    button.disabled=true;
-    button.textContent="Generating...";
-    status.textContent="AI is creating your flashcards. Please wait...";
-    status.className="status";
-    study.style.display="none";
-    empty.style.display="block";
-    empty.textContent="Creating your flashcards...";
-
-    try{
-        const response=await fetch("/api/flashcards",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({subject,topic,count})
-        });
-
-        const data=await response.json();
-
-        if(!response.ok){
-            throw new Error(data.error||"Unable to generate flashcards.");
-        }
-
-        if(!Array.isArray(data.flashcards)||data.flashcards.length===0){
-            throw new Error("The AI did not return valid flashcards. Please try again.");
-        }
-
-        flashcards=data.flashcards.filter(card=>
-            card&&typeof card.question==="string"&&
-            typeof card.answer==="string"&&
-            card.question.trim()&&card.answer.trim()
-        );
-
-        if(flashcards.length===0){
-            throw new Error("No valid flashcards were returned. Please try again.");
-        }
-
-        flashcardIndex=0;
-        flashcardFlipped=false;
-        study.style.display="block";
-        empty.style.display="none";
-        renderFlashcard();
-
-        status.textContent=flashcards.length+" flashcards generated successfully! Click a card to reveal its answer.";
-        status.className="status success";
-
-    }catch(error){
-        flashcards=[];
-        study.style.display="none";
-        empty.style.display="block";
-        empty.textContent="Your flashcards will appear here after generation.";
-        status.textContent=error.message||"Something went wrong. Please try again.";
-        status.className="status error";
-    }finally{
-        button.disabled=false;
-        button.textContent="✨ Generate AI Flashcards";
-    }
-}
-
-function renderFlashcard(){
-    if(!flashcards.length) return;
-
-    const card=flashcards[flashcardIndex];
-    const label=document.getElementById("flashcard-label");
-    const text=document.getElementById("flashcard-text");
-    const hint=document.getElementById("flashcard-hint");
-    const counter=document.getElementById("flashcard-counter");
-    const progress=document.getElementById("flashcard-progress-fill");
-    const previous=document.getElementById("flash-prev");
-    const next=document.getElementById("flash-next");
-
-    label.textContent=flashcardFlipped?"ANSWER":"QUESTION";
-    text.textContent=flashcardFlipped?card.answer:card.question;
-    hint.textContent=flashcardFlipped?"Click to see the question ↻":"Click this card to reveal the answer ↻";
-
-    counter.textContent="Card "+(flashcardIndex+1)+" of "+flashcards.length;
-    progress.style.width=((flashcardIndex+1)/flashcards.length*100)+"%";
-
-    previous.disabled=flashcardIndex===0;
-    next.disabled=flashcardIndex===flashcards.length-1;
-}
-
-function flipFlashcard(){
-    if(!flashcards.length) return;
-    flashcardFlipped=!flashcardFlipped;
-    renderFlashcard();
-}
-
-function nextFlashcard(){
-    if(flashcardIndex<flashcards.length-1){
-        flashcardIndex++;
-        flashcardFlipped=false;
-        renderFlashcard();
-    }
-}
-
-function previousFlashcard(){
-    if(flashcardIndex>0){
-        flashcardIndex--;
-        flashcardFlipped=false;
-        renderFlashcard();
-    }
-}
-
-function shuffleFlashcards(){
-    if(flashcards.length<2) return;
-
-    for(let i=flashcards.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];
-    }
-
-    flashcardIndex=0;
-    flashcardFlipped=false;
-    renderFlashcard();
-
-    const status=document.getElementById("flash-status");
-    status.textContent="Flashcards shuffled! Start revising.";
-    status.className="status success";
-}
-
-function restartFlashcards(){
-    if(!flashcards.length) return;
-    flashcardIndex=0;
-    flashcardFlipped=false;
-    renderFlashcard();
-
-    const status=document.getElementById("flash-status");
-    status.textContent="Flashcards restarted. Good luck with your revision!";
-    status.className="status success";
-}
-
-document.getElementById("flashcard").addEventListener("keydown",event=>{
-    if(event.key==="Enter"||event.key===" "){
-        event.preventDefault();
-        flipFlashcard();
-    }
-});
-
-/* PROGRESS TRACKING */
-function updateProgress(){
-    const scores=readStorage("kalamnovaQuizScores",[]);
-    const attempts=scores.length;
-    const highest=attempts?Math.max(...scores):0;
-    const average=attempts?Math.round(scores.reduce((sum,score)=>sum+score,0)/attempts):0;
-
-    document.getElementById("attempt-count").textContent=attempts;
-    document.getElementById("highest-score").textContent=highest+"%";
-    document.getElementById("average-score").textContent=average+"%";
-    document.getElementById("average-progress").style.width=average+"%";
-    document.getElementById("highest-progress").style.width=highest+"%";
-}
-
-function clearQuizProgress(){
-    if(!confirm("Are you sure you want to reset all quiz progress?")) return;
-    saveStorage("kalamnovaQuizScores",[]);
-    updateProgress();
-    updateDashboard();
-}
-
-/* AI NOTES MAKER */
 async function generateNotes(){
-    const fileInput=document.getElementById("notes-file");
-    const status=document.getElementById("notes-status");
-    const result=document.getElementById("notes-result");
-    const actions=document.getElementById("notes-actions");
-    const button=document.getElementById("generate-notes");
-    const file=fileInput.files[0];
-
-    if(!file){
-        status.textContent="Please select a PDF, DOCX or TXT file.";
-        status.className="status error";
-        return;
-    }
-
-    const fileName=file.name.toLowerCase();
-    const supported=fileName.endsWith(".pdf")||fileName.endsWith(".docx")||fileName.endsWith(".txt");
-
-    if(!supported){
-        status.textContent="Unsupported file format. Please select a PDF, DOCX or TXT file.";
-        status.className="status error";
-        return;
-    }
-
-    status.textContent="Reading your file...";
-    status.className="status";
-    result.innerHTML="";
-    actions.style.display="none";
-    button.disabled=true;
-    button.textContent="Please wait...";
-
-    try{
-        let extractedText="";
-
-        if(fileName.endsWith(".txt")){
-            extractedText=await file.text();
-        }else if(fileName.endsWith(".pdf")){
-            if(typeof pdfjsLib==="undefined") throw new Error("PDF reader could not load. Refresh the page and try again.");
-
-            pdfjsLib.GlobalWorkerOptions.workerSrc=
-                "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-            const data=await file.arrayBuffer();
-            const pdf=await pdfjsLib.getDocument({data}).promise;
-
-            for(let i=1;i<=pdf.numPages;i++){
-                const page=await pdf.getPage(i);
-                const content=await page.getTextContent();
-                extractedText+=content.items.map(item=>item.str).join(" ")+"\n";
-            }
-        }else if(fileName.endsWith(".docx")){
-            if(typeof mammoth==="undefined") throw new Error("Word document reader could not load. Refresh the page and try again.");
-
-            const data=await file.arrayBuffer();
-            const output=await mammoth.extractRawText({arrayBuffer:data});
-            extractedText=output.value;
-        }
-
-        if(!extractedText.trim()) throw new Error("No readable text found in this file. It may be a scanned document.");
-        if(extractedText.length>20000) throw new Error("Your file contains too much text. Please use a shorter file (maximum 20,000 characters).");
-
-        status.textContent="Generating your AI notes...";
-        const response=await fetch("/api/notes",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({text:extractedText})
-        });
-
-        const data=await response.json();
-        if(!response.ok) throw new Error(data.error||"Notes generation failed.");
-        if(!data.notes) throw new Error("No notes were generated.");
-
-        const output=document.createElement("div");
-        output.className="result-box";
-        const heading=document.createElement("h3");
-        heading.textContent="📝 Your AI Study Notes";
-        const notes=document.createElement("div");
-        notes.id="generated-notes";
-        notes.className="notes-output";
-        notes.textContent=data.notes;
-        output.append(heading,notes);
-        result.appendChild(output);
-
-        actions.style.display="flex";
-        status.textContent="Your notes have been generated successfully!";
-        status.className="status success";
-
-    }catch(error){
-        status.textContent="Error: "+(error.message||"Something went wrong.");
-        status.className="status error";
-    }finally{
-        button.disabled=false;
-        button.textContent="✨ Generate AI Notes";
-    }
+  const btn=$("notesBtn"),out=$("notesOutput");
+  setBusy(btn,true,"✦ Generate Study Notes");out.textContent="Reading your study material...";
+  try{
+    const file=$("notesFile").files[0];
+    let text=$("notesText").value.trim();
+    if(file)text=await extractFileText(file);
+    if(!text.trim())throw new Error("Please upload a file or paste your study material.");
+    if(text.length>20000)throw new Error("Your material is too long. Please use a shorter document (maximum 20,000 characters).");
+    out.textContent="Generating your notes...";
+    const data=await callAI("/api/notes",{text});
+    latestNotes=data.notes||"";
+    if(!latestNotes)throw new Error("No notes were generated.");
+    out.textContent=latestNotes;$("notesActions").style.display="flex";
+  }catch(err){out.textContent="Error: "+err.message;$("notesActions").style.display="none";}
+  finally{setBusy(btn,false,"✦ Generate Study Notes");}
 }
-
 async function copyNotes(){
-    const notes=document.getElementById("generated-notes");
-    if(!notes) return;
-
-    try{
-        await navigator.clipboard.writeText(notes.textContent);
-        const status=document.getElementById("notes-status");
-        status.textContent="Notes copied successfully!";
-        status.className="status success";
-    }catch(error){
-        const status=document.getElementById("notes-status");
-        status.textContent="Unable to copy notes. Please select and copy them manually.";
-        status.className="status error";
-    }
+  if(!latestNotes)return;
+  try{await navigator.clipboard.writeText(latestNotes);alert("Notes copied!");}
+  catch{prompt("Copy your notes below:",latestNotes);}
 }
-
 function downloadNotes(){
-    const notes=document.getElementById("generated-notes");
-    if(!notes) return;
-
-    const blob=new Blob([notes.textContent],{type:"text/plain;charset=utf-8"});
-    const url=URL.createObjectURL(blob);
-    const link=document.createElement("a");
-    link.href=url;
-    link.download="KALAMNOVA-AI-Study-Notes.txt";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+  if(!latestNotes)return;
+  const blob=new Blob([latestNotes],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="KALAMNOVA-AI-Study-Notes.txt";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-
-/* AI CHAT ASSISTANT */
-function addChatMessage(message,sender){
-    const container=document.getElementById("chat-messages");
-    const bubble=document.createElement("div");
-    bubble.className="chat-message "+sender;
-    bubble.textContent=message;
-    container.appendChild(bubble);
-    container.scrollTop=container.scrollHeight;
-    return bubble;
+async function sendMessage(e){
+  e.preventDefault();
+  const input=$("chatInput"),btn=$("chatBtn"),message=input.value.trim();
+  if(!message)return;
+  addMessage(message,"user");input.value="";setBusy(btn,true,"Send");
+  const loading=addMessage("Thinking...","ai");
+  try{
+    const data=await callAI("/api/chat",{message});
+    loading.textContent=data.reply||data.response||data.message||"I couldn't create a response.";
+  }catch(err){loading.textContent="Error: "+err.message;}
+  finally{setBusy(btn,false,"Send");}
 }
-
-async function sendChatMessage(){
-    const input=document.getElementById("chat-question");
-    const button=document.getElementById("chat-button");
-    const question=input.value.trim();
-    if(!question){input.focus();return;}
-
-    addChatMessage(question,"user");
-    input.value="";
-    button.disabled=true;
-    button.textContent="Thinking...";
-    const waiting=addChatMessage("Thinking... Please wait.","ai");
-
-    try{
-        const response=await fetch("/api/chat",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({message:question})
-        });
-        const data=await response.json();
-        if(!response.ok) throw new Error(data.error||"AI assistant is unavailable.");
-        waiting.textContent=data.reply||data.answer||data.message||"I couldn't generate a response.";
-    }catch(error){
-        waiting.textContent=error.message||"Something went wrong. Please try again.";
-    }finally{
-        button.disabled=false;
-        button.textContent="Send ➤";
-        input.focus();
-    }
+function addMessage(text,role){
+  const box=$("chatBox"),el=document.createElement("div");
+  el.className="message "+role;el.textContent=text;box.appendChild(el);box.scrollTop=box.scrollHeight;return el;
 }
-
 function clearChat(){
-    const container=document.getElementById("chat-messages");
-    container.innerHTML="";
-    addChatMessage("👋 Hello! I'm your KALAMNOVA AI Study Assistant. Ask me anything about your studies!","ai");
+  $("chatBox").innerHTML="";
+  addMessage("Hello again! What would you like to learn today?","ai");
 }
-
-document.getElementById("chat-question").addEventListener("keydown",event=>{
-    if(event.key==="Enter"&&!event.shiftKey){
-        event.preventDefault();
-        sendChatMessage();
-    }
-});
-
-/* INITIALIZE WEBSITE */
-renderTasks();
+async function skillRoadmap(){
+  const value=$("skillInput").value.trim(),out=$("skillOutput");
+  if(!value){out.textContent="Please enter a skill you want to learn.";return;}
+  out.textContent="Building your skill roadmap...";
+  try{
+    const data=await callAI("/api/chat",{message:`Create a practical beginner-friendly learning roadmap for this skill: ${value}. Include learning stages, weekly practice, free learning resources to look for, and a small project. Be realistic and student-friendly.`});
+    out.textContent=data.reply||data.response||data.message||"No roadmap returned.";
+  }catch(err){out.textContent="Error: "+err.message;}
+}
+async function careerGuide(){
+  const value=$("careerInput").value.trim(),out=$("careerOutput");
+  if(!value){out.textContent="Please describe your interests and goals.";return;}
+  out.textContent="Preparing your career guidance...";
+  try{
+    const data=await callAI("/api/chat",{message:`Act as a student career guide. Based on this information, suggest suitable career paths, skills to develop, beginner projects, and next steps. Avoid guaranteeing jobs or outcomes. Student information: ${value}`});
+    out.textContent=data.reply||data.response||data.message||"No career guidance returned.";
+  }catch(err){out.textContent="Error: "+err.message;}
+}
 updateDashboard();
-updateProgress();
-
-const todayString=new Date(
-    Date.now()-new Date().getTimezoneOffset()*60000
-).toISOString().split("T")[0];
-
-document.getElementById("plan-date").min=todayString;
 </script>
-
 </body>
 </html>
