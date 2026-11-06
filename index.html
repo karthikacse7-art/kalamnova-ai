@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,6 +151,59 @@ textarea.form-control{min-height:110px;resize:vertical}
 .notes-output{white-space:pre-wrap;overflow-wrap:anywhere;font-family:Arial,sans-serif;line-height:1.8;color:var(--text)}
 .notes-actions{display:none;margin-top:15px;gap:10px;flex-wrap:wrap}
 
+/* AI FLASHCARDS */
+.flashcard-area{max-width:760px}
+.flashcard{
+    min-height:270px;
+    background:linear-gradient(135deg,#3730a3,#6366f1);
+    color:white;
+    border-radius:20px;
+    padding:35px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 15px 35px rgba(55,48,163,.18);
+    transition:transform .25s;
+    user-select:none;
+}
+.flashcard:hover{transform:translateY(-3px)}
+.flashcard .card-label{
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:#c7d2fe;
+    margin-bottom:20px;
+}
+.flashcard h2{
+    font-size:clamp(19px,3vw,25px);
+    line-height:1.5;
+    margin:0;
+    overflow-wrap:anywhere;
+}
+.flashcard .flip-hint{font-size:12px;color:#e0e7ff;margin-top:25px}
+.flashcard-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+.flashcard-counter{text-align:center;color:var(--muted);font-size:13px;margin-top:15px}
+.flashcard-progress{height:8px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin-top:10px}
+.flashcard-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4f46e5,#818cf8);transition:width .3s}
+.flashcard-empty{
+    text-align:center;
+    padding:35px 15px;
+    color:var(--muted);
+    background:#f8faff;
+    border:1px dashed #c7d2fe;
+    border-radius:14px;
+}
+
 /* FOOTER */
 .footer{text-align:center;color:var(--muted);font-size:12px;padding:30px 10px 10px}
 
@@ -178,6 +230,7 @@ textarea.form-control{min-height:110px;resize:vertical}
     .chat-messages{height:350px}
     .chat-input-area{flex-direction:column}
     .top-label{display:none}
+    .flashcard{min-height:230px;padding:25px 18px}
 }
 </style>
 </head>
@@ -203,6 +256,7 @@ textarea.form-control{min-height:110px;resize:vertical}
     <a href="#" class="nav-link" data-page="planner" onclick="showPage('planner',this);return false"><span>📚</span> Study Planner</a>
     <a href="#" class="nav-link" data-page="studyplan" onclick="showPage('studyplan',this);return false"><span>🗓️</span> AI Study Plan</a>
     <a href="#" class="nav-link" data-page="quiz" onclick="showPage('quiz',this);return false"><span>📝</span> Practice Quiz</a>
+    <a href="#" class="nav-link" data-page="flashcards" onclick="showPage('flashcards',this);return false"><span>🃏</span> AI Flashcards</a>
     <a href="#" class="nav-link" data-page="progress" onclick="showPage('progress',this);return false"><span>📈</span> My Progress</a>
     <a href="#" class="nav-link" data-page="notes" onclick="showPage('notes',this);return false"><span>📄</span> AI Notes Maker</a>
     <a href="#" class="nav-link" data-page="assistant" onclick="showPage('assistant',this);return false"><span>🤖</span> AI Assistant</a>
@@ -243,6 +297,7 @@ textarea.form-control{min-height:110px;resize:vertical}
         <div class="card feature-card" onclick="showPage('planner')"><div class="stat-icon">📚</div><h3>Study Planner</h3><p>Organize your daily tasks and stay focused on your goals.</p></div>
         <div class="card feature-card" onclick="showPage('studyplan')"><div class="stat-icon">🗓️</div><h3>AI Study Plan</h3><p>Generate a personalized study timetable with AI.</p></div>
         <div class="card feature-card" onclick="showPage('quiz')"><div class="stat-icon">📝</div><h3>Practice Quiz</h3><p>Test your knowledge with AI-powered practice questions.</p></div>
+        <div class="card feature-card" onclick="showPage('flashcards')"><div class="stat-icon">🃏</div><h3>AI Flashcards</h3><p>Create interactive question-and-answer cards for quick revision.</p></div>
         <div class="card feature-card" onclick="showPage('progress')"><div class="stat-icon">📈</div><h3>Progress Tracking</h3><p>Track your quiz scores and celebrate your improvements.</p></div>
         <div class="card feature-card" onclick="showPage('notes')"><div class="stat-icon">📄</div><h3>AI Notes Maker</h3><p>Turn PDF, Word and text documents into organized study notes.</p></div>
         <div class="card feature-card" onclick="showPage('assistant')"><div class="stat-icon">🤖</div><h3>AI Study Assistant</h3><p>Ask questions and get helpful explanations from AI.</p></div>
@@ -304,7 +359,7 @@ textarea.form-control{min-height:110px;resize:vertical}
         </div>
         <button class="btn" id="generate-plan" onclick="generateStudyPlan()">✨ Generate My Study Plan</button>
         <p class="status" id="plan-status"></p>
-        <div id="study-plan-result" aria-live="polite"></div>
+        <div id="study-plan-result"></div>
     </div>
 </section>
 
@@ -335,6 +390,70 @@ textarea.form-control{min-height:110px;resize:vertical}
         <button class="btn btn-secondary" id="retry-quiz" style="display:none;margin:15px 0 0 8px" onclick="generateQuiz()">Try Another Quiz</button>
         <div id="quiz-result"></div>
         <div id="quiz-feedback"></div>
+    </div>
+</section>
+
+<!-- AI FLASHCARDS -->
+<section class="page" id="flashcards">
+    <div class="section-heading">
+        <div>
+            <h2>AI Flashcards Generator</h2>
+            <p>Create interactive flashcards to remember important concepts.</p>
+        </div>
+    </div>
+
+    <div class="card form-card flashcard-area">
+        <div class="form-group">
+            <label for="flash-subject">Subject</label>
+            <input class="form-control" id="flash-subject" type="text" placeholder="Example: Biology">
+        </div>
+
+        <div class="form-group">
+            <label for="flash-topic">Topic</label>
+            <input class="form-control" id="flash-topic" type="text" placeholder="Example: Human Digestive System">
+        </div>
+
+        <div class="form-group">
+            <label for="flash-count">Number of flashcards</label>
+            <select class="form-control" id="flash-count">
+                <option value="5">5 Flashcards</option>
+                <option value="10" selected>10 Flashcards</option>
+                <option value="15">15 Flashcards</option>
+            </select>
+        </div>
+
+        <button class="btn" id="generate-flashcards" onclick="generateFlashcards()">✨ Generate AI Flashcards</button>
+        <p id="flash-status" class="status" aria-live="polite"></p>
+
+        <div id="flashcard-study" style="display:none">
+            <div class="flashcard-counter" id="flashcard-counter">Card 1 of 10</div>
+
+            <div class="flashcard-progress">
+                <div class="flashcard-progress-fill" id="flashcard-progress-fill"></div>
+            </div>
+
+            <div class="flashcard" id="flashcard" onclick="flipFlashcard()" role="button" tabindex="0" aria-label="Flip flashcard to reveal answer">
+                <div class="card-label" id="flashcard-label">QUESTION</div>
+                <h2 id="flashcard-text">Your question will appear here.</h2>
+                <div class="flip-hint" id="flashcard-hint">Click this card to reveal the answer ↻</div>
+            </div>
+
+            <div class="flashcard-controls">
+                <button class="btn btn-secondary" id="flash-prev" onclick="previousFlashcard()">← Previous</button>
+                <button class="btn" id="flash-next" onclick="nextFlashcard()">Next →</button>
+            </div>
+
+            <div class="flashcard-controls">
+                <button class="btn btn-secondary btn-small" onclick="shuffleFlashcards()">🔀 Shuffle</button>
+                <button class="btn btn-secondary btn-small" onclick="restartFlashcards()">↻ Restart</button>
+            </div>
+        </div>
+
+        <div id="flashcard-empty" class="flashcard-empty" style="margin-top:20px">
+            <div style="font-size:35px">🃏</div>
+            <h3 style="color:var(--navy)">Ready to revise?</h3>
+            <p>Enter a subject and topic above to create your first set of AI flashcards.</p>
+        </div>
     </div>
 </section>
 
@@ -407,6 +526,7 @@ const pageTitles = {
     planner:["Study Planner","Organize your daily study tasks."],
     studyplan:["AI Study Plan","Create your personalized study timetable."],
     quiz:["Practice Quiz","Test your knowledge with AI."],
+    flashcards:["AI Flashcards","Create interactive flashcards for quick revision."],
     progress:["My Progress","Track your learning achievements."],
     notes:["AI Notes Maker","Turn your study materials into organized notes."],
     assistant:["AI Study Assistant","Your personal AI learning companion."]
@@ -752,6 +872,163 @@ function submitQuiz(){
     updateProgress();
     updateDashboard();
 }
+
+/* AI FLASHCARDS */
+let flashcards=[];
+let flashcardIndex=0;
+let flashcardFlipped=false;
+
+async function generateFlashcards(){
+    const subject=document.getElementById("flash-subject").value.trim();
+    const topic=document.getElementById("flash-topic").value.trim();
+    const count=Number(document.getElementById("flash-count").value);
+    const status=document.getElementById("flash-status");
+    const button=document.getElementById("generate-flashcards");
+    const study=document.getElementById("flashcard-study");
+    const empty=document.getElementById("flashcard-empty");
+
+    if(!subject||!topic){
+        status.textContent="Please enter both a subject and a topic.";
+        status.className="status error";
+        return;
+    }
+
+    button.disabled=true;
+    button.textContent="Generating...";
+    status.textContent="AI is creating your flashcards. Please wait...";
+    status.className="status";
+    study.style.display="none";
+    empty.style.display="block";
+    empty.textContent="Creating your flashcards...";
+
+    try{
+        const response=await fetch("/api/flashcards",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({subject,topic,count})
+        });
+
+        const data=await response.json();
+
+        if(!response.ok){
+            throw new Error(data.error||"Unable to generate flashcards.");
+        }
+
+        if(!Array.isArray(data.flashcards)||data.flashcards.length===0){
+            throw new Error("The AI did not return valid flashcards. Please try again.");
+        }
+
+        flashcards=data.flashcards.filter(card=>
+            card&&typeof card.question==="string"&&
+            typeof card.answer==="string"&&
+            card.question.trim()&&card.answer.trim()
+        );
+
+        if(flashcards.length===0){
+            throw new Error("No valid flashcards were returned. Please try again.");
+        }
+
+        flashcardIndex=0;
+        flashcardFlipped=false;
+        study.style.display="block";
+        empty.style.display="none";
+        renderFlashcard();
+
+        status.textContent=flashcards.length+" flashcards generated successfully! Click a card to reveal its answer.";
+        status.className="status success";
+
+    }catch(error){
+        flashcards=[];
+        study.style.display="none";
+        empty.style.display="block";
+        empty.textContent="Your flashcards will appear here after generation.";
+        status.textContent=error.message||"Something went wrong. Please try again.";
+        status.className="status error";
+    }finally{
+        button.disabled=false;
+        button.textContent="✨ Generate AI Flashcards";
+    }
+}
+
+function renderFlashcard(){
+    if(!flashcards.length) return;
+
+    const card=flashcards[flashcardIndex];
+    const label=document.getElementById("flashcard-label");
+    const text=document.getElementById("flashcard-text");
+    const hint=document.getElementById("flashcard-hint");
+    const counter=document.getElementById("flashcard-counter");
+    const progress=document.getElementById("flashcard-progress-fill");
+    const previous=document.getElementById("flash-prev");
+    const next=document.getElementById("flash-next");
+
+    label.textContent=flashcardFlipped?"ANSWER":"QUESTION";
+    text.textContent=flashcardFlipped?card.answer:card.question;
+    hint.textContent=flashcardFlipped?"Click to see the question ↻":"Click this card to reveal the answer ↻";
+
+    counter.textContent="Card "+(flashcardIndex+1)+" of "+flashcards.length;
+    progress.style.width=((flashcardIndex+1)/flashcards.length*100)+"%";
+
+    previous.disabled=flashcardIndex===0;
+    next.disabled=flashcardIndex===flashcards.length-1;
+}
+
+function flipFlashcard(){
+    if(!flashcards.length) return;
+    flashcardFlipped=!flashcardFlipped;
+    renderFlashcard();
+}
+
+function nextFlashcard(){
+    if(flashcardIndex<flashcards.length-1){
+        flashcardIndex++;
+        flashcardFlipped=false;
+        renderFlashcard();
+    }
+}
+
+function previousFlashcard(){
+    if(flashcardIndex>0){
+        flashcardIndex--;
+        flashcardFlipped=false;
+        renderFlashcard();
+    }
+}
+
+function shuffleFlashcards(){
+    if(flashcards.length<2) return;
+
+    for(let i=flashcards.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [flashcards[i],flashcards[j]]=[flashcards[j],flashcards[i]];
+    }
+
+    flashcardIndex=0;
+    flashcardFlipped=false;
+    renderFlashcard();
+
+    const status=document.getElementById("flash-status");
+    status.textContent="Flashcards shuffled! Start revising.";
+    status.className="status success";
+}
+
+function restartFlashcards(){
+    if(!flashcards.length) return;
+    flashcardIndex=0;
+    flashcardFlipped=false;
+    renderFlashcard();
+
+    const status=document.getElementById("flash-status");
+    status.textContent="Flashcards restarted. Good luck with your revision!";
+    status.className="status success";
+}
+
+document.getElementById("flashcard").addEventListener("keydown",event=>{
+    if(event.key==="Enter"||event.key===" "){
+        event.preventDefault();
+        flipFlashcard();
+    }
+});
 
 /* PROGRESS TRACKING */
 function updateProgress(){
