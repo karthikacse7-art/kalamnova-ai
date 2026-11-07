@@ -1817,7 +1817,8 @@ Use simple language. Avoid long paragraphs.
       throw new Error(data.error || "AI request failed.");
     }
 
-    result.textContent = data.answer || "No answer received.";
+  result.innerHTML = (data.answer || "No answer received.")
+  .replace(/\n/g, "<br><br>");
 
   } catch (error) {
     result.textContent =
