@@ -2057,6 +2057,33 @@ function showInteractiveMockTest(test) {
         score++;
       }
     });
+        // SAVE MOCK TEST PERFORMANCE
+    const percentage = Math.round(
+      (score / test.questions.length) * 100
+    );
+
+    let mockHistory = [];
+
+    try {
+      mockHistory = JSON.parse(
+        localStorage.getItem("kalamnovaMockHistory") || "[]"
+      );
+    } catch (error) {
+      mockHistory = [];
+    }
+
+    mockHistory.unshift({
+      title: test.title || "Mock Test",
+      score: score,
+      total: test.questions.length,
+      percentage: percentage,
+      date: new Date().toLocaleDateString()
+    });
+
+    localStorage.setItem(
+      "kalamnovaMockHistory",
+      JSON.stringify(mockHistory)
+    );
 
     area.innerHTML = `
       <div class="card">
@@ -2127,7 +2154,53 @@ function formatMockTime(seconds) {
   return String(minutes).padStart(2, "0") + ":" +
     String(remaining).padStart(2, "0");
 }
-   
+   // UPDATE MOCK TEST PERFORMANCE DASHBOARD
+function updateMockPerformanceDashboard() {
+  let history = [];
+
+  try {
+    history = JSON.parse(
+      localStorage.getItem("kalamnovaMockHistory") || "[]"
+    );
+  } catch (error) {
+    history = [];
+  }
+
+  const totalTests = history.length;
+
+  const averageScore = totalTests
+    ? Math.round(
+        history.reduce((sum, test) => sum + test.percentage, 0) / totalTests
+      )
+    : 0;
+
+  const bestScore = totalTests
+    ? Math.max(...history.map(test => test.percentage))
+    : 0;
+
+  document.getElementById("mockTestsCompleted").textContent = totalTests;
+  document.getElementById("mockAverageScore").textContent = averageScore + "%";
+  document.getElementById("mockBestScore").textContent = bestScore + "%";
+
+  const historyArea = document.getElementById("mockTestHistory");
+
+  if (historyArea) {
+    if (totalTests === 0) {
+      historyArea.textContent = "No mock tests completed yet.";
+    } else {
+      historyArea.innerHTML = history.map(test => `
+        <div style="padding:12px 0;border-bottom:1px solid #ddd;">
+          <strong>${test.title}</strong>
+          <p>Score: ${test.score}/${test.total} (${test.percentage}%)</p>
+          <small>${test.date}</small>
+        </div>
+      `).join("");
+    }
+  }
+}
+
+// LOAD SAVED MOCK TEST PERFORMANCE
+updateMockPerformanceDashboard();
 </script>
 </body>
 </html>
