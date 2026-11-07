@@ -1700,5 +1700,68 @@ updateDashboard();
 updateRewards();
 renderCommunity();
 </script>
+  <script>
+function startExamPrep(exam) {
+  document.getElementById("examType").value = exam;
+
+  document.getElementById("examQuestion").value =
+    "Create a personalized study plan for " + exam +
+    ". Include subjects, daily targets, practice tests and revision.";
+
+  document.getElementById("examQuestion").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+async function askExamAI() {
+  const exam = document.getElementById("examType").value;
+  const question = document.getElementById("examQuestion").value.trim();
+  const result = document.getElementById("examAIResult");
+
+  if (!question) {
+    result.textContent = "Please enter your question first.";
+    return;
+  }
+
+  result.textContent = "🤖 AI is preparing your answer...";
+
+  const message = `
+You are KALAMNOVA AI, an expert exam preparation tutor.
+
+Exam: ${exam}
+
+Student's request: ${question}
+
+Give a clear, accurate, well-structured answer.
+Use headings, bullet points and examples where useful.
+For study plans, include daily targets.
+For practice questions, include answers and explanations.
+  `;
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed.");
+    }
+
+    result.textContent = data.answer || "No answer received.";
+
+  } catch (error) {
+    result.textContent =
+      "Unable to connect to AI. Please try again.\n" +
+      error.message;
+  }
+}
+</script>
 </body>
 </html>
