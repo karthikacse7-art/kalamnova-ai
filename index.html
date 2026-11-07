@@ -1755,9 +1755,19 @@ function startExamPrep(exam) {
   document.getElementById("examQuestion").scrollIntoView({
     behavior: "smooth",
     block: "center"
-  });
+        });
 }
 
+function setExamTask(task) {
+  document.getElementById("examQuestion").value = task;
+
+  document.getElementById("examQuestion").scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+  document.getElementById("examQuestion").focus();
+}
 async function askExamAI() {
   const exam = document.getElementById("examType").value;
   const question = document.getElementById("examQuestion").value.trim();
