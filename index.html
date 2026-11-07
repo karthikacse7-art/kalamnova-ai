@@ -358,6 +358,9 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
   <button class="nav-btn" data-page="pomodoro"><span class="nav-icon">🍅</span>Pomodoro Timer</button>
   <button class="nav-btn" data-page="studyplan"><span class="nav-icon">🤖</span>AI Study Plan</button>
   <button class="nav-btn" data-page="quiz"><span class="nav-icon">📝</span>Practice Quiz</button>
+  <button class="nav-btn" data-page="examcenter">
+  <span class="nav-icon">🎯</span>AI Exam Preparation Centre
+</button>
   <button class="nav-btn" data-page="flashcards"><span class="nav-icon">🗂️</span>AI Flashcards</button>
   <button class="nav-btn" data-page="notes"><span class="nav-icon">📚</span>AI Notes Maker</button>
   <button class="nav-btn" data-page="assistant"><span class="nav-icon">💬</span>AI Assistant</button>
@@ -645,6 +648,68 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
       <button class="btn secondary" onclick="nextInterviewQuestion()">Next Question →</button>
     </div>
   </div>
+</section>
+  <!-- AI EXAM PREPARATION CENTRE -->
+<section class="page" id="examcenter">
+
+  <h2>🎯 AI Exam Preparation Centre</h2>
+  <p class="muted">Your personal AI-powered exam preparation assistant.</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>🏫 School Exams</h3>
+      <p>Prepare for CBSE, ICSE and State Board examinations.</p>
+      <button onclick="startExamPrep('School Exams')">Start Preparing</button>
+    </div>
+
+    <div class="card">
+      <h3>🎓 JEE Preparation</h3>
+      <p>Practice Physics, Chemistry and Mathematics.</p>
+      <button onclick="startExamPrep('JEE')">Start Preparing</button>
+    </div>
+
+    <div class="card">
+      <h3>🧬 NEET Preparation</h3>
+      <p>Practice Biology, Physics and Chemistry.</p>
+      <button onclick="startExamPrep('NEET')">Start Preparing</button>
+    </div>
+
+    <div class="card">
+      <h3>🏛️ UPSC Preparation</h3>
+      <p>Prepare for Civil Services with structured study support.</p>
+      <button onclick="startExamPrep('UPSC')">Start Preparing</button>
+    </div>
+
+    <div class="card">
+      <h3>📚 College Exams</h3>
+      <p>Prepare for university and semester examinations.</p>
+      <button onclick="startExamPrep('College Exams')">Start Preparing</button>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <h3>🤖 AI Exam Preparation Assistant</h3>
+    <p>Choose your exam and ask AI to create a study plan, explain topics or generate practice questions.</p>
+
+    <select id="examType">
+      <option value="School Exams">School Exams</option>
+      <option value="JEE">JEE</option>
+      <option value="NEET">NEET</option>
+      <option value="UPSC">UPSC</option>
+      <option value="College Exams">College Exams</option>
+    </select>
+
+    <textarea id="examQuestion" placeholder="Example: Create a 30-day study plan for my exam..."></textarea>
+
+    <button onclick="askExamAI()">Ask AI</button>
+
+    <div id="examAIResult" class="card" style="margin-top:15px;white-space:pre-wrap;">
+      Your AI preparation results will appear here.
+    </div>
+  </div>
+
 </section>
 
 <div class="footer">© 2026 KALAMNOVA AI · Learn Smarter. Grow Faster.</div>
