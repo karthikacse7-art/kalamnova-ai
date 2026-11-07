@@ -735,7 +735,15 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
       <option value="UPSC">UPSC</option>
       <option value="College Exams">College Exams</option>
     </select>
+ <div class="exam-quick-actions">
+  <button type="button" onclick="setExamTask('Create a personalized study plan with daily tasks, topics and revision.')">📅 Create Study Plan</button>
 
+  <button type="button" onclick="setExamTask('Explain this topic in simple steps with examples: ')">📖 Explain a Topic</button>
+
+  <button type="button" onclick="setExamTask('Generate 10 practice questions with answers and explanations.')">📝 Generate Practice Questions</button>
+
+  <button type="button" onclick="setExamTask('Create a timed mock test with questions, marks and answers.')">🎯 Create Mock Test</button>
+</div>
     <textarea id="examQuestion" placeholder="Example: Create a 30-day study plan for my exam..."></textarea>
 
     <button onclick="askExamAI()">Ask AI</button>
