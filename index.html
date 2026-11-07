@@ -1879,13 +1879,13 @@ Use simple language. Avoid long paragraphs.
       let test;
 
       try {
-        test = JSON.parse(
-          answer.replace(/```json|```/g, "").trim()
-        );
-      } catch {
-        throw new Error("AI returned an invalid mock test. Please try again.");
-      }
-
+  test = JSON.parse(
+    answer.replace(/```json|```/g, "").trim()
+  );
+} catch {
+  result.textContent = "AI ORIGINAL RESPONSE:\n\n" + answer;
+  return;
+}
       if (
         !Array.isArray(test.questions) ||
         test.questions.length === 0 ||
