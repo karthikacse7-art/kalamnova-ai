@@ -572,16 +572,72 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
 </section>
 
 <!-- PROGRESS -->
+
 <section class="page" id="progress">
-  <h3>My Progress</h3><p class="muted">Celebrate your learning journey.</p>
+  <h2>🏆 My Progress Dashboard</h2>
+  <p class="muted">Celebrate your learning journey and track your exam preparation.</p>
+
   <div class="grid">
-    <div class="card"><div class="stat-icon">📚</div><div class="stat-number" id="progressTasks">0</div><div class="stat-label">Total Study Tasks</div></div>
-    <div class="card"><div class="stat-icon">🏆</div><div class="stat-number" id="progressCompleted">0</div><div class="stat-label">Completed Tasks</div></div>
-    <div class="card"><div class="stat-icon">📝</div><div class="stat-number" id="progressQuizzes">0</div><div class="stat-label">Quizzes Completed</div></div>
+    <div class="card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-number" id="progressTasks">0</div>
+      <div class="stat-label">Total Study Tasks</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-number" id="progressCompleted">0</div>
+      <div class="stat-label">Completed Tasks</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon">📝</div>
+      <div class="stat-number" id="progressQuizzes">0</div>
+      <div class="stat-label">Quizzes Completed</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-number" id="mockTestsCompleted">0</div>
+      <div class="stat-label">Mock Tests Completed</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-number" id="mockAverageScore">0%</div>
+      <div class="stat-label">Average Mock Test Score</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-icon">🥇</div>
+      <div class="stat-number" id="mockBestScore">0%</div>
+      <div class="stat-label">Best Mock Test Score</div>
+    </div>
   </div>
-  <div class="card"><h3>Task Completion</h3><div class="progress-track"><div class="progress-fill" id="taskProgress"></div></div><p id="progressText">Start adding tasks to track your progress.</p></div>
-  <div class="card"><h3>Quiz History</h3><div id="quizHistory" class="muted">No quizzes completed yet.</div></div>
+
+  <div class="card">
+    <h3>📈 Task Completion</h3>
+    <div class="progress-track">
+      <div class="progress-fill" id="taskProgress"></div>
+    </div>
+    <p id="progressText">Start adding tasks to track your progress.</p>
+  </div>
+
+  <div class="card">
+    <h3>📋 Mock Test History</h3>
+    <div id="mockTestHistory" class="muted">
+      No mock tests completed yet.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📝 Quiz History</h3>
+    <div id="quizHistory" class="muted">
+      No quizzes completed yet.
+    </div>
+  </div>
 </section>
+
 
 <!-- GAMIFICATION -->
 <section class="page" id="rewards">
