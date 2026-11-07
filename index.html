@@ -355,6 +355,7 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
 
   <div class="nav-label">SMART LEARNING</div>
   <button class="nav-btn" data-page="planner"><span class="nav-icon">📅</span>Study Planner</button>
+  <button class="nav-btn" data-page="pomodoro"><span class="nav-icon">🍅</span>Pomodoro Timer</button>
   <button class="nav-btn" data-page="studyplan"><span class="nav-icon">🤖</span>AI Study Plan</button>
   <button class="nav-btn" data-page="quiz"><span class="nav-icon">📝</span>Practice Quiz</button>
   <button class="nav-btn" data-page="flashcards"><span class="nav-icon">🗂️</span>AI Flashcards</button>
@@ -647,7 +648,36 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
 </section>
 
 <div class="footer">© 2026 KALAMNOVA AI · Learn Smarter. Grow Faster.</div>
+<!-- POMODORO TIMER -->
+<section class="page" id="pomodoro">
+  <h2>🍅 Pomodoro Focus Timer</h2>
+  <p class="muted">Focus better. Take breaks. Achieve more.</p>
+
+  <div class="card" style="text-align:center;max-width:600px;margin:auto;">
+    <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:25px;">
+      <button class="btn" onclick="setPomodoroMode('focus')">Focus</button>
+      <button class="btn" onclick="setPomodoroMode('short')">Short Break</button>
+      <button class="btn" onclick="setPomodoroMode('long')">Long Break</button>
+    </div>
+
+    <h1 id="pomodoroTime" style="font-size:65px;margin:20px 0;">25:00</h1>
+    <p id="pomodoroStatus" class="muted">Ready to focus?</p>
+
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
+      <button class="btn" id="pomodoroStart" onclick="startPomodoro()">▶ Start</button>
+      <button class="btn" onclick="pausePomodoro()">⏸ Pause</button>
+      <button class="btn" onclick="resetPomodoro()">↻ Reset</button>
+    </div>
+
+    <hr style="margin:25px 0;opacity:.2;">
+
+    <h3>Completed Focus Sessions</h3>
+    <h2 id="pomodoroSessions">0</h2>
+    <p class="muted">Every focused minute brings you closer to your goals!</p>
+  </div>
+</section>
 </main>
+
 </div>
 
 <!-- SUPABASE LIBRARY -->
@@ -1472,7 +1502,92 @@ function addCommunityPost() {
   $("communityText").value="";renderCommunity();
 }
 
+
+  /* POMODORO TIMER */
+let pomodoroMode = "focus";
+let pomodoroSeconds = 25 * 60;
+let pomodoroInterval = null;
+let pomodoroCompleted = 0;
+
+const pomodoroDurations = {
+  focus: 25 * 60,
+  short: 5 * 60,
+  long: 15 * 60
+};
+
+function updatePomodoroDisplay() {
+  const minutes = Math.floor(pomodoroSeconds / 60);
+  const seconds = pomodoroSeconds % 60;
+
+  $("pomodoroTime").textContent =
+    String(minutes).padStart(2, "0") + ":" +
+    String(seconds).padStart(2, "0");
+
+  $("pomodoroSessions").textContent = pomodoroCompleted;
+}
+
+function setPomodoroMode(mode) {
+  pausePomodoro();
+  pomodoroMode = mode;
+  pomodoroSeconds = pomodoroDurations[mode];
+
+  $("pomodoroStatus").textContent =
+    mode === "focus" ? "Time to focus! 📚" :
+    mode === "short" ? "Take a short break! ☕" :
+    "Enjoy your long break! 🌿";
+
+  updatePomodoroDisplay();
+}
+
+function startPomodoro() {
+  if (pomodoroInterval !== null) return;
+
+  $("pomodoroStatus").textContent = "Timer running... Keep going! 💪";
+
+  pomodoroInterval = setInterval(() => {
+    pomodoroSeconds--;
+
+    if (pomodoroSeconds <= 0) {
+      clearInterval(pomodoroInterval);
+      pomodoroInterval = null;
+      pomodoroSeconds = 0;
+
+      if (pomodoroMode === "focus") {
+        pomodoroCompleted++;
+        $("pomodoroStatus").textContent =
+          "Focus session completed! Great work! 🎉";
+        awardXP(10, "Pomodoro focus session completed");
+        recordLearningActivity();
+      } else {
+        $("pomodoroStatus").textContent =
+          "Break completed! Ready for another session? 🚀";
+      }
+
+      updatePomodoroDisplay();
+      alert("Pomodoro timer completed!");
+      return;
+    }
+
+    updatePomodoroDisplay();
+  }, 1000);
+}
+
+function pausePomodoro() {
+  if (pomodoroInterval !== null) {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    $("pomodoroStatus").textContent = "Timer paused.";
+  }
+}
+
+function resetPomodoro() {
+  pausePomodoro();
+  pomodoroSeconds = pomodoroDurations[pomodoroMode];
+  $("pomodoroStatus").textContent = "Timer reset. Ready?";
+  updatePomodoroDisplay();
+}
 /* INITIALIZE EXISTING FEATURES */
+updatePomodoroDisplay();
 recordLearningActivity();
 renderTasks();
 updateDashboard();
