@@ -1,3 +1,4 @@
+
 export default {
   async fetch(request) {
     const headers = {
@@ -60,24 +61,55 @@ export default {
       }
 
       const prompt = `
-Create a practical and personalized study timetable.
+Create a SHORT, clear and practical study timetable.
 
+SUBJECT: ${subject.trim()}
+DAILY STUDY HOURS: ${hours}
+EXAM DATE: ${examDate}
+
+Follow this EXACT output structure:
+
+📘 MY STUDY PLAN
 Subject: ${subject.trim()}
-Available study hours per day: ${hours}
+Daily study time: ${hours} hours
 Exam date: ${examDate}
 
-Include:
-1. A daily study timetable.
-2. Break times.
-3. Important topics to study.
-4. Revision sessions.
-5. Practice questions or mock tests.
-6. Final preparation advice.
+📅 DAY 1 – [Topic name]
+| Time | Activity |
+| 1 | Learn the main concepts |
+| 2 | Practise questions |
+| 3 | Revise and test yourself |
 
-Make the plan realistic for a student.
-Use clear headings, numbered days, and simple language.
-If the exam is far away, organize the plan into weekly phases.
-Do not claim that the student has completed any work.
+Adjust the number of sessions to fit ${hours} hours.
+Use realistic time durations and include short breaks.
+
+For every day include:
+1. Day number and topic.
+2. A small timetable with time and activity.
+3. Three simple tasks to complete.
+4. One revision activity.
+
+Organize the days according to the time remaining until the exam.
+For longer periods, group the schedule into weekly phases.
+Include a final revision and mock-test day before the exam.
+
+Finish with:
+🎯 DAILY CHECKLIST
+□ Study the planned topic
+□ Practise questions
+□ Revise important points
+□ Review mistakes
+
+💡 EXAM TIPS
+Give only 3 short, useful tips.
+
+IMPORTANT RULES:
+- Use simple student-friendly English.
+- Keep each day's explanation short.
+- Use clear headings and numbered days.
+- Avoid long paragraphs and repeated advice.
+- Never claim the student has completed a task.
+- Do not create an unrealistic timetable.
 `;
 
       const apiResponse = await fetch(
@@ -93,15 +125,15 @@ Do not claim that the student has completed any work.
             messages: [
               {
                 role: "system",
-                content: "You are KALAMNOVA AI, a friendly educational study planner. Create practical, clear and realistic study schedules."
+                content: "You are KALAMNOVA AI, a friendly student study planner. Always create concise, organized and realistic timetables. Follow the requested output structure."
               },
               {
                 role: "user",
                 content: prompt
               }
             ],
-            temperature: 0.5,
-            max_tokens: 2000
+            temperature: 0.4,
+            max_tokens: 1800
           }),
           signal: AbortSignal.timeout(25000)
         }
@@ -118,8 +150,7 @@ Do not claim that the student has completed any work.
         );
       }
 
-      const plan =
-        data.choices?.[0]?.message?.content?.trim();
+      const plan = data.choices?.[0]?.message?.content?.trim();
 
       if (!plan) {
         throw new Error("No study plan received.");
