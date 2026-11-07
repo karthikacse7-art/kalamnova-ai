@@ -113,7 +113,7 @@ Do not make up facts.`;
               }
             ],
             temperature: 0.4,
-            max_tokens: isSkillRequest ? 1400 : 1000
+            max_tokens: isSkillRequest ? 1400 : 4000
           }),
           signal: AbortSignal.timeout(25000)
         }
