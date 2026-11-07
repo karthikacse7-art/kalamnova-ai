@@ -659,7 +659,9 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
       <button class="btn" onclick="setPomodoroMode('short')">Short Break</button>
       <button class="btn" onclick="setPomodoroMode('long')">Long Break</button>
     </div>
-
+    <button class="btn" id="pomodoroAutoToggle" onclick="togglePomodoroAutoMode()">
+  🔁 Auto Mode: OFF
+</button>
     <h1 id="pomodoroTime" style="font-size:65px;margin:20px 0;">25:00</h1>
     <p id="pomodoroStatus" class="muted">Ready to focus?</p>
 
@@ -1508,13 +1510,22 @@ let pomodoroMode = "focus";
 let pomodoroSeconds = 25 * 60;
 let pomodoroInterval = null;
 let pomodoroCompleted = 0;
+  let pomodoroAutoMode = false;
 
 const pomodoroDurations = {
   focus: 25 * 60,
   short: 5 * 60,
   long: 15 * 60
 };
+function togglePomodoroAutoMode() {
+  pomodoroAutoMode = !pomodoroAutoMode;
 
+  $("pomodoroAutoToggle").textContent =
+    pomodoroAutoMode ? "🔁 Auto Mode: ON" : "🔁 Auto Mode: OFF";
+
+  $("pomodoroStatus").textContent =
+    pomodoroAutoMode ? "Auto Mode enabled! 🚀" : "Auto Mode disabled.";
+}
 function updatePomodoroDisplay() {
   const minutes = Math.floor(pomodoroSeconds / 60);
   const seconds = pomodoroSeconds % 60;
@@ -1546,40 +1557,37 @@ function startPomodoro() {
 
   pomodoroInterval = setInterval(() => {
     pomodoroSeconds--;
+if (pomodoroSeconds <= 0) {
+  clearInterval(pomodoroInterval);
+  pomodoroInterval = null;
+  pomodoroSeconds = 0;
 
-    if (pomodoroSeconds <= 0) {
-      clearInterval(pomodoroInterval);
-      pomodoroInterval = null;
-      pomodoroSeconds = 0;
-
-      if (pomodoroMode === "focus") {
-        pomodoroCompleted++;
-        $("pomodoroStatus").textContent =
-          "Focus session completed! Great work! 🎉";
-        awardXP(10, "Pomodoro focus session completed");
-        recordLearningActivity();
-      } else {
-        $("pomodoroStatus").textContent =
-          "Break completed! Ready for another session? 🚀";
-      }
-
-      updatePomodoroDisplay();
-      alert("Pomodoro timer completed!");
-      return;
-    }
-
-    updatePomodoroDisplay();
-  }, 1000);
-}
-
-function pausePomodoro() {
-  if (pomodoroInterval !== null) {
-    clearInterval(pomodoroInterval);
-    pomodoroInterval = null;
-    $("pomodoroStatus").textContent = "Timer paused.";
+  if (pomodoroMode === "focus") {
+    pomodoroCompleted++;
+    $("pomodoroStatus").textContent =
+      "Focus session completed! Great work! 🎉";
+    awardXP(10, "Pomodoro focus session completed");
+    recordLearningActivity();
+  } else {
+    $("pomodoroStatus").textContent =
+      "Break completed! Ready for another session? 🚀";
   }
-}
 
+  updatePomodoroDisplay();
+
+  if (pomodoroAutoMode) {
+    const nextMode = pomodoroMode === "focus" ? "short" : "focus";
+    setPomodoroMode(nextMode);
+    startPomodoro();
+  } else {
+    alert("Pomodoro timer completed!");
+  }
+
+  return;
+}
+       updatePomodoroDisplay();
+  }, 1000);
+} 
 function resetPomodoro() {
   pausePomodoro();
   pomodoroSeconds = pomodoroDurations[pomodoroMode];
