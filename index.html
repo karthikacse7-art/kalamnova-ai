@@ -752,6 +752,9 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
   <h3>📘 Your AI Study Results</h3>
   <p>Your study plan, explanations and practice questions will appear here.</p>
 </div>
+   <!-- INTERACTIVE MOCK TEST AREA -->
+<div id="interactiveMockTest" style="display:none;">
+</div> 
   </div>
 
 </section>
@@ -1768,10 +1771,13 @@ function setExamTask(task) {
 
   document.getElementById("examQuestion").focus();
 }
+
+ 
 async function askExamAI() {
   const exam = document.getElementById("examType").value;
   const question = document.getElementById("examQuestion").value.trim();
   const result = document.getElementById("examAIResult");
+  const mockArea = document.getElementById("interactiveMockTest");
 
   if (!question) {
     result.textContent = "Please enter your question first.";
@@ -1779,14 +1785,47 @@ async function askExamAI() {
   }
 
   result.textContent = "🤖 AI is preparing your answer...";
+  mockArea.style.display = "none";
+  mockArea.innerHTML = "";
 
-  const message = `
+  const isMockTest = /mock test/i.test(question);
+
+  const message = isMockTest
+    ? `
+You are KALAMNOVA AI, an expert ${exam} exam tutor.
+
+Create a multiple-choice mock test based on this student request:
+${question}
+
+Return ONLY valid JSON. Do not use Markdown or code fences.
+
+Use exactly this structure:
+{
+  "title": "Mock Test",
+  "duration": 15,
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "answer": 0,
+      "explanation": "Explain why the correct answer is right."
+    }
+  ]
+}
+
+Create 10 questions.
+Each question must have exactly 4 options.
+The answer must be the zero-based option number: 0, 1, 2 or 3.
+Include a clear explanation for every answer.
+Duration must be in minutes.
+Make questions suitable for the selected exam.
+`
+    : `
 You are KALAMNOVA AI, an expert exam preparation tutor.
 
 Exam: ${exam}
 
 Student's request: ${question}
-
 
 FORMAT YOUR ANSWER FOR STUDENTS:
 
@@ -1817,8 +1856,7 @@ Summarize the important points.
 Use clear headings and numbered sections.
 Leave blank lines between sections.
 Use simple language. Avoid long paragraphs.
-
-  `;
+`;
 
   try {
     const response = await fetch("/api/chat", {
@@ -1835,15 +1873,204 @@ Use simple language. Avoid long paragraphs.
       throw new Error(data.error || "AI request failed.");
     }
 
-  result.innerHTML = (data.answer || "No answer received.")
-  .replace(/\n/g, "<br><br>");
+    const answer = data.answer || "No answer received.";
+
+    if (isMockTest) {
+      let test;
+
+      try {
+        test = JSON.parse(
+          answer.replace(/```json|```/g, "").trim()
+        );
+      } catch {
+        throw new Error("AI returned an invalid mock test. Please try again.");
+      }
+
+      if (
+        !Array.isArray(test.questions) ||
+        test.questions.length === 0 ||
+        !test.questions.every(q =>
+          typeof q.question === "string" &&
+          Array.isArray(q.options) &&
+          q.options.length === 4 &&
+          Number.isInteger(q.answer) &&
+          q.answer >= 0 &&
+          q.answer <= 3
+        )
+      ) {
+        throw new Error("The mock test format is incomplete. Please try again.");
+      }
+
+      result.textContent = "Your interactive mock test is ready!";
+      showInteractiveMockTest(test);
+    } else {
+      result.innerHTML = answer.replace(/\n/g, "<br><br>");
+    }
 
   } catch (error) {
     result.textContent =
-      "Unable to connect to AI. Please try again.\n" +
+      "Unable to prepare your answer. Please try again.\n" +
       error.message;
   }
 }
+
+function showInteractiveMockTest(test) {
+  const area = document.getElementById("interactiveMockTest");
+
+  area.style.display = "block";
+
+  let currentQuestion = 0;
+  let answers = {};
+  let remainingSeconds = Math.max(1, Number(test.duration) || 15) * 60;
+  let timerInterval;
+
+  function renderQuestion() {
+    const q = test.questions[currentQuestion];
+
+    area.innerHTML = `
+      <div class="card">
+        <h3>🎯 ${test.title || "Interactive Mock Test"}</h3>
+        <p>Question ${currentQuestion + 1} of ${test.questions.length}</p>
+        <h3 id="mockTimer">⏱️ Time: ${formatMockTime(remainingSeconds)}</h3>
+        <hr>
+        <h3>${q.question}</h3>
+        <div id="mockOptions"></div>
+        <p id="mockProgress"></p>
+        <button id="mockNext">
+          ${currentQuestion === test.questions.length - 1 ? "Submit Test" : "Next Question"}
+        </button>
+      </div>
+    `;
+
+    const optionsArea = document.getElementById("mockOptions");
+
+    q.options.forEach((option, index) => {
+      const label = document.createElement("label");
+      label.style.display = "block";
+      label.style.padding = "10px";
+      label.style.margin = "8px 0";
+      label.style.border = "1px solid #ccc";
+      label.style.borderRadius = "8px";
+      label.style.cursor = "pointer";
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = "mockAnswer";
+      radio.value = index;
+      radio.checked = answers[currentQuestion] === index;
+
+      radio.addEventListener("change", () => {
+        answers[currentQuestion] = index;
+        updateProgress();
+      });
+
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(" " + option));
+      optionsArea.appendChild(label);
+    });
+
+    updateProgress();
+
+    document.getElementById("mockNext").addEventListener("click", () => {
+      if (currentQuestion < test.questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        finishMockTest();
+      }
+    });
+  }
+
+  function updateProgress() {
+    const progress = document.getElementById("mockProgress");
+    if (progress) {
+      progress.textContent =
+        "Answered: " + Object.keys(answers).length +
+        " / " + test.questions.length;
+    }
+  }
+
+  function finishMockTest() {
+    clearInterval(timerInterval);
+
+    let score = 0;
+
+    test.questions.forEach((q, index) => {
+      if (answers[index] === q.answer) {
+        score++;
+      }
+    });
+
+    area.innerHTML = `
+      <div class="card">
+        <h2>🏆 Mock Test Completed!</h2>
+        <h3>Your Score: ${score} / ${test.questions.length}</h3>
+        <p>Percentage: ${Math.round(score / test.questions.length * 100)}%</p>
+        <div id="mockReview"></div>
+        <button id="mockRestart">Try Another Test</button>
+      </div>
+    `;
+
+    const review = document.getElementById("mockReview");
+
+    test.questions.forEach((q, index) => {
+      const item = document.createElement("div");
+      item.style.padding = "12px 0";
+      item.style.borderTop = "1px solid #ddd";
+
+      const heading = document.createElement("h4");
+      heading.textContent = `Question ${index + 1}: ${q.question}`;
+
+      const yourAnswer = document.createElement("p");
+      yourAnswer.textContent =
+        "Your answer: " +
+        (answers[index] === undefined
+          ? "Not answered"
+          : q.options[answers[index]]);
+
+      const correctAnswer = document.createElement("p");
+      correctAnswer.textContent = "Correct answer: " + q.options[q.answer];
+
+      const explanation = document.createElement("p");
+      explanation.textContent = "Explanation: " + (q.explanation || "No explanation provided.");
+
+      item.append(heading, yourAnswer, correctAnswer, explanation);
+      review.appendChild(item);
+    });
+
+    document.getElementById("mockRestart").addEventListener("click", () => {
+      document.getElementById("examQuestion").value =
+        "Create a timed mock test with 10 multiple-choice questions.";
+      askExamAI();
+    });
+  }
+
+  function updateTimer() {
+    remainingSeconds--;
+
+    const timer = document.getElementById("mockTimer");
+
+    if (timer) {
+      timer.textContent = "⏱️ Time: " + formatMockTime(remainingSeconds);
+    }
+
+    if (remainingSeconds <= 0) {
+      finishMockTest();
+    }
+  }
+
+  renderQuestion();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function formatMockTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  const remaining = seconds % 60;
+
+  return String(minutes).padStart(2, "0") + ":" +
+    String(remaining).padStart(2, "0");
+}
+   
 </script>
 </body>
 </html>
