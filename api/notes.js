@@ -16,7 +16,10 @@ export default {
       const apiKey = process.env.GROQ_API_KEY;
 
       if (!apiKey) {
-        throw new Error("API key is not configured.");
+        return new Response(
+          JSON.stringify({ error: "API key is not configured." }),
+          { status: 500, headers }
+        );
       }
 
       const { text } = await request.json();
@@ -37,6 +40,71 @@ export default {
         );
       }
 
+      const prompt = `
+Convert the following study material into SHORT, CLEAR and WELL-ORGANIZED student notes.
+
+STRICT FORMATTING RULES:
+- Use numbered headings.
+- Use bullet points instead of long paragraphs.
+- Explain each point in 1–3 simple sentences.
+- Highlight important terms using clear labels.
+- Include only information supported by the material.
+- Do not repeat the same information.
+- Keep the notes useful for exam preparation.
+- If a section is not relevant, skip it instead of inventing information.
+
+FOLLOW THIS STRUCTURE:
+
+📘 1. TOPIC TITLE
+Write a suitable topic title.
+
+📝 2. INTRODUCTION
+- Explain the topic in 2–3 short points.
+
+📚 3. MAIN CONCEPTS
+- List the important concepts.
+- Explain each concept in simple language.
+- Use numbered subheadings where useful.
+
+🔑 4. IMPORTANT DEFINITIONS
+- Term: Simple definition.
+- Include all important definitions found in the material.
+
+⭐ 5. KEY POINTS
+- List the most important facts.
+- Keep each point short and clear.
+
+📐 6. FORMULAS (if applicable)
+- Formula
+- Meaning of each symbol
+- One simple example if possible.
+
+💡 7. EXAMPLES
+- Give simple examples based on the study material.
+
+📋 8. ADVANTAGES / TYPES / FEATURES
+- Include these only if they are relevant to the topic.
+- Use bullet points.
+
+🎯 9. QUICK REVISION
+- Give 5–8 essential points to remember.
+- Make this section suitable for last-minute revision.
+
+❓ 10. PRACTICE QUESTIONS
+- Create 5 questions based on the material.
+- Give short answers under a separate ANSWERS heading.
+
+FINAL INSTRUCTIONS:
+- Use simple student-friendly English.
+- Avoid unnecessary introductions and conclusions.
+- Keep the notes compact but do not omit important concepts.
+- Make the output easy to copy and download.
+- Never claim the student has completed any activity.
+
+STUDY MATERIAL:
+${text.trim()}
+`;
+
       const response = await fetch(
         "https://api.groq.com/openai/v1/chat/completions",
         {
@@ -50,74 +118,32 @@ export default {
             messages: [
               {
                 role: "system",
-                content: `You are KALAMNOVA AI Notes Maker.
-
-Convert the student's study material into easy-to-understand, well-organized study notes.
-
-IMPORTANT FORMATTING RULES:
-- Use short bullet points.
-- Avoid long paragraphs.
-- Explain concepts in simple student-friendly language.
-- Use clear headings and subheadings.
-- Keep the notes accurate.
-- Do not invent facts.
-
-Follow this exact structure:
-
-# 1. Topic Title
-Give a suitable title.
-
-# 2. Topic Overview
-Explain the topic in 2-3 short bullet points.
-
-# 3. Important Concepts
-Explain the important concepts using short bullet points.
-
-# 4. Important Definitions
-Give important terms and their simple meanings.
-
-# 5. Key Terms
-List important keywords and their meanings.
-
-# 6. Formulas
-Include important formulas and explain each symbol.
-If there are no formulas, write "No important formulas in this material."
-
-# 7. Examples
-Give simple examples based on the material.
-
-# 8. Important Facts
-List the facts students should remember.
-
-# 9. Quick Revision
-Give a short revision summary using bullet points.
-
-# 10. Practice Questions
-Create 5 useful practice questions based on the material.
-Include answers after the questions under a separate heading.
-
-Keep everything organized, readable and useful for exam preparation.`
+                content: "You are KALAMNOVA AI Notes Maker. Create accurate, concise, organized and exam-friendly notes using numbered headings and bullet points."
               },
               {
                 role: "user",
-                content: text.trim()
+                content: prompt
               }
             ],
             temperature: 0.3,
-            max_tokens: 3500
-          })
+            max_tokens: 3000
+          }),
+          signal: AbortSignal.timeout(25000)
         }
       );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error?.message || "AI notes generation failed."
+        return new Response(
+          JSON.stringify({
+            error: data.error?.message || "AI notes generation failed."
+          }),
+          { status: 502, headers }
         );
       }
 
-      const notes = data.choices?.[0]?.message?.content;
+      const notes = data.choices?.[0]?.message?.content?.trim();
 
       if (!notes) {
         throw new Error("No notes were generated.");
@@ -134,7 +160,9 @@ Keep everything organized, readable and useful for exam preparation.`
     } catch (error) {
       return new Response(
         JSON.stringify({
-          error: error.message || "Something went wrong."
+          error: error.name === "TimeoutError"
+            ? "Notes generation took too long. Please try again."
+            : "Unable to generate notes. Please try again."
         }),
         {
           status: 500,
