@@ -1562,9 +1562,9 @@ function speakAIResponse(text) {
 
   const voices = window.speechSynthesis.getVoices();
 
-  const femaleVoice = voices.find(voice =>
-    /female|woman|zira|samantha|susan|heera/i.test(voice.name)
-  );
+const femaleVoice = voices.find(voice =>
+  voice.name.includes("Microsoft Heera")
+);
 
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = voiceLanguage;
