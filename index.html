@@ -544,6 +544,17 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
     <div id="chatMessages"><div class="message ai">Hello! 👋 I'm your KALAMNOVA AI study assistant. What would you like to learn today?</div></div>
     <div class="form-group"><textarea id="chatInput" placeholder="Ask me anything about your studies..."></textarea></div>
     <button class="btn" id="chatButton" onclick="sendMessage()">Send Message</button>
+    <button class="btn" id="voiceInputButton" onclick="startVoiceInput()">
+  🎤 Speak Your Question
+</button>
+
+<button class="btn secondary" id="voiceOutputButton" onclick="toggleVoiceOutput()">
+  🔊 Voice Answers: ON
+</button>
+
+<p id="voiceStatus" class="muted">
+  Tap the microphone and speak your question.
+</p>
     <button class="btn secondary" onclick="clearChat()">Clear Chat</button>
   </div>
 </section>
@@ -1481,7 +1492,67 @@ function downloadNotes() {
   const url=URL.createObjectURL(blob),a=document.createElement("a");
   a.href=url;a.download="KALAMNOVA-AI-Notes.txt";a.click();URL.revokeObjectURL(url);
 }
+/* AI VOICE ASSISTANT */
 
+let voiceOutputEnabled = true;
+let speechRecognition = null;
+
+function startVoiceInput() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const status = $("voiceStatus");
+  const input = $("chatInput");
+
+  if (!SpeechRecognition) {
+    status.textContent = "Voice input is not supported. Please use Chrome.";
+    return;
+  }
+
+  speechRecognition = new SpeechRecognition();
+  speechRecognition.lang = "en-IN";
+  speechRecognition.interimResults = false;
+  speechRecognition.maxAlternatives = 1;
+
+  speechRecognition.onstart = () => {
+    status.textContent = "🎙️ Listening... Speak now.";
+  };
+
+  speechRecognition.onresult = (event) => {
+    input.value = event.results[0][0].transcript;
+    status.textContent = "Voice captured! Sending your question...";
+    sendMessage();
+  };
+
+  speechRecognition.onerror = (event) => {
+    status.textContent = "Voice input error: " + event.error;
+  };
+
+  speechRecognition.start();
+}
+
+function toggleVoiceOutput() {
+  voiceOutputEnabled = !voiceOutputEnabled;
+
+  $("voiceOutputButton").textContent = voiceOutputEnabled
+    ? "🔊 Voice Answers: ON"
+    : "🔇 Voice Answers: OFF";
+
+  if (!voiceOutputEnabled && window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function speakAIResponse(text) {
+  if (!voiceOutputEnabled || !("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-IN";
+
+  window.speechSynthesis.speak(utterance);
+}
 /* AI ASSISTANT */
 async function sendMessage() {
   const input=$("chatInput"),message=input.value.trim();if(!message)return;
@@ -1489,7 +1560,9 @@ async function sendMessage() {
   setLoading("chatButton",true,"Send Message");
   try {
     const data=await callAI("/api/chat",{message});
-    appendMessage(data.answer||"No answer received.","ai");
+   const answer = data.answer || "No answer received.";
+appendMessage(answer, "ai");
+speakAIResponse(answer);
   } catch(error) {appendMessage("Error: "+error.message,"ai")}
   finally {setLoading("chatButton",false,"Send Message")}
 }
