@@ -1411,7 +1411,8 @@ function markFlashcard(known) {
 
 /* NOTES MAKER */
 let generatedNotes="";
-$("notesFile").addEventListener("change",async event=>{
+const notesFileInput = $("notesFile");
+if (notesFileInput) notesFileInput.addEventListener("change",async event=>{
   const file=event.target.files[0];if(!file)return;
   if(!file.name.toLowerCase().endsWith(".txt")) {
     alert("Please upload a TXT file.");event.target.value="";return;
