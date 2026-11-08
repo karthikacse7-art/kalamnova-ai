@@ -537,65 +537,7 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
   </div>
 </section>
 
-<!-- AI ASSISTANT -->
-<section class="page" id="assistant">
-  <h3>AI Study Assistant</h3><p class="muted">Ask questions and get student-friendly explanations.</p>
-  <div class="card">
-    <div id="chatMessages"><div class="message ai">Hello! 👋 I'm your KALAMNOVA AI study assistant. What would you like to learn today?</div></div>
-    <div class="form-group"><textarea id="chatInput" placeholder="Ask me anything about your studies..."></textarea></div>
-    <button class="btn" id="chatButton" onclick="sendMessage()">Send Message</button>
-    <button class="btn" id="voiceInputButton" onclick="startVoiceInput()">
-      🎤 Speak Your Question
-</button>
-    <select id="voiceLanguageSelect"
-        onchange="voiceLanguage=this.value"
-        class="form-control">
-  <option value="en-IN">🇬🇧 English</option>
-  <option value="ta-IN">🇮🇳 தமிழ் (Tamil)</option>
-</select>
 
-      <button class="btn" onclick="testVoice()">
-  🔊 Test Voice
-</button>
-  
-<button class="btn secondary" id="voiceOutputButton" onclick="toggleVoiceOutput()">
-  🔊 Voice Answers: ON
-</button>
-
-<p id="voiceStatus" class="muted">
-  Tap the microphone and speak your question.
-</p>
-    <button class="btn secondary" onclick="clearChat()">Clear Chat</button>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section class="page" id="skills">
-  <h3>Skill Development</h3><p class="muted">Build the skills that matter in today's world.</p>
-  <div class="grid">
-    <div class="card feature-card"><div class="feature-icon">💻</div><h3>Technical Skills</h3><p>Learn programming, web development, AI and digital tools.</p><button class="btn" onclick="getGuidance('Create a beginner-friendly technical skills roadmap for a student.')">Explore Roadmap</button></div>
-    <div class="card feature-card"><div class="feature-icon">🗣️</div><h3>Communication</h3><p>Improve speaking, writing, presentation and teamwork.</p><button class="btn" onclick="getGuidance('Create a practical communication skills improvement plan for a student.')">Improve Skills</button></div>
-    <div class="card feature-card"><div class="feature-icon">🎨</div><h3>Creativity & Projects</h3><p>Develop creative thinking and build practical projects.</p><button class="btn" onclick="getGuidance('Suggest practical creative projects for school and college students.')">Find Projects</button></div>
-    <div class="card feature-card"><div class="feature-icon">🧠</div><h3>Problem Solving</h3><p>Build logical thinking and analytical skills.</p><button class="btn" onclick="getGuidance('Create a daily problem-solving practice plan for students.')">Start Practicing</button></div>
-  </div>
-  <div class="card"><h3>AI Skill Coach</h3><div class="result show" id="skillResult">Choose a skill above to get a personalized learning roadmap.</div></div>
-</section>
-
-<!-- CAREER -->
-<section class="page" id="career">
-  <h3>Career Launchpad</h3><p class="muted">Start exploring your future opportunities.</p>
-  <div class="card">
-    <div class="form-group"><label>What career or field interests you?</label><input id="careerInput" placeholder="Example: Software Developer, Designer, Data Scientist"></div>
-    <div class="form-group"><label>Your current education level</label><select id="careerLevel"><option>School Student</option><option>College Student</option><option>Graduate</option><option>Other</option></select></div>
-    <button class="btn" onclick="careerGuidance()">Explore My Career</button>
-    <div class="result" id="careerResult"></div>
-  </div>
-</section>
-
-<!-- PROGRESS -->
-
-<section class="page" id="progress">
-  <h2>🏆 My Progress Dashboard</h2>
   <p class="muted">Celebrate your learning journey and track your exam preparation.</p>
 
   <div class="grid">
