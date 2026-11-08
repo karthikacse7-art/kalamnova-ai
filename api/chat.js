@@ -104,7 +104,7 @@ Do not make up facts.`;
             model: "openai/gpt-oss-120b",
             messages: [
               {
-                role: "system",
+                role: "system", 
                 content: systemPrompt
               },
               {
