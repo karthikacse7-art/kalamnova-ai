@@ -545,9 +545,13 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
     <div class="form-group"><textarea id="chatInput" placeholder="Ask me anything about your studies..."></textarea></div>
     <button class="btn" id="chatButton" onclick="sendMessage()">Send Message</button>
     <button class="btn" id="voiceInputButton" onclick="startVoiceInput()">
-  🎤 Speak Your Question
+      🎤 Speak Your Question
 </button>
 
+      <button class="btn" onclick="testVoice()">
+  🔊 Test Voice
+</button>
+  
 <button class="btn secondary" id="voiceOutputButton" onclick="toggleVoiceOutput()">
   🔊 Voice Answers: ON
 </button>
@@ -1553,6 +1557,13 @@ function speakAIResponse(text) {
   utterance.lang = "en-IN";
 
   window.speechSynthesis.speak(utterance);
+}
+  function testVoice() {
+  const test = new SpeechSynthesisUtterance(
+    "Hello! Welcome to KALAMNOVA AI."
+  );
+  test.lang = "en-IN";
+  window.speechSynthesis.speak(test);
 }
 /* AI ASSISTANT */
 async function sendMessage() {
