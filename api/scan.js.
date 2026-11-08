@@ -1,0 +1,104 @@
+
+export default {
+  async fetch(request) {
+    const headers = { "Content-Type": "application/json" };
+
+    if (request.method !== "POST") {
+      return new Response(
+        JSON.stringify({ error: "Method not allowed" }),
+        { status: 405, headers }
+      );
+    }
+
+    try {
+      if (!process.env.GROQ_API_KEY) {
+        return new Response(
+          JSON.stringify({ error: "Groq API key is missing." }),
+          { status: 500, headers }
+        );
+      }
+
+      const { image, mimeType } = await request.json();
+
+      if (
+        !image ||
+        typeof image !== "string" ||
+        !["image/jpeg", "image/png", "image/webp"].includes(mimeType) ||
+        image.length > 8_000_000
+      ) {
+        return new Response(
+          JSON.stringify({ error: "Please upload a valid JPG, PNG or WEBP image under the size limit." }),
+          { status: 400, headers }
+        );
+      }
+
+      const apiResponse = await fetch(
+        "https://api.groq.com/openai/v1/chat/completions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: "qwen/qwen3.8-27b",
+            messages: [
+              {
+                role: "system",
+                content: "You are KALAMNOVA AI, a friendly educational tutor. Read the question in the uploaded image carefully. Explain the answer step by step using simple student-friendly English. If it is a maths or science problem, show the formulas and calculations. If the image is unclear, ask the student to upload a clearer image. Never guess unreadable text."
+              },
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "text",
+                    text: "Read and solve the question in this image. Give a clear step-by-step explanation."
+                  },
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: `data:${mimeType};base64,${image}`
+                    }
+                  }
+                ]
+              }
+            ],
+            temperature: 0.3,
+            max_tokens: 2000
+          }),
+          signal: AbortSignal.timeout(40000)
+        }
+      );
+
+      const data = await apiResponse.json();
+
+      if (!apiResponse.ok) {
+        return new Response(
+          JSON.stringify({
+            error: data.error?.message || "Image scanning failed."
+          }),
+          { status: 502, headers }
+        );
+      }
+
+      const answer =
+        data.choices?.[0]?.message?.content?.trim() ||
+        "No answer received.";
+
+      return new Response(
+        JSON.stringify({ answer }),
+        { status: 200, headers }
+      );
+
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: error.name === "TimeoutError"
+            ? "Image scanning took too long. Please try again."
+            : "Something went wrong while scanning the image."
+        }),
+        { status: 500, headers }
+      );
+    }
+  }
+};
