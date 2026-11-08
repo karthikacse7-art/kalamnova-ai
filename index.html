@@ -1553,7 +1553,70 @@ function appendMessage(text,type) {
 function clearChat() {
   $("chatMessages").innerHTML='<div class="message ai">Hello! 👋 What would you like to learn today?</div>';
 }
+/* AI QUESTION SCANNER */
 
+$("questionImage").addEventListener("change", function() {
+  const file = this.files[0];
+  const preview = $("questionImagePreview");
+
+  if (!file) {
+    preview.innerHTML = "";
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image.");
+    this.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    preview.innerHTML =
+      `<img src="${event.target.result}" style="max-width:100%; max-height:250px; border-radius:10px;">`;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+async function scanQuestion() {
+  const file = $("questionImage").files[0];
+
+  if (!file) {
+    alert("Please upload a question image first.");
+    return;
+  }
+
+  const result = $("scanQuestionResult");
+  const button = $("scanQuestionButton");
+
+  result.textContent = "🔍 Reading your question... Please wait.";
+  button.disabled = true;
+
+  try {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+
+      reader.readAsDataURL(file);
+    });
+
+    const data = await callAI("/api/scan", {
+      image: base64,
+      mimeType: file.type
+    });
+
+    result.textContent = data.answer || "No answer received.";
+
+  } catch (error) {
+    result.textContent = "Error: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+}
 /* SKILL DEVELOPMENT */
 async function getGuidance(prompt) {
   $("skillResult").textContent="Creating your skill roadmap...";
