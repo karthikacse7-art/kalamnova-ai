@@ -1560,20 +1560,28 @@ function speakAIResponse(text) {
 
   window.speechSynthesis.cancel();
 
-  const voices = window.speechSynthesis.getVoices();
+  function speakWithFemaleVoice() {
+    const voices = window.speechSynthesis.getVoices();
 
-const femaleVoice = voices.find(voice =>
-  voice.name.includes("Microsoft Heera")
-);
+    const femaleVoice = voices.find(voice =>
+      voice.name.includes("Microsoft Heera")
+    );
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = voiceLanguage;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-IN";
 
-  if (femaleVoice) {
-    utterance.voice = femaleVoice;
+    if (femaleVoice) {
+      utterance.voice = femaleVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
   }
 
-  window.speechSynthesis.speak(utterance);
+  if (window.speechSynthesis.getVoices().length > 0) {
+    speakWithFemaleVoice();
+  } else {
+    window.speechSynthesis.onvoiceschanged = speakWithFemaleVoice;
+  }
 }
   function testVoice() {
   const test = new SpeechSynthesisUtterance(
