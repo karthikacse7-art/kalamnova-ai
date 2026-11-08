@@ -622,7 +622,14 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
     </div>
     <p id="progressText">Start adding tasks to track your progress.</p>
   </div>
-
+<div class="card">
+  <h3>📈 Mock Test Performance Trend</h3>
+  <p class="muted">Track your scores across completed mock tests.</p>
+  <div id="mockPerformanceChart"
+       style="display:flex;align-items:flex-end;gap:12px;height:200px;padding:15px 5px;border-bottom:2px solid #ccc;overflow-x:auto;">
+    <p class="muted">Complete mock tests to see your performance chart.</p>
+  </div>
+</div>
   <div class="card">
     <h3>📋 Mock Test History</h3>
     <div id="mockTestHistory" class="muted">
@@ -2167,6 +2174,22 @@ function updateMockPerformanceDashboard() {
   }
 
   const totalTests = history.length;
+  const chartArea = document.getElementById("mockPerformanceChart");
+
+if (chartArea) {
+  if (history.length === 0) {
+    chartArea.innerHTML =
+      '<p class="muted">Complete mock tests to see your performance chart.</p>';
+  } else {
+    chartArea.innerHTML = history.slice().reverse().map((test, index) => `
+      <div style="min-width:45px;text-align:center;">
+        <div style="font-size:12px;margin-bottom:5px;">${test.percentage}%</div>
+        <div style="height:${Math.max(5, test.percentage * 1.3)}px;background:#2563eb;border-radius:6px 6px 0 0;"></div>
+        <small>Test ${index + 1}</small>
+      </div>
+    `).join("");
+  }
+}
 
   const averageScore = totalTests
     ? Math.round(
