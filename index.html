@@ -1560,8 +1560,18 @@ function speakAIResponse(text) {
 
   window.speechSynthesis.cancel();
 
+  const voices = window.speechSynthesis.getVoices();
+
+  const femaleVoice = voices.find(voice =>
+    /female|woman|zira|samantha|susan|heera/i.test(voice.name)
+  );
+
   const utterance = new SpeechSynthesisUtterance(text);
- utterance.lang = voiceLanguage;
+  utterance.lang = voiceLanguage;
+
+  if (femaleVoice) {
+    utterance.voice = femaleVoice;
+  }
 
   window.speechSynthesis.speak(utterance);
 }
