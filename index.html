@@ -547,6 +547,12 @@ body.dark-mode .dark-toggle {background:#334155;color:white}
     <button class="btn" id="voiceInputButton" onclick="startVoiceInput()">
       🎤 Speak Your Question
 </button>
+    <select id="voiceLanguageSelect"
+        onchange="voiceLanguage=this.value"
+        class="form-control">
+  <option value="en-IN">🇬🇧 English</option>
+  <option value="ta-IN">🇮🇳 தமிழ் (Tamil)</option>
+</select>
 
       <button class="btn" onclick="testVoice()">
   🔊 Test Voice
@@ -1500,6 +1506,7 @@ function downloadNotes() {
 /* AI VOICE ASSISTANT */
 
 let voiceOutputEnabled = true;
+  let voiceLanguage = "en-IN";
 let speechRecognition = null;
 
 function startVoiceInput() {
@@ -1515,7 +1522,7 @@ function startVoiceInput() {
   }
 
   speechRecognition = new SpeechRecognition();
-  speechRecognition.lang = "en-IN";
+speechRecognition.lang = voiceLanguage;
   speechRecognition.interimResults = false;
   speechRecognition.maxAlternatives = 1;
 
@@ -1554,7 +1561,7 @@ function speakAIResponse(text) {
   window.speechSynthesis.cancel();
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-IN";
+ utterance.lang = voiceLanguage;
 
   window.speechSynthesis.speak(utterance);
 }
